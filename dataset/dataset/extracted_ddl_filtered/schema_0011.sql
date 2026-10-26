@@ -1,0 +1,20 @@
+-- Source: https://github.com/phpchap/symfony-Kanban/blob/49725b71b34e525f47efc23a3e661cbe882f825f/data/sql/schema.sql?raw=true
+-- Tables detected: 4 | FK/REFERENCES mentions: 8
+
+CREATE TABLE department (id INT AUTO_INCREMENT, name VARCHAR(100), description text, short_name VARCHAR(100), task_color VARCHAR(100), created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ENGINE = INNODB;
+
+CREATE TABLE phase (id INT AUTO_INCREMENT, name VARCHAR(100), description text, slug VARCHAR(255), created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, UNIQUE INDEX phase_sluggable_idx (slug), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ENGINE = INNODB;
+
+CREATE TABLE task (id INT AUTO_INCREMENT, name VARCHAR(100), description text, slug VARCHAR(255), task_color VARCHAR(100), estimated_mins_to_complete BIGINT, actual_mins_to_complete DATETIME, phase_id INT, department_id INT, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, UNIQUE INDEX task_sluggable_idx (slug), INDEX phase_id_idx (phase_id), INDEX department_id_idx (department_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ENGINE = INNODB;
+
+CREATE TABLE task_department (task_id INT, department_id INT, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY(task_id, department_id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ENGINE = INNODB;
+
+-- Foreign keys added via ALTER TABLE:
+ALTER TABLE task ADD CONSTRAINT task_phase_id_phase_id FOREIGN KEY (phase_id) REFERENCES phase(id);
+
+ALTER TABLE task ADD CONSTRAINT task_department_id_department_id FOREIGN KEY (department_id) REFERENCES department(id);
+
+ALTER TABLE task_department ADD CONSTRAINT task_department_task_id_task_id FOREIGN KEY (task_id) REFERENCES task(id);
+
+ALTER TABLE task_department ADD CONSTRAINT task_department_department_id_department_id FOREIGN KEY (department_id) REFERENCES department(id);
+

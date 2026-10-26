@@ -1,0 +1,1939 @@
+-- Source: https://github.com/LearnEra/LearnEraPlaftform/blob/115255561460f1595f1b52220f34cf6c65b6384d/common/test/db_cache/bok_choy_schema.sql?raw=true
+-- Tables detected: 143 | FK constraints: 153
+CREATE TABLE "assessment_aiclassifier" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "classifier_set_id" int NOT NULL,
+    "criterion_id" int NOT NULL,
+    "classifier_data" varchar(100) NOT NULL,
+    PRIMARY KEY ("id"),
+    KEY "assessment_aiclassifier_714175dc" ("classifier_set_id"),
+    KEY "assessment_aiclassifier_a36470e4" ("criterion_id"),
+    CONSTRAINT "classifier_set_id_refs_id_e0204c20f80cbf6" FOREIGN KEY ("classifier_set_id") REFERENCES "assessment_aiclassifierset" ("id"),
+    CONSTRAINT "criterion_id_refs_id_5b95f648e6ab97f2" FOREIGN KEY ("criterion_id") REFERENCES "assessment_criterion" ("id")
+);
+
+CREATE TABLE "assessment_aiclassifierset" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "rubric_id" int NOT NULL,
+    "created_at" TIMESTAMP NOT NULL,
+    "algorithm_id" varchar(128) NOT NULL,
+    "course_id" varchar(40) NOT NULL,
+    "item_id" varchar(128) NOT NULL,
+    PRIMARY KEY ("id"),
+    KEY "assessment_aiclassifierset_27cb9807" ("rubric_id"),
+    KEY "assessment_aiclassifierset_3b1c9c31" ("created_at"),
+    KEY "assessment_aiclassifierset_53012c1e" ("algorithm_id"),
+    KEY "assessment_aiclassifierset_ff48d8e5" ("course_id"),
+    KEY "assessment_aiclassifierset_67b70d25" ("item_id"),
+    CONSTRAINT "rubric_id_refs_id_39819374c037b8e4" FOREIGN KEY ("rubric_id") REFERENCES "assessment_rubric" ("id")
+);
+
+CREATE TABLE "assessment_aigradingworkflow" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "uuid" varchar(36) NOT NULL,
+    "scheduled_at" TIMESTAMP NOT NULL,
+    "completed_at" TIMESTAMP DEFAULT NULL,
+    "submission_uuid" varchar(128) NOT NULL,
+    "classifier_set_id" int DEFAULT NULL,
+    "algorithm_id" varchar(128) NOT NULL,
+    "rubric_id" int NOT NULL,
+    "assessment_id" int DEFAULT NULL,
+    "student_id" varchar(40) NOT NULL,
+    "item_id" varchar(128) NOT NULL,
+    "course_id" varchar(40) NOT NULL,
+    "essay_text" TEXT NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "assessment_aigradingworkflow_uuid_492e936265ecbfd2_uniq" ("uuid"),
+    KEY "assessment_aigradingworkflow_2bbc74ae" ("uuid"),
+    KEY "assessment_aigradingworkflow_4bacaa90" ("scheduled_at"),
+    KEY "assessment_aigradingworkflow_a2fd3af6" ("completed_at"),
+    KEY "assessment_aigradingworkflow_39d020e6" ("submission_uuid"),
+    KEY "assessment_aigradingworkflow_714175dc" ("classifier_set_id"),
+    KEY "assessment_aigradingworkflow_53012c1e" ("algorithm_id"),
+    KEY "assessment_aigradingworkflow_27cb9807" ("rubric_id"),
+    KEY "assessment_aigradingworkflow_c168f2dc" ("assessment_id"),
+    KEY "assessment_aigradingworkflow_42ff452e" ("student_id"),
+    KEY "assessment_aigradingworkflow_67b70d25" ("item_id"),
+    KEY "assessment_aigradingworkflow_ff48d8e5" ("course_id"),
+    CONSTRAINT "assessment_id_refs_id_2b6c2601d8478e7" FOREIGN KEY ("assessment_id") REFERENCES "assessment_assessment" ("id"),
+    CONSTRAINT "classifier_set_id_refs_id_4f95ef541e9046d1" FOREIGN KEY ("classifier_set_id") REFERENCES "assessment_aiclassifierset" ("id"),
+    CONSTRAINT "rubric_id_refs_id_7b31a4b7dc2a0464" FOREIGN KEY ("rubric_id") REFERENCES "assessment_rubric" ("id")
+);
+
+CREATE TABLE "assessment_aitrainingworkflow" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "uuid" varchar(36) NOT NULL,
+    "algorithm_id" varchar(128) NOT NULL,
+    "classifier_set_id" int DEFAULT NULL,
+    "scheduled_at" TIMESTAMP NOT NULL,
+    "completed_at" TIMESTAMP DEFAULT NULL,
+    "item_id" varchar(128) NOT NULL,
+    "course_id" varchar(40) NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "assessment_aitrainingworkflow_uuid_284fdaa93019f8ef_uniq" ("uuid"),
+    KEY "assessment_aitrainingworkflow_2bbc74ae" ("uuid"),
+    KEY "assessment_aitrainingworkflow_53012c1e" ("algorithm_id"),
+    KEY "assessment_aitrainingworkflow_714175dc" ("classifier_set_id"),
+    KEY "assessment_aitrainingworkflow_4bacaa90" ("scheduled_at"),
+    KEY "assessment_aitrainingworkflow_a2fd3af6" ("completed_at"),
+    KEY "assessment_aitrainingworkflow_67b70d25" ("item_id"),
+    KEY "assessment_aitrainingworkflow_ff48d8e5" ("course_id"),
+    CONSTRAINT "classifier_set_id_refs_id_4f31dd8e0dcc7412" FOREIGN KEY ("classifier_set_id") REFERENCES "assessment_aiclassifierset" ("id")
+);
+
+CREATE TABLE "assessment_aitrainingworkflow_training_examples" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "aitrainingworkflow_id" int NOT NULL,
+    "trainingexample_id" int NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "assessment_aitraini_aitrainingworkflow_id_4b50cfbece05470a_uniq" ("aitrainingworkflow_id","trainingexample_id"),
+    KEY "assessment_aitrainingworkflow_training_examples_a57f9195" ("aitrainingworkflow_id"),
+    KEY "assessment_aitrainingworkflow_training_examples_ea4da31f" ("trainingexample_id"),
+    CONSTRAINT "trainingexample_id_refs_id_78a2a13b0bf13a24" FOREIGN KEY ("trainingexample_id") REFERENCES "assessment_trainingexample" ("id"),
+    CONSTRAINT "aitrainingworkflow_id_refs_id_2840acb945c30582" FOREIGN KEY ("aitrainingworkflow_id") REFERENCES "assessment_aitrainingworkflow" ("id")
+);
+
+CREATE TABLE "assessment_assessment" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "submission_uuid" varchar(128) NOT NULL,
+    "rubric_id" int NOT NULL,
+    "scored_at" TIMESTAMP NOT NULL,
+    "scorer_id" varchar(40) NOT NULL,
+    "score_type" varchar(2) NOT NULL,
+    "feedback" TEXT NOT NULL,
+    PRIMARY KEY ("id"),
+    KEY "assessment_assessment_39d020e6" ("submission_uuid"),
+    KEY "assessment_assessment_27cb9807" ("rubric_id"),
+    KEY "assessment_assessment_3227200" ("scored_at"),
+    KEY "assessment_assessment_9f54855a" ("scorer_id"),
+    CONSTRAINT "rubric_id_refs_id_287cd4a61ab6dbc4" FOREIGN KEY ("rubric_id") REFERENCES "assessment_rubric" ("id")
+);
+
+CREATE TABLE "assessment_assessmentfeedback" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "submission_uuid" varchar(128) NOT NULL,
+    "feedback_text" TEXT NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "submission_uuid" ("submission_uuid")
+);
+
+CREATE TABLE "assessment_assessmentfeedback_assessments" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "assessmentfeedback_id" int NOT NULL,
+    "assessment_id" int NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "assessment_assessmen_assessmentfeedback_id_36925aaa1a839ac_uniq" ("assessmentfeedback_id","assessment_id"),
+    KEY "assessment_assessmentfeedback_assessments_58f1f0d" ("assessmentfeedback_id"),
+    KEY "assessment_assessmentfeedback_assessments_c168f2dc" ("assessment_id"),
+    CONSTRAINT "assessment_id_refs_id_170e92e6e7fd607e" FOREIGN KEY ("assessment_id") REFERENCES "assessment_assessment" ("id"),
+    CONSTRAINT "assessmentfeedback_id_refs_id_226c8f1e91bbd347" FOREIGN KEY ("assessmentfeedback_id") REFERENCES "assessment_assessmentfeedback" ("id")
+);
+
+CREATE TABLE "assessment_assessmentfeedback_options" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "assessmentfeedback_id" int NOT NULL,
+    "assessmentfeedbackoption_id" int NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "assessment_assessmen_assessmentfeedback_id_14efc9eea8f4c83_uniq" ("assessmentfeedback_id","assessmentfeedbackoption_id"),
+    KEY "assessment_assessmentfeedback_options_58f1f0d" ("assessmentfeedback_id"),
+    KEY "assessment_assessmentfeedback_options_4e523d64" ("assessmentfeedbackoption_id"),
+    CONSTRAINT "assessmentfeedbackoption_id_refs_id_597390b9cdf28acd" FOREIGN KEY ("assessmentfeedbackoption_id") REFERENCES "assessment_assessmentfeedbackoption" ("id"),
+    CONSTRAINT "assessmentfeedback_id_refs_id_5383f6e95c27c412" FOREIGN KEY ("assessmentfeedback_id") REFERENCES "assessment_assessmentfeedback" ("id")
+);
+
+CREATE TABLE "assessment_assessmentfeedbackoption" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "text" varchar(255) NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "text" ("text")
+);
+
+CREATE TABLE "assessment_assessmentpart" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "assessment_id" int NOT NULL,
+    "option_id" int,
+    "feedback" TEXT NOT NULL,
+    "criterion_id" int NOT NULL,
+    PRIMARY KEY ("id"),
+    KEY "assessment_assessmentpart_c168f2dc" ("assessment_id"),
+    KEY "assessment_assessmentpart_2f3b0dc9" ("option_id"),
+    KEY "assessment_assessmentpart_a36470e4" ("criterion_id"),
+    CONSTRAINT "option_id_refs_id_5353f6b204439dd5" FOREIGN KEY ("option_id") REFERENCES "assessment_criterionoption" ("id"),
+    CONSTRAINT "assessment_id_refs_id_5cb07795bff26444" FOREIGN KEY ("assessment_id") REFERENCES "assessment_assessment" ("id"),
+    CONSTRAINT "criterion_id_refs_id_5353f6b204439dd5" FOREIGN KEY ("criterion_id") REFERENCES "assessment_criterionoption" ("id")
+);
+
+CREATE TABLE "assessment_criterion" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "rubric_id" int NOT NULL,
+    "name" varchar(100) NOT NULL,
+    "order_num" int unsigned NOT NULL,
+    "prompt" TEXT NOT NULL,
+    "label" varchar(100) NOT NULL DEFAULT '',
+    PRIMARY KEY ("id"),
+    KEY "assessment_criterion_27cb9807" ("rubric_id"),
+    CONSTRAINT "rubric_id_refs_id_48945684f2f4f3c4" FOREIGN KEY ("rubric_id") REFERENCES "assessment_rubric" ("id")
+);
+
+CREATE TABLE "assessment_criterionoption" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "criterion_id" int NOT NULL,
+    "order_num" int unsigned NOT NULL,
+    "points" int unsigned NOT NULL,
+    "name" varchar(100) NOT NULL,
+    "explanation" TEXT NOT NULL,
+    "label" varchar(100) NOT NULL DEFAULT '',
+    PRIMARY KEY ("id"),
+    KEY "assessment_criterionoption_a36470e4" ("criterion_id"),
+    CONSTRAINT "criterion_id_refs_id_4aabcea0d2645232" FOREIGN KEY ("criterion_id") REFERENCES "assessment_criterion" ("id")
+);
+
+CREATE TABLE "assessment_peerworkflow" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "student_id" varchar(40) NOT NULL,
+    "item_id" varchar(128) NOT NULL,
+    "course_id" varchar(40) NOT NULL,
+    "submission_uuid" varchar(128) NOT NULL,
+    "created_at" TIMESTAMP NOT NULL,
+    "completed_at" TIMESTAMP DEFAULT NULL,
+    "grading_completed_at" TIMESTAMP,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "submission_uuid" ("submission_uuid"),
+    KEY "assessment_peerworkflow_42ff452e" ("student_id"),
+    KEY "assessment_peerworkflow_67b70d25" ("item_id"),
+    KEY "assessment_peerworkflow_ff48d8e5" ("course_id"),
+    KEY "assessment_peerworkflow_3b1c9c31" ("created_at"),
+    KEY "assessment_peerworkflow_a2fd3af6" ("completed_at"),
+    KEY "assessment_peerworkflow_course_id_5ca23fddca9b630d" ("course_id","item_id","student_id"),
+    KEY "assessment_peerworkflow_dcd62131" ("grading_completed_at")
+);
+
+CREATE TABLE "assessment_peerworkflowitem" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "scorer_id" int NOT NULL,
+    "author_id" int NOT NULL,
+    "submission_uuid" varchar(128) NOT NULL,
+    "started_at" TIMESTAMP NOT NULL,
+    "assessment_id" int DEFAULT NULL,
+    "scored" SMALLINT NOT NULL,
+    PRIMARY KEY ("id"),
+    KEY "assessment_peerworkflowitem_9f54855a" ("scorer_id"),
+    KEY "assessment_peerworkflowitem_cc846901" ("author_id"),
+    KEY "assessment_peerworkflowitem_39d020e6" ("submission_uuid"),
+    KEY "assessment_peerworkflowitem_d6e710e4" ("started_at"),
+    KEY "assessment_peerworkflowitem_c168f2dc" ("assessment_id"),
+    CONSTRAINT "assessment_id_refs_id_61929d36f69a86a1" FOREIGN KEY ("assessment_id") REFERENCES "assessment_assessment" ("id"),
+    CONSTRAINT "author_id_refs_id_5b3f4e759547df0" FOREIGN KEY ("author_id") REFERENCES "assessment_peerworkflow" ("id"),
+    CONSTRAINT "scorer_id_refs_id_5b3f4e759547df0" FOREIGN KEY ("scorer_id") REFERENCES "assessment_peerworkflow" ("id")
+);
+
+CREATE TABLE "assessment_rubric" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "content_hash" varchar(40) NOT NULL,
+    "structure_hash" varchar(40) NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "content_hash" ("content_hash"),
+    KEY "assessment_rubric_36e74b05" ("structure_hash")
+);
+
+CREATE TABLE "assessment_studenttrainingworkflow" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "submission_uuid" varchar(128) NOT NULL,
+    "student_id" varchar(40) NOT NULL,
+    "item_id" varchar(128) NOT NULL,
+    "course_id" varchar(40) NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "assessment_studenttrainin_submission_uuid_6d32c6477719d68f_uniq" ("submission_uuid"),
+    KEY "assessment_studenttrainingworkflow_39d020e6" ("submission_uuid"),
+    KEY "assessment_studenttrainingworkflow_42ff452e" ("student_id"),
+    KEY "assessment_studenttrainingworkflow_67b70d25" ("item_id"),
+    KEY "assessment_studenttrainingworkflow_ff48d8e5" ("course_id")
+);
+
+CREATE TABLE "assessment_studenttrainingworkflowitem" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "workflow_id" int NOT NULL,
+    "order_num" int unsigned NOT NULL,
+    "started_at" TIMESTAMP NOT NULL,
+    "completed_at" TIMESTAMP DEFAULT NULL,
+    "training_example_id" int NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "assessment_studenttrainingworkf_order_num_1391289faa95b87c_uniq" ("order_num","workflow_id"),
+    KEY "assessment_studenttrainingworkflowitem_26cddbc7" ("workflow_id"),
+    KEY "assessment_studenttrainingworkflowitem_541d6663" ("training_example_id"),
+    CONSTRAINT "training_example_id_refs_id_21003d6e7d3f36e4" FOREIGN KEY ("training_example_id") REFERENCES "assessment_trainingexample" ("id"),
+    CONSTRAINT "workflow_id_refs_id_5a3573250ce50a30" FOREIGN KEY ("workflow_id") REFERENCES "assessment_studenttrainingworkflow" ("id")
+);
+
+CREATE TABLE "assessment_trainingexample" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "raw_answer" TEXT NOT NULL,
+    "rubric_id" int NOT NULL,
+    "content_hash" varchar(40) NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "content_hash" ("content_hash"),
+    KEY "assessment_trainingexample_27cb9807" ("rubric_id"),
+    CONSTRAINT "rubric_id_refs_id_36f1317b7750db21" FOREIGN KEY ("rubric_id") REFERENCES "assessment_rubric" ("id")
+);
+
+CREATE TABLE "assessment_trainingexample_options_selected" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "trainingexample_id" int NOT NULL,
+    "criterionoption_id" int NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "assessment_trainingexa_trainingexample_id_60940991fb17d27d_uniq" ("trainingexample_id","criterionoption_id"),
+    KEY "assessment_trainingexample_options_selected_ea4da31f" ("trainingexample_id"),
+    KEY "assessment_trainingexample_options_selected_843fa247" ("criterionoption_id"),
+    CONSTRAINT "criterionoption_id_refs_id_16ecec54bed5a465" FOREIGN KEY ("criterionoption_id") REFERENCES "assessment_criterionoption" ("id"),
+    CONSTRAINT "trainingexample_id_refs_id_797bc2db5f0faa8d" FOREIGN KEY ("trainingexample_id") REFERENCES "assessment_trainingexample" ("id")
+);
+
+CREATE TABLE "auth_group" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "name" varchar(80) NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "name" ("name")
+);
+
+CREATE TABLE "auth_group_permissions" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "group_id" int NOT NULL,
+    "permission_id" int NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "group_id" ("group_id","permission_id"),
+    KEY "auth_group_permissions_bda51c3c" ("group_id"),
+    KEY "auth_group_permissions_1e014c8f" ("permission_id"),
+    CONSTRAINT "group_id_refs_id_3cea63fe" FOREIGN KEY ("group_id") REFERENCES "auth_group" ("id"),
+    CONSTRAINT "permission_id_refs_id_a7792de1" FOREIGN KEY ("permission_id") REFERENCES "auth_permission" ("id")
+);
+
+CREATE TABLE "auth_permission" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "name" varchar(50) NOT NULL,
+    "content_type_id" int NOT NULL,
+    "codename" varchar(100) NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "content_type_id" ("content_type_id","codename"),
+    KEY "auth_permission_e4470c6e" ("content_type_id"),
+    CONSTRAINT "content_type_id_refs_id_728de91f" FOREIGN KEY ("content_type_id") REFERENCES "django_content_type" ("id")
+) ENGINE=InnoDB AUTO_INCREMENT=370 DEFAULT CHARSET=utf8;
+
+CREATE TABLE "auth_registration" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "user_id" int NOT NULL,
+    "activation_key" varchar(32) NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "user_id" ("user_id"),
+    UNIQUE KEY "activation_key" ("activation_key"),
+    CONSTRAINT "user_id_refs_id_3fe8066a03e5b0b5" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "auth_user" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "username" varchar(30) NOT NULL,
+    "first_name" varchar(30) NOT NULL,
+    "last_name" varchar(30) NOT NULL,
+    "email" varchar(75) NOT NULL,
+    "password" varchar(128) NOT NULL,
+    "is_staff" SMALLINT NOT NULL,
+    "is_active" SMALLINT NOT NULL,
+    "is_superuser" SMALLINT NOT NULL,
+    "last_login" TIMESTAMP NOT NULL,
+    "date_joined" TIMESTAMP NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "username" ("username"),
+    UNIQUE KEY "email" ("email")
+);
+
+CREATE TABLE "auth_user_groups" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "user_id" int NOT NULL,
+    "group_id" int NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "user_id" ("user_id","group_id"),
+    KEY "auth_user_groups_fbfc09f1" ("user_id"),
+    KEY "auth_user_groups_bda51c3c" ("group_id"),
+    CONSTRAINT "user_id_refs_id_831107f1" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id"),
+    CONSTRAINT "group_id_refs_id_f0ee9890" FOREIGN KEY ("group_id") REFERENCES "auth_group" ("id")
+);
+
+CREATE TABLE "auth_user_user_permissions" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "user_id" int NOT NULL,
+    "permission_id" int NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "user_id" ("user_id","permission_id"),
+    KEY "auth_user_user_permissions_fbfc09f1" ("user_id"),
+    KEY "auth_user_user_permissions_1e014c8f" ("permission_id"),
+    CONSTRAINT "user_id_refs_id_f2045483" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id"),
+    CONSTRAINT "permission_id_refs_id_67e79cb" FOREIGN KEY ("permission_id") REFERENCES "auth_permission" ("id")
+);
+
+CREATE TABLE "auth_userprofile" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "user_id" int NOT NULL,
+    "name" varchar(255) NOT NULL,
+    "language" varchar(255) NOT NULL,
+    "location" varchar(255) NOT NULL,
+    "meta" TEXT NOT NULL,
+    "courseware" varchar(255) NOT NULL,
+    "gender" varchar(6),
+    "mailing_address" TEXT,
+    "year_of_birth" int,
+    "level_of_education" varchar(6),
+    "goals" TEXT,
+    "allow_certificate" SMALLINT NOT NULL,
+    "country" varchar(2),
+    "city" TEXT,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "user_id" ("user_id"),
+    KEY "auth_userprofile_52094d6e" ("name"),
+    KEY "auth_userprofile_8a7ac9ab" ("language"),
+    KEY "auth_userprofile_b54954de" ("location"),
+    KEY "auth_userprofile_fca3d292" ("gender"),
+    KEY "auth_userprofile_d85587" ("year_of_birth"),
+    KEY "auth_userprofile_551e365c" ("level_of_education"),
+    CONSTRAINT "user_id_refs_id_3daaa960628b4c11" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "bulk_email_courseauthorization" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "course_id" varchar(255) NOT NULL,
+    "email_enabled" SMALLINT NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "bulk_email_courseauthorization_course_id_4f6cee675bf93275_uniq" ("course_id"),
+    KEY "bulk_email_courseauthorization_ff48d8e5" ("course_id")
+);
+
+CREATE TABLE "bulk_email_courseemail" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "sender_id" int DEFAULT NULL,
+    "slug" varchar(128) NOT NULL,
+    "subject" varchar(128) NOT NULL,
+    "html_message" TEXT,
+    "created" TIMESTAMP NOT NULL,
+    "modified" TIMESTAMP NOT NULL,
+    "course_id" varchar(255) NOT NULL,
+    "to_option" varchar(64) NOT NULL,
+    "text_message" TEXT,
+    PRIMARY KEY ("id"),
+    KEY "bulk_email_courseemail_901f59e9" ("sender_id"),
+    KEY "bulk_email_courseemail_36af87d1" ("slug"),
+    KEY "bulk_email_courseemail_ff48d8e5" ("course_id"),
+    CONSTRAINT "sender_id_refs_id_5e8b8f9870ed6279" FOREIGN KEY ("sender_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "bulk_email_courseemailtemplate" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "html_template" TEXT,
+    "plain_template" TEXT,
+    PRIMARY KEY ("id")
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+CREATE TABLE "bulk_email_optout" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "course_id" varchar(255) NOT NULL,
+    "user_id" int,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "bulk_email_optout_course_id_368f7519b2997e1a_uniq" ("course_id","user_id"),
+    KEY "bulk_email_optout_ff48d8e5" ("course_id"),
+    KEY "bulk_email_optout_fbfc09f1" ("user_id"),
+    CONSTRAINT "user_id_refs_id_fc2bac99e68e67c" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "celery_taskmeta" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "task_id" varchar(255) NOT NULL,
+    "status" varchar(50) NOT NULL,
+    "result" TEXT,
+    "date_done" TIMESTAMP NOT NULL,
+    "traceback" TEXT,
+    "hidden" SMALLINT NOT NULL,
+    "meta" TEXT,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "task_id" ("task_id"),
+    KEY "celery_taskmeta_c91f1bf" ("hidden")
+);
+
+CREATE TABLE "celery_tasksetmeta" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "taskset_id" varchar(255) NOT NULL,
+    "result" TEXT NOT NULL,
+    "date_done" TIMESTAMP NOT NULL,
+    "hidden" SMALLINT NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "taskset_id" ("taskset_id"),
+    KEY "celery_tasksetmeta_c91f1bf" ("hidden")
+);
+
+CREATE TABLE "certificates_certificatewhitelist" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "user_id" int NOT NULL,
+    "course_id" varchar(255) NOT NULL,
+    "whitelist" SMALLINT NOT NULL,
+    PRIMARY KEY ("id"),
+    KEY "certificates_certificatewhitelist_fbfc09f1" ("user_id"),
+    CONSTRAINT "user_id_refs_id_517c1c6aa7ba9306" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "certificates_generatedcertificate" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "user_id" int NOT NULL,
+    "download_url" varchar(128) NOT NULL,
+    "grade" varchar(5) NOT NULL,
+    "course_id" varchar(255) NOT NULL,
+    "key" varchar(32) NOT NULL,
+    "distinction" SMALLINT NOT NULL,
+    "status" varchar(32) NOT NULL,
+    "verify_uuid" varchar(32) NOT NULL,
+    "download_uuid" varchar(32) NOT NULL,
+    "name" varchar(255) NOT NULL,
+    "created_date" TIMESTAMP NOT NULL,
+    "modified_date" TIMESTAMP NOT NULL,
+    "error_reason" varchar(512) NOT NULL,
+    "mode" varchar(32) NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "certificates_generatedcertifica_course_id_1389f6b2d72f5e78_uniq" ("course_id","user_id"),
+    KEY "certificates_generatedcertificate_fbfc09f1" ("user_id"),
+    CONSTRAINT "user_id_refs_id_6c4fb3478e23bfe2" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "circuit_servercircuit" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "name" varchar(32) NOT NULL,
+    "schematic" TEXT NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "name" ("name")
+);
+
+CREATE TABLE "course_action_state_coursererunstate" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "created_time" TIMESTAMP NOT NULL,
+    "updated_time" TIMESTAMP NOT NULL,
+    "created_user_id" int DEFAULT NULL,
+    "updated_user_id" int DEFAULT NULL,
+    "course_key" varchar(255) NOT NULL,
+    "action" varchar(100) NOT NULL,
+    "state" varchar(50) NOT NULL,
+    "should_display" SMALLINT NOT NULL,
+    "message" varchar(1000) NOT NULL,
+    "source_course_key" varchar(255) NOT NULL,
+    "display_name" varchar(255) NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "course_action_state_coursererun_course_key_cf5da77ed3032d6_uniq" ("course_key","action"),
+    KEY "course_action_state_coursererunstate_5b876fa2" ("created_user_id"),
+    KEY "course_action_state_coursererunstate_ceb2e2e7" ("updated_user_id"),
+    KEY "course_action_state_coursererunstate_b4b47e7a" ("course_key"),
+    KEY "course_action_state_coursererunstate_1bd4707b" ("action"),
+    KEY "course_action_state_coursererunstate_ebfe36dd" ("source_course_key"),
+    CONSTRAINT "created_user_id_refs_id_1334640c1744bdeb" FOREIGN KEY ("created_user_id") REFERENCES "auth_user" ("id"),
+    CONSTRAINT "updated_user_id_refs_id_1334640c1744bdeb" FOREIGN KEY ("updated_user_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "course_groups_courseusergroup" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "name" varchar(255) NOT NULL,
+    "course_id" varchar(255) NOT NULL,
+    "group_type" varchar(20) NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "name" ("name","course_id"),
+    KEY "course_groups_courseusergroup_ff48d8e5" ("course_id")
+);
+
+CREATE TABLE "course_groups_courseusergroup_users" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "courseusergroup_id" int NOT NULL,
+    "user_id" int NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "courseusergroup_id" ("courseusergroup_id","user_id"),
+    KEY "course_groups_courseusergroup_users_caee1c64" ("courseusergroup_id"),
+    KEY "course_groups_courseusergroup_users_fbfc09f1" ("user_id"),
+    CONSTRAINT "courseusergroup_id_refs_id_d26180aa" FOREIGN KEY ("courseusergroup_id") REFERENCES "course_groups_courseusergroup" ("id"),
+    CONSTRAINT "user_id_refs_id_bf33b47a" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "course_modes_coursemode" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "course_id" varchar(255) NOT NULL,
+    "mode_slug" varchar(100) NOT NULL,
+    "mode_display_name" varchar(255) NOT NULL,
+    "min_price" int NOT NULL,
+    "suggested_prices" varchar(255) NOT NULL,
+    "currency" varchar(8) NOT NULL,
+    "expiration_date" date DEFAULT NULL,
+    "expiration_datetime" TIMESTAMP DEFAULT NULL,
+    "description" TEXT,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "course_modes_coursemode_course_id_69505c92fc09856_uniq" ("course_id","currency","mode_slug"),
+    KEY "course_modes_coursemode_ff48d8e5" ("course_id")
+);
+
+CREATE TABLE "course_modes_coursemodesarchive" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "course_id" varchar(255) NOT NULL,
+    "mode_slug" varchar(100) NOT NULL,
+    "mode_display_name" varchar(255) NOT NULL,
+    "min_price" int NOT NULL,
+    "suggested_prices" varchar(255) NOT NULL,
+    "currency" varchar(8) NOT NULL,
+    "expiration_date" date DEFAULT NULL,
+    "expiration_datetime" TIMESTAMP DEFAULT NULL,
+    PRIMARY KEY ("id"),
+    KEY "course_modes_coursemodesarchive_ff48d8e5" ("course_id")
+);
+
+CREATE TABLE "courseware_offlinecomputedgrade" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "user_id" int NOT NULL,
+    "course_id" varchar(255) NOT NULL,
+    "created" TIMESTAMP DEFAULT NULL,
+    "updated" TIMESTAMP NOT NULL,
+    "gradeset" TEXT,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "courseware_offlinecomputedgrade_user_id_46133bbd0926078f_uniq" ("user_id","course_id"),
+    KEY "courseware_offlinecomputedgrade_fbfc09f1" ("user_id"),
+    KEY "courseware_offlinecomputedgrade_ff48d8e5" ("course_id"),
+    KEY "courseware_offlinecomputedgrade_3216ff68" ("created"),
+    KEY "courseware_offlinecomputedgrade_8aac229" ("updated"),
+    CONSTRAINT "user_id_refs_id_7b3221f638cf339d" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "courseware_offlinecomputedgradelog" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "course_id" varchar(255) NOT NULL,
+    "created" TIMESTAMP DEFAULT NULL,
+    "seconds" int NOT NULL,
+    "nstudents" int NOT NULL,
+    PRIMARY KEY ("id"),
+    KEY "courseware_offlinecomputedgradelog_ff48d8e5" ("course_id"),
+    KEY "courseware_offlinecomputedgradelog_3216ff68" ("created")
+);
+
+CREATE TABLE "courseware_studentmodule" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "module_type" varchar(32) NOT NULL,
+    "module_id" varchar(255) NOT NULL,
+    "student_id" int NOT NULL,
+    "state" TEXT,
+    "grade" DOUBLE PRECISION DEFAULT NULL,
+    "created" TIMESTAMP NOT NULL,
+    "modified" TIMESTAMP NOT NULL,
+    "max_grade" DOUBLE PRECISION,
+    "done" varchar(8) NOT NULL,
+    "course_id" varchar(255) NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "courseware_studentmodule_student_id_635d77aea1256de5_uniq" ("student_id","module_id","course_id"),
+    KEY "courseware_studentmodule_42ff452e" ("student_id"),
+    KEY "courseware_studentmodule_3216ff68" ("created"),
+    KEY "courseware_studentmodule_6dff86b5" ("grade"),
+    KEY "courseware_studentmodule_5436e97a" ("modified"),
+    KEY "courseware_studentmodule_2d8768ff" ("module_type"),
+    KEY "courseware_studentmodule_f53ed95e" ("module_id"),
+    KEY "courseware_studentmodule_1923c03f" ("done"),
+    KEY "courseware_studentmodule_ff48d8e5" ("course_id"),
+    CONSTRAINT "student_id_refs_id_51af713179ba2570" FOREIGN KEY ("student_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "courseware_studentmodulehistory" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "student_module_id" int NOT NULL,
+    "version" varchar(255),
+    "created" TIMESTAMP NOT NULL,
+    "state" TEXT,
+    "grade" DOUBLE PRECISION DEFAULT NULL,
+    "max_grade" DOUBLE PRECISION DEFAULT NULL,
+    PRIMARY KEY ("id"),
+    KEY "courseware_studentmodulehistory_5656f5fe" ("student_module_id"),
+    KEY "courseware_studentmodulehistory_659105e4" ("version"),
+    KEY "courseware_studentmodulehistory_3216ff68" ("created"),
+    CONSTRAINT "student_module_id_refs_id_51904344e48636f4" FOREIGN KEY ("student_module_id") REFERENCES "courseware_studentmodule" ("id")
+);
+
+CREATE TABLE "courseware_xmodulestudentinfofield" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "field_name" varchar(64) NOT NULL,
+    "value" TEXT NOT NULL,
+    "student_id" int NOT NULL,
+    "created" TIMESTAMP NOT NULL,
+    "modified" TIMESTAMP NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "courseware_xmodulestudentinfof_student_id_33f2f772c49db067_uniq" ("student_id","field_name"),
+    KEY "courseware_xmodulestudentinfofield_7e1499" ("field_name"),
+    KEY "courseware_xmodulestudentinfofield_42ff452e" ("student_id"),
+    KEY "courseware_xmodulestudentinfofield_3216ff68" ("created"),
+    KEY "courseware_xmodulestudentinfofield_5436e97a" ("modified"),
+    CONSTRAINT "student_id_refs_id_66e06928bfcfbe68" FOREIGN KEY ("student_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "courseware_xmodulestudentprefsfield" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "field_name" varchar(64) NOT NULL,
+    "module_type" varchar(64) NOT NULL,
+    "value" TEXT NOT NULL,
+    "student_id" int NOT NULL,
+    "created" TIMESTAMP NOT NULL,
+    "modified" TIMESTAMP NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "courseware_xmodulestudentprefs_student_id_2a5d275498b7a407_uniq" ("student_id","module_type","field_name"),
+    KEY "courseware_xmodulestudentprefsfield_7e1499" ("field_name"),
+    KEY "courseware_xmodulestudentprefsfield_2d8768ff" ("module_type"),
+    KEY "courseware_xmodulestudentprefsfield_42ff452e" ("student_id"),
+    KEY "courseware_xmodulestudentprefsfield_3216ff68" ("created"),
+    KEY "courseware_xmodulestudentprefsfield_5436e97a" ("modified"),
+    CONSTRAINT "student_id_refs_id_32bbaa45d7b9940b" FOREIGN KEY ("student_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "courseware_xmoduleuserstatesummaryfield" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "field_name" varchar(64) NOT NULL,
+    "usage_id" varchar(255) NOT NULL,
+    "value" TEXT NOT NULL,
+    "created" TIMESTAMP NOT NULL,
+    "modified" TIMESTAMP NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "courseware_xmodulecontentfi_definition_id_50fa4fd570cf2f4a_uniq" ("usage_id","field_name"),
+    KEY "courseware_xmodulecontentfield_7e1499" ("field_name"),
+    KEY "courseware_xmodulecontentfield_1d304ded" ("usage_id"),
+    KEY "courseware_xmodulecontentfield_3216ff68" ("created"),
+    KEY "courseware_xmodulecontentfield_5436e97a" ("modified")
+);
+
+CREATE TABLE "dark_lang_darklangconfig" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "change_date" TIMESTAMP NOT NULL,
+    "changed_by_id" int DEFAULT NULL,
+    "enabled" SMALLINT NOT NULL,
+    "released_languages" TEXT NOT NULL,
+    PRIMARY KEY ("id"),
+    KEY "dark_lang_darklangconfig_16905482" ("changed_by_id"),
+    CONSTRAINT "changed_by_id_refs_id_3fb19c355c5fe834" FOREIGN KEY ("changed_by_id") REFERENCES "auth_user" ("id")
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+CREATE TABLE "django_admin_log" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "action_time" TIMESTAMP NOT NULL,
+    "user_id" int NOT NULL,
+    "content_type_id" int DEFAULT NULL,
+    "object_id" TEXT,
+    "object_repr" varchar(200) NOT NULL,
+    "action_flag" smallint unsigned NOT NULL,
+    "change_message" TEXT NOT NULL,
+    PRIMARY KEY ("id"),
+    KEY "django_admin_log_fbfc09f1" ("user_id"),
+    KEY "django_admin_log_e4470c6e" ("content_type_id"),
+    CONSTRAINT "content_type_id_refs_id_288599e6" FOREIGN KEY ("content_type_id") REFERENCES "django_content_type" ("id"),
+    CONSTRAINT "user_id_refs_id_c8665aa" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "django_comment_client_permission" (
+    "name" varchar(30) NOT NULL,
+    PRIMARY KEY ("name")
+);
+
+CREATE TABLE "django_comment_client_permission_roles" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "permission_id" varchar(30) NOT NULL,
+    "role_id" int NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "django_comment_client_permi_permission_id_7a766da089425952_uniq" ("permission_id","role_id"),
+    KEY "django_comment_client_permission_roles_1e014c8f" ("permission_id"),
+    KEY "django_comment_client_permission_roles_bf07f040" ("role_id"),
+    CONSTRAINT "role_id_refs_id_6ccffe4ec1b5c854" FOREIGN KEY ("role_id") REFERENCES "django_comment_client_role" ("id"),
+    CONSTRAINT "permission_id_refs_name_63b5ab82b6302d27" FOREIGN KEY ("permission_id") REFERENCES "django_comment_client_permission" ("name")
+);
+
+CREATE TABLE "django_comment_client_role" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "name" varchar(30) NOT NULL,
+    "course_id" varchar(255) NOT NULL,
+    PRIMARY KEY ("id"),
+    KEY "django_comment_client_role_ff48d8e5" ("course_id")
+);
+
+CREATE TABLE "django_comment_client_role_users" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "role_id" int NOT NULL,
+    "user_id" int NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "django_comment_client_role_users_role_id_78e483f531943614_uniq" ("role_id","user_id"),
+    KEY "django_comment_client_role_users_bf07f040" ("role_id"),
+    KEY "django_comment_client_role_users_fbfc09f1" ("user_id"),
+    CONSTRAINT "user_id_refs_id_60d02531441b79e7" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id"),
+    CONSTRAINT "role_id_refs_id_282d08d1ab82c838" FOREIGN KEY ("role_id") REFERENCES "django_comment_client_role" ("id")
+);
+
+CREATE TABLE "django_content_type" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "name" varchar(100) NOT NULL,
+    "app_label" varchar(100) NOT NULL,
+    "model" varchar(100) NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "app_label" ("app_label","model")
+) ENGINE=InnoDB AUTO_INCREMENT=123 DEFAULT CHARSET=utf8;
+
+CREATE TABLE "django_openid_auth_association" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "server_url" TEXT NOT NULL,
+    "handle" varchar(255) NOT NULL,
+    "secret" TEXT NOT NULL,
+    "issued" int NOT NULL,
+    "lifetime" int NOT NULL,
+    "assoc_type" TEXT NOT NULL,
+    PRIMARY KEY ("id")
+);
+
+CREATE TABLE "django_openid_auth_nonce" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "server_url" varchar(2047) NOT NULL,
+    "timestamp" int NOT NULL,
+    "salt" varchar(40) NOT NULL,
+    PRIMARY KEY ("id")
+);
+
+CREATE TABLE "django_openid_auth_useropenid" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "user_id" int NOT NULL,
+    "claimed_id" TEXT NOT NULL,
+    "display_id" TEXT NOT NULL,
+    PRIMARY KEY ("id"),
+    KEY "django_openid_auth_useropenid_fbfc09f1" ("user_id"),
+    CONSTRAINT "user_id_refs_id_be7162f0" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "django_session" (
+    "session_key" varchar(40) NOT NULL,
+    "session_data" TEXT NOT NULL,
+    "expire_date" TIMESTAMP NOT NULL,
+    PRIMARY KEY ("session_key"),
+    KEY "django_session_c25c2c28" ("expire_date")
+);
+
+CREATE TABLE "django_site" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "domain" varchar(100) NOT NULL,
+    "name" varchar(50) NOT NULL,
+    PRIMARY KEY ("id")
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+CREATE TABLE "djcelery_crontabschedule" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "minute" varchar(64) NOT NULL,
+    "hour" varchar(64) NOT NULL,
+    "day_of_week" varchar(64) NOT NULL,
+    "day_of_month" varchar(64) NOT NULL,
+    "month_of_year" varchar(64) NOT NULL,
+    PRIMARY KEY ("id")
+);
+
+CREATE TABLE "djcelery_intervalschedule" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "every" int NOT NULL,
+    "period" varchar(24) NOT NULL,
+    PRIMARY KEY ("id")
+);
+
+CREATE TABLE "djcelery_periodictask" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "name" varchar(200) NOT NULL,
+    "task" varchar(200) NOT NULL,
+    "interval_id" int DEFAULT NULL,
+    "crontab_id" int DEFAULT NULL,
+    "args" TEXT NOT NULL,
+    "kwargs" TEXT NOT NULL,
+    "queue" varchar(200) DEFAULT NULL,
+    "exchange" varchar(200) DEFAULT NULL,
+    "routing_key" varchar(200) DEFAULT NULL,
+    "expires" TIMESTAMP DEFAULT NULL,
+    "enabled" SMALLINT NOT NULL,
+    "last_run_at" TIMESTAMP DEFAULT NULL,
+    "total_run_count" int unsigned NOT NULL,
+    "date_changed" TIMESTAMP NOT NULL,
+    "description" TEXT NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "name" ("name"),
+    KEY "djcelery_periodictask_17d2d99d" ("interval_id"),
+    KEY "djcelery_periodictask_7aa5fda" ("crontab_id"),
+    CONSTRAINT "crontab_id_refs_id_ebff5e74" FOREIGN KEY ("crontab_id") REFERENCES "djcelery_crontabschedule" ("id"),
+    CONSTRAINT "interval_id_refs_id_f2054349" FOREIGN KEY ("interval_id") REFERENCES "djcelery_intervalschedule" ("id")
+);
+
+CREATE TABLE "djcelery_periodictasks" (
+    "ident" smallint NOT NULL,
+    "last_update" TIMESTAMP NOT NULL,
+    PRIMARY KEY ("ident")
+);
+
+CREATE TABLE "djcelery_taskstate" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "state" varchar(64) NOT NULL,
+    "task_id" varchar(36) NOT NULL,
+    "name" varchar(200) DEFAULT NULL,
+    "tstamp" TIMESTAMP NOT NULL,
+    "args" TEXT,
+    "kwargs" TEXT,
+    "eta" TIMESTAMP DEFAULT NULL,
+    "expires" TIMESTAMP DEFAULT NULL,
+    "result" TEXT,
+    "traceback" TEXT,
+    "runtime" DOUBLE PRECISION DEFAULT NULL,
+    "retries" int NOT NULL,
+    "worker_id" int DEFAULT NULL,
+    "hidden" SMALLINT NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "task_id" ("task_id"),
+    KEY "djcelery_taskstate_355bfc27" ("state"),
+    KEY "djcelery_taskstate_52094d6e" ("name"),
+    KEY "djcelery_taskstate_f0ba6500" ("tstamp"),
+    KEY "djcelery_taskstate_20fc5b84" ("worker_id"),
+    KEY "djcelery_taskstate_c91f1bf" ("hidden"),
+    CONSTRAINT "worker_id_refs_id_4e3453a" FOREIGN KEY ("worker_id") REFERENCES "djcelery_workerstate" ("id")
+);
+
+CREATE TABLE "djcelery_workerstate" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "hostname" varchar(255) NOT NULL,
+    "last_heartbeat" TIMESTAMP DEFAULT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "hostname" ("hostname"),
+    KEY "djcelery_workerstate_eb8ac7e4" ("last_heartbeat")
+);
+
+CREATE TABLE "embargo_embargoedcourse" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "course_id" varchar(255) NOT NULL,
+    "embargoed" SMALLINT NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "course_id" ("course_id")
+);
+
+CREATE TABLE "embargo_embargoedstate" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "change_date" TIMESTAMP NOT NULL,
+    "changed_by_id" int DEFAULT NULL,
+    "enabled" SMALLINT NOT NULL,
+    "embargoed_countries" TEXT NOT NULL,
+    PRIMARY KEY ("id"),
+    KEY "embargo_embargoedstate_16905482" ("changed_by_id"),
+    CONSTRAINT "changed_by_id_refs_id_3c8b83add0205d39" FOREIGN KEY ("changed_by_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "embargo_ipfilter" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "change_date" TIMESTAMP NOT NULL,
+    "changed_by_id" int DEFAULT NULL,
+    "enabled" SMALLINT NOT NULL,
+    "whitelist" TEXT NOT NULL,
+    "blacklist" TEXT NOT NULL,
+    PRIMARY KEY ("id"),
+    KEY "embargo_ipfilter_16905482" ("changed_by_id"),
+    CONSTRAINT "changed_by_id_refs_id_3babbf0a22c1f5d3" FOREIGN KEY ("changed_by_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "external_auth_externalauthmap" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "external_id" varchar(255) NOT NULL,
+    "external_domain" varchar(255) NOT NULL,
+    "external_credentials" TEXT NOT NULL,
+    "external_email" varchar(255) NOT NULL,
+    "external_name" varchar(255) NOT NULL,
+    "user_id" int DEFAULT NULL,
+    "internal_password" varchar(31) NOT NULL,
+    "dtcreated" TIMESTAMP NOT NULL,
+    "dtsignup" TIMESTAMP DEFAULT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "external_auth_externalauthmap_external_id_7f035ef8bc4d313e_uniq" ("external_id","external_domain"),
+    UNIQUE KEY "user_id" ("user_id"),
+    KEY "external_auth_externalauthmap_d5e787" ("external_id"),
+    KEY "external_auth_externalauthmap_a570024c" ("external_domain"),
+    KEY "external_auth_externalauthmap_a142061d" ("external_email"),
+    KEY "external_auth_externalauthmap_c1a016f" ("external_name"),
+    CONSTRAINT "user_id_refs_id_39c4e675f8635f67" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "foldit_puzzlecomplete" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "user_id" int NOT NULL,
+    "unique_user_id" varchar(50) NOT NULL,
+    "puzzle_id" int NOT NULL,
+    "puzzle_set" int NOT NULL,
+    "puzzle_subset" int NOT NULL,
+    "created" TIMESTAMP NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "foldit_puzzlecomplete_user_id_4c63656af6674331_uniq" ("user_id","puzzle_id","puzzle_set","puzzle_subset"),
+    KEY "foldit_puzzlecomplete_fbfc09f1" ("user_id"),
+    KEY "foldit_puzzlecomplete_8027477e" ("unique_user_id"),
+    KEY "foldit_puzzlecomplete_4798a2b8" ("puzzle_set"),
+    KEY "foldit_puzzlecomplete_59f06bcd" ("puzzle_subset"),
+    CONSTRAINT "user_id_refs_id_23bb09ab37e9437b" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "foldit_score" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "user_id" int NOT NULL,
+    "unique_user_id" varchar(50) NOT NULL,
+    "puzzle_id" int NOT NULL,
+    "best_score" DOUBLE PRECISION NOT NULL,
+    "current_score" DOUBLE PRECISION NOT NULL,
+    "score_version" int NOT NULL,
+    "created" TIMESTAMP NOT NULL,
+    PRIMARY KEY ("id"),
+    KEY "foldit_score_fbfc09f1" ("user_id"),
+    KEY "foldit_score_8027477e" ("unique_user_id"),
+    KEY "foldit_score_3624c060" ("best_score"),
+    KEY "foldit_score_b4627792" ("current_score"),
+    CONSTRAINT "user_id_refs_id_44efb56f4c07957f" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "instructor_task_instructortask" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "task_type" varchar(50) NOT NULL,
+    "course_id" varchar(255) NOT NULL,
+    "task_key" varchar(255) NOT NULL,
+    "task_input" varchar(255) NOT NULL,
+    "task_id" varchar(255) NOT NULL,
+    "task_state" varchar(50) DEFAULT NULL,
+    "task_output" varchar(1024) DEFAULT NULL,
+    "requester_id" int NOT NULL,
+    "created" TIMESTAMP DEFAULT NULL,
+    "updated" TIMESTAMP NOT NULL,
+    "subtasks" TEXT NOT NULL,
+    PRIMARY KEY ("id"),
+    KEY "instructor_task_instructortask_8ae638b4" ("task_type"),
+    KEY "instructor_task_instructortask_ff48d8e5" ("course_id"),
+    KEY "instructor_task_instructortask_cfc55170" ("task_key"),
+    KEY "instructor_task_instructortask_c00fe455" ("task_id"),
+    KEY "instructor_task_instructortask_731e67a4" ("task_state"),
+    KEY "instructor_task_instructortask_b8ca8b9f" ("requester_id"),
+    CONSTRAINT "requester_id_refs_id_4d6b69c6a97278e6" FOREIGN KEY ("requester_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "licenses_coursesoftware" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "name" varchar(255) NOT NULL,
+    "full_name" varchar(255) NOT NULL,
+    "url" varchar(255) NOT NULL,
+    "course_id" varchar(255) NOT NULL,
+    PRIMARY KEY ("id")
+);
+
+CREATE TABLE "licenses_userlicense" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "software_id" int NOT NULL,
+    "user_id" int DEFAULT NULL,
+    "serial" varchar(255) NOT NULL,
+    PRIMARY KEY ("id"),
+    KEY "licenses_userlicense_4c6ed3c1" ("software_id"),
+    KEY "licenses_userlicense_fbfc09f1" ("user_id"),
+    CONSTRAINT "user_id_refs_id_26345de02f3a1cb3" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id"),
+    CONSTRAINT "software_id_refs_id_78738fcdf9e27be8" FOREIGN KEY ("software_id") REFERENCES "licenses_coursesoftware" ("id")
+);
+
+CREATE TABLE "linkedin_linkedin" (
+    "user_id" int NOT NULL,
+    "has_linkedin_account" SMALLINT DEFAULT NULL,
+    "emailed_courses" TEXT NOT NULL,
+    PRIMARY KEY ("user_id"),
+    CONSTRAINT "user_id_refs_id_7b29e97d72e31bb2" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "notes_note" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "user_id" int NOT NULL,
+    "course_id" varchar(255) NOT NULL,
+    "uri" varchar(255) NOT NULL,
+    "text" TEXT NOT NULL,
+    "quote" TEXT NOT NULL,
+    "range_start" varchar(2048) NOT NULL,
+    "range_start_offset" int NOT NULL,
+    "range_end" varchar(2048) NOT NULL,
+    "range_end_offset" int NOT NULL,
+    "tags" TEXT NOT NULL,
+    "created" TIMESTAMP DEFAULT NULL,
+    "updated" TIMESTAMP NOT NULL,
+    PRIMARY KEY ("id"),
+    KEY "notes_note_fbfc09f1" ("user_id"),
+    KEY "notes_note_ff48d8e5" ("course_id"),
+    KEY "notes_note_a9794fa" ("uri"),
+    KEY "notes_note_3216ff68" ("created"),
+    KEY "notes_note_8aac229" ("updated"),
+    CONSTRAINT "user_id_refs_id_380a4734360715cc" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "notifications_articlesubscription" (
+    "subscription_ptr_id" int NOT NULL,
+    "articleplugin_ptr_id" int NOT NULL,
+    PRIMARY KEY ("articleplugin_ptr_id"),
+    UNIQUE KEY "subscription_ptr_id" ("subscription_ptr_id"),
+    CONSTRAINT "articleplugin_ptr_id_refs_id_1bd08ac071ed584a" FOREIGN KEY ("articleplugin_ptr_id") REFERENCES "wiki_articleplugin" ("id"),
+    CONSTRAINT "subscription_ptr_id_refs_id_18f7bae575c0b518" FOREIGN KEY ("subscription_ptr_id") REFERENCES "notify_subscription" ("id")
+);
+
+CREATE TABLE "notify_notification" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "subscription_id" int DEFAULT NULL,
+    "message" TEXT NOT NULL,
+    "url" varchar(200) DEFAULT NULL,
+    "is_viewed" SMALLINT NOT NULL,
+    "is_emailed" SMALLINT NOT NULL,
+    "created" TIMESTAMP NOT NULL,
+    PRIMARY KEY ("id"),
+    KEY "notify_notification_104f5ac1" ("subscription_id"),
+    CONSTRAINT "subscription_id_refs_id_7a99ebc5baf93d4f" FOREIGN KEY ("subscription_id") REFERENCES "notify_subscription" ("id")
+);
+
+CREATE TABLE "notify_notificationtype" (
+    "key" varchar(128) NOT NULL,
+    "label" varchar(128) DEFAULT NULL,
+    "content_type_id" int DEFAULT NULL,
+    PRIMARY KEY ("key"),
+    KEY "notify_notificationtype_e4470c6e" ("content_type_id"),
+    CONSTRAINT "content_type_id_refs_id_4919de6f2478378" FOREIGN KEY ("content_type_id") REFERENCES "django_content_type" ("id")
+);
+
+CREATE TABLE "notify_settings" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "user_id" int NOT NULL,
+    "interval" smallint NOT NULL,
+    PRIMARY KEY ("id"),
+    KEY "notify_settings_fbfc09f1" ("user_id"),
+    CONSTRAINT "user_id_refs_id_2e6a6a1d9a2911e6" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "notify_subscription" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "settings_id" int NOT NULL,
+    "notification_type_id" varchar(128) NOT NULL,
+    "object_id" varchar(64) DEFAULT NULL,
+    "send_emails" SMALLINT NOT NULL,
+    PRIMARY KEY ("id"),
+    KEY "notify_subscription_83326d99" ("settings_id"),
+    KEY "notify_subscription_9955f091" ("notification_type_id"),
+    CONSTRAINT "notification_type_id_refs_key_25426c9bbaa41a19" FOREIGN KEY ("notification_type_id") REFERENCES "notify_notificationtype" ("key"),
+    CONSTRAINT "settings_id_refs_id_2b8d6d653b7225d5" FOREIGN KEY ("settings_id") REFERENCES "notify_settings" ("id")
+);
+
+CREATE TABLE "psychometrics_psychometricdata" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "studentmodule_id" int NOT NULL,
+    "done" SMALLINT NOT NULL,
+    "attempts" int NOT NULL,
+    "checktimes" TEXT,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "studentmodule_id" ("studentmodule_id")
+);
+
+CREATE TABLE "reverification_midcoursereverificationwindow" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "course_id" varchar(255) NOT NULL,
+    "start_date" TIMESTAMP DEFAULT NULL,
+    "end_date" TIMESTAMP DEFAULT NULL,
+    PRIMARY KEY ("id"),
+    KEY "reverification_midcoursereverificationwindow_ff48d8e5" ("course_id")
+);
+
+CREATE TABLE "shoppingcart_certificateitem" (
+    "orderitem_ptr_id" int NOT NULL,
+    "course_id" varchar(128) NOT NULL,
+    "course_enrollment_id" int NOT NULL,
+    "mode" varchar(50) NOT NULL,
+    PRIMARY KEY ("orderitem_ptr_id"),
+    KEY "shoppingcart_certificateitem_ff48d8e5" ("course_id"),
+    KEY "shoppingcart_certificateitem_9e513f0b" ("course_enrollment_id"),
+    KEY "shoppingcart_certificateitem_4160619e" ("mode"),
+    CONSTRAINT "course_enrollment_id_refs_id_259181e58048c435" FOREIGN KEY ("course_enrollment_id") REFERENCES "student_courseenrollment" ("id"),
+    CONSTRAINT "orderitem_ptr_id_refs_id_4d598262d3ebc4d0" FOREIGN KEY ("orderitem_ptr_id") REFERENCES "shoppingcart_orderitem" ("id")
+);
+
+CREATE TABLE "shoppingcart_coupon" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "code" varchar(32) NOT NULL,
+    "description" varchar(255) DEFAULT NULL,
+    "course_id" varchar(255) NOT NULL,
+    "percentage_discount" int NOT NULL,
+    "created_by_id" int NOT NULL,
+    "created_at" TIMESTAMP NOT NULL,
+    "is_active" SMALLINT NOT NULL,
+    PRIMARY KEY ("id"),
+    KEY "shoppingcart_coupon_65da3d2c" ("code"),
+    KEY "shoppingcart_coupon_b5de30be" ("created_by_id"),
+    CONSTRAINT "created_by_id_refs_id_70b740220259aadc" FOREIGN KEY ("created_by_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "shoppingcart_couponredemption" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "order_id" int NOT NULL,
+    "user_id" int NOT NULL,
+    "coupon_id" int NOT NULL,
+    PRIMARY KEY ("id"),
+    KEY "shoppingcart_couponredemption_8337030b" ("order_id"),
+    KEY "shoppingcart_couponredemption_fbfc09f1" ("user_id"),
+    KEY "shoppingcart_couponredemption_c29b2e60" ("coupon_id"),
+    CONSTRAINT "coupon_id_refs_id_1c5f086bc11a8022" FOREIGN KEY ("coupon_id") REFERENCES "shoppingcart_coupon" ("id"),
+    CONSTRAINT "order_id_refs_id_13bbfbf0f5db1967" FOREIGN KEY ("order_id") REFERENCES "shoppingcart_order" ("id"),
+    CONSTRAINT "user_id_refs_id_c543b145e9b8167" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "shoppingcart_courseregistrationcode" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "code" varchar(32) NOT NULL,
+    "course_id" varchar(255) NOT NULL,
+    "created_by_id" int NOT NULL,
+    "created_at" TIMESTAMP NOT NULL,
+    "invoice_id" int,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "shoppingcart_courseregistrationcode_code_6614bad3cae62199_uniq" ("code"),
+    KEY "shoppingcart_courseregistrationcode_65da3d2c" ("code"),
+    KEY "shoppingcart_courseregistrationcode_ff48d8e5" ("course_id"),
+    KEY "shoppingcart_courseregistrationcode_b5de30be" ("created_by_id"),
+    KEY "shoppingcart_courseregistrationcode_59f72b12" ("invoice_id"),
+    CONSTRAINT "created_by_id_refs_id_7eaaed0838397037" FOREIGN KEY ("created_by_id") REFERENCES "auth_user" ("id"),
+    CONSTRAINT "invoice_id_refs_id_6e8c54da995f0ae8" FOREIGN KEY ("invoice_id") REFERENCES "shoppingcart_invoice" ("id")
+);
+
+CREATE TABLE "shoppingcart_invoice" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "total_amount" DOUBLE PRECISION NOT NULL,
+    "company_name" varchar(255) NOT NULL,
+    "course_id" varchar(255) NOT NULL,
+    "internal_reference" varchar(255),
+    "is_valid" SMALLINT NOT NULL,
+    "address_line_1" varchar(255) NOT NULL,
+    "address_line_2" varchar(255),
+    "address_line_3" varchar(255),
+    "city" varchar(255),
+    "state" varchar(255),
+    "zip" varchar(15),
+    "country" varchar(64),
+    "recipient_name" varchar(255) NOT NULL,
+    "recipient_email" varchar(255) NOT NULL,
+    "customer_reference_number" varchar(63),
+    "company_contact_name" varchar(255) NOT NULL,
+    "company_contact_email" varchar(255) NOT NULL,
+    PRIMARY KEY ("id"),
+    KEY "shoppingcart_invoice_ca9021a2" ("company_name"),
+    KEY "shoppingcart_invoice_ff48d8e5" ("course_id")
+);
+
+CREATE TABLE "shoppingcart_order" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "user_id" int NOT NULL,
+    "currency" varchar(8) NOT NULL,
+    "status" varchar(32) NOT NULL,
+    "purchase_time" TIMESTAMP DEFAULT NULL,
+    "bill_to_first" varchar(64) NOT NULL,
+    "bill_to_last" varchar(64) NOT NULL,
+    "bill_to_street1" varchar(128) NOT NULL,
+    "bill_to_street2" varchar(128) NOT NULL,
+    "bill_to_city" varchar(64) NOT NULL,
+    "bill_to_state" varchar(8) NOT NULL,
+    "bill_to_postalcode" varchar(16) NOT NULL,
+    "bill_to_country" varchar(64) NOT NULL,
+    "bill_to_ccnum" varchar(8) NOT NULL,
+    "bill_to_cardtype" varchar(32) NOT NULL,
+    "processor_reply_dump" TEXT NOT NULL,
+    "refunded_time" TIMESTAMP,
+    PRIMARY KEY ("id"),
+    KEY "shoppingcart_order_fbfc09f1" ("user_id"),
+    CONSTRAINT "user_id_refs_id_a4b0342e1195673" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "shoppingcart_orderitem" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "order_id" int NOT NULL,
+    "user_id" int NOT NULL,
+    "status" varchar(32) NOT NULL,
+    "qty" int NOT NULL,
+    "unit_cost" decimal(30,2) NOT NULL,
+    "line_desc" varchar(1024) NOT NULL,
+    "currency" varchar(8) NOT NULL,
+    "fulfilled_time" TIMESTAMP,
+    "report_comments" TEXT NOT NULL,
+    "refund_requested_time" TIMESTAMP,
+    "service_fee" decimal(30,2) NOT NULL,
+    "list_price" decimal(30,2),
+    PRIMARY KEY ("id"),
+    KEY "shoppingcart_orderitem_8337030b" ("order_id"),
+    KEY "shoppingcart_orderitem_fbfc09f1" ("user_id"),
+    KEY "shoppingcart_orderitem_c9ad71dd" ("status"),
+    KEY "shoppingcart_orderitem_8457f26a" ("fulfilled_time"),
+    KEY "shoppingcart_orderitem_416112c1" ("refund_requested_time"),
+    CONSTRAINT "order_id_refs_id_4fad6e867c77b3f0" FOREIGN KEY ("order_id") REFERENCES "shoppingcart_order" ("id"),
+    CONSTRAINT "user_id_refs_id_608b9042d92ae410" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "shoppingcart_paidcourseregistration" (
+    "orderitem_ptr_id" int NOT NULL,
+    "course_id" varchar(128) NOT NULL,
+    "mode" varchar(50) NOT NULL,
+    PRIMARY KEY ("orderitem_ptr_id"),
+    KEY "shoppingcart_paidcourseregistration_ff48d8e5" ("course_id"),
+    KEY "shoppingcart_paidcourseregistration_4160619e" ("mode"),
+    CONSTRAINT "orderitem_ptr_id_refs_id_c5c6141d8709d99" FOREIGN KEY ("orderitem_ptr_id") REFERENCES "shoppingcart_orderitem" ("id")
+);
+
+CREATE TABLE "shoppingcart_paidcourseregistrationannotation" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "course_id" varchar(128) NOT NULL,
+    "annotation" TEXT,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "course_id" ("course_id")
+);
+
+CREATE TABLE "shoppingcart_registrationcoderedemption" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "order_id" int NOT NULL,
+    "registration_code_id" int NOT NULL,
+    "redeemed_by_id" int NOT NULL,
+    "redeemed_at" TIMESTAMP DEFAULT NULL,
+    PRIMARY KEY ("id"),
+    KEY "shoppingcart_registrationcoderedemption_8337030b" ("order_id"),
+    KEY "shoppingcart_registrationcoderedemption_d25b37dc" ("registration_code_id"),
+    KEY "shoppingcart_registrationcoderedemption_e151467a" ("redeemed_by_id"),
+    CONSTRAINT "redeemed_by_id_refs_id_2c29fd0d4e320dc9" FOREIGN KEY ("redeemed_by_id") REFERENCES "auth_user" ("id"),
+    CONSTRAINT "order_id_refs_id_3e4c388753a8a5c9" FOREIGN KEY ("order_id") REFERENCES "shoppingcart_order" ("id"),
+    CONSTRAINT "registration_code_id_refs_id_2b7812ae4d01e47b" FOREIGN KEY ("registration_code_id") REFERENCES "shoppingcart_courseregistrationcode" ("id")
+);
+
+CREATE TABLE "social_auth_association" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "server_url" varchar(255) NOT NULL,
+    "handle" varchar(255) NOT NULL,
+    "secret" varchar(255) NOT NULL,
+    "issued" int NOT NULL,
+    "lifetime" int NOT NULL,
+    "assoc_type" varchar(64) NOT NULL,
+    PRIMARY KEY ("id")
+);
+
+CREATE TABLE "social_auth_code" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "email" varchar(75) NOT NULL,
+    "code" varchar(32) NOT NULL,
+    "verified" SMALLINT NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "email" ("email","code"),
+    KEY "social_auth_code_65da3d2c" ("code")
+);
+
+CREATE TABLE "social_auth_nonce" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "server_url" varchar(255) NOT NULL,
+    "timestamp" int NOT NULL,
+    "salt" varchar(65) NOT NULL,
+    PRIMARY KEY ("id")
+);
+
+CREATE TABLE "social_auth_usersocialauth" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "user_id" int NOT NULL,
+    "provider" varchar(32) NOT NULL,
+    "uid" varchar(255) NOT NULL,
+    "extra_data" TEXT NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "provider" ("provider","uid"),
+    KEY "social_auth_usersocialauth_fbfc09f1" ("user_id"),
+    CONSTRAINT "user_id_refs_id_60fa311b" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "south_migrationhistory" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "app_name" varchar(255) NOT NULL,
+    "migration" varchar(255) NOT NULL,
+    "applied" TIMESTAMP NOT NULL,
+    PRIMARY KEY ("id")
+) ENGINE=InnoDB AUTO_INCREMENT=179 DEFAULT CHARSET=utf8;
+
+CREATE TABLE "splash_splashconfig" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "change_date" TIMESTAMP NOT NULL,
+    "changed_by_id" int DEFAULT NULL,
+    "enabled" SMALLINT NOT NULL,
+    "cookie_name" TEXT NOT NULL,
+    "cookie_allowed_values" TEXT NOT NULL,
+    "unaffected_usernames" TEXT NOT NULL,
+    "redirect_url" varchar(200) NOT NULL,
+    "unaffected_url_paths" TEXT NOT NULL,
+    PRIMARY KEY ("id"),
+    KEY "splash_splashconfig_16905482" ("changed_by_id"),
+    CONSTRAINT "changed_by_id_refs_id_6024c0b79125b21c" FOREIGN KEY ("changed_by_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "student_anonymoususerid" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "user_id" int NOT NULL,
+    "anonymous_user_id" varchar(32) NOT NULL,
+    "course_id" varchar(255) NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "anonymous_user_id" ("anonymous_user_id"),
+    KEY "student_anonymoususerid_fbfc09f1" ("user_id"),
+    KEY "student_anonymoususerid_ff48d8e5" ("course_id"),
+    CONSTRAINT "user_id_refs_id_23effb36c38f7a2a" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "student_courseaccessrole" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "user_id" int NOT NULL,
+    "org" varchar(64) NOT NULL,
+    "course_id" varchar(255) NOT NULL,
+    "role" varchar(64) NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "student_courseaccessrole_user_id_3203176c4f474414_uniq" ("user_id","org","course_id","role"),
+    KEY "student_courseaccessrole_fbfc09f1" ("user_id"),
+    KEY "student_courseaccessrole_4f5f82e2" ("org"),
+    KEY "student_courseaccessrole_ff48d8e5" ("course_id"),
+    KEY "student_courseaccessrole_e0b082a1" ("role"),
+    CONSTRAINT "user_id_refs_id_7460a3f36ac23885" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "student_courseenrollment" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "user_id" int NOT NULL,
+    "course_id" varchar(255) NOT NULL,
+    "created" TIMESTAMP DEFAULT NULL,
+    "is_active" SMALLINT NOT NULL,
+    "mode" varchar(100) NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "student_courseenrollment_user_id_2d2a572f07dd8e37_uniq" ("user_id","course_id"),
+    KEY "student_courseenrollment_fbfc09f1" ("user_id"),
+    KEY "student_courseenrollment_ff48d8e5" ("course_id"),
+    KEY "student_courseenrollment_3216ff68" ("created"),
+    CONSTRAINT "user_id_refs_id_45948fcded37bc9d" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "student_courseenrollmentallowed" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "email" varchar(255) NOT NULL,
+    "course_id" varchar(255) NOT NULL,
+    "created" TIMESTAMP DEFAULT NULL,
+    "auto_enroll" SMALLINT NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "student_courseenrollmentallowed_email_6f3eafd4a6c58591_uniq" ("email","course_id"),
+    KEY "student_courseenrollmentallowed_3904588a" ("email"),
+    KEY "student_courseenrollmentallowed_ff48d8e5" ("course_id"),
+    KEY "student_courseenrollmentallowed_3216ff68" ("created")
+);
+
+CREATE TABLE "student_loginfailures" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "user_id" int NOT NULL,
+    "failure_count" int NOT NULL,
+    "lockout_until" TIMESTAMP DEFAULT NULL,
+    PRIMARY KEY ("id"),
+    KEY "student_loginfailures_fbfc09f1" ("user_id"),
+    CONSTRAINT "user_id_refs_id_50dcb1c1e6a71045" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "student_passwordhistory" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "user_id" int NOT NULL,
+    "password" varchar(128) NOT NULL,
+    "time_set" TIMESTAMP NOT NULL,
+    PRIMARY KEY ("id"),
+    KEY "student_passwordhistory_fbfc09f1" ("user_id"),
+    CONSTRAINT "user_id_refs_id_6110e7eaed0987da" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "student_pendingemailchange" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "user_id" int NOT NULL,
+    "new_email" varchar(255) NOT NULL,
+    "activation_key" varchar(32) NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "user_id" ("user_id"),
+    UNIQUE KEY "activation_key" ("activation_key"),
+    KEY "student_pendingemailchange_856c86d7" ("new_email"),
+    CONSTRAINT "user_id_refs_id_24fa3bcda525fa67" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "student_pendingnamechange" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "user_id" int NOT NULL,
+    "new_name" varchar(255) NOT NULL,
+    "rationale" varchar(1024) NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "user_id" ("user_id"),
+    CONSTRAINT "user_id_refs_id_24e959cdd9359b27" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "student_usersignupsource" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "site" varchar(255) NOT NULL,
+    "user_id" int NOT NULL,
+    PRIMARY KEY ("id"),
+    KEY "student_usersignupsource_e00a881a" ("site"),
+    KEY "student_usersignupsource_fbfc09f1" ("user_id"),
+    CONSTRAINT "user_id_refs_id_4ae6e32838a4bd6e" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "student_userstanding" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "user_id" int NOT NULL,
+    "account_status" varchar(31) NOT NULL,
+    "changed_by_id" int NOT NULL,
+    "standing_last_changed_at" TIMESTAMP NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "user_id" ("user_id"),
+    KEY "student_userstanding_16905482" ("changed_by_id"),
+    CONSTRAINT "changed_by_id_refs_id_5ec33b2b0450a33b" FOREIGN KEY ("changed_by_id") REFERENCES "auth_user" ("id"),
+    CONSTRAINT "user_id_refs_id_5ec33b2b0450a33b" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "student_usertestgroup" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "name" varchar(32) NOT NULL,
+    "description" TEXT NOT NULL,
+    PRIMARY KEY ("id"),
+    KEY "student_usertestgroup_52094d6e" ("name")
+);
+
+CREATE TABLE "student_usertestgroup_users" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "usertestgroup_id" int NOT NULL,
+    "user_id" int NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "student_usertestgroup_us_usertestgroup_id_63c588e0372991b0_uniq" ("usertestgroup_id","user_id"),
+    KEY "student_usertestgroup_users_44f27cdf" ("usertestgroup_id"),
+    KEY "student_usertestgroup_users_fbfc09f1" ("user_id"),
+    CONSTRAINT "usertestgroup_id_refs_id_78e186d36d724f9e" FOREIGN KEY ("usertestgroup_id") REFERENCES "student_usertestgroup" ("id"),
+    CONSTRAINT "user_id_refs_id_412b14bf8947584c" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "submissions_score" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "student_item_id" int NOT NULL,
+    "submission_id" int DEFAULT NULL,
+    "points_earned" int unsigned NOT NULL,
+    "points_possible" int unsigned NOT NULL,
+    "created_at" TIMESTAMP NOT NULL,
+    "reset" SMALLINT NOT NULL,
+    PRIMARY KEY ("id"),
+    KEY "submissions_score_fa84001" ("student_item_id"),
+    KEY "submissions_score_b3d6235a" ("submission_id"),
+    KEY "submissions_score_3b1c9c31" ("created_at"),
+    CONSTRAINT "student_item_id_refs_id_33922a7f8cd97385" FOREIGN KEY ("student_item_id") REFERENCES "submissions_studentitem" ("id"),
+    CONSTRAINT "submission_id_refs_id_3b63d5ec9e39cf2e" FOREIGN KEY ("submission_id") REFERENCES "submissions_submission" ("id")
+);
+
+CREATE TABLE "submissions_scoresummary" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "student_item_id" int NOT NULL,
+    "highest_id" int NOT NULL,
+    "latest_id" int NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "student_item_id" ("student_item_id"),
+    KEY "submissions_scoresummary_d65f9365" ("highest_id"),
+    KEY "submissions_scoresummary_1efb24d9" ("latest_id"),
+    CONSTRAINT "latest_id_refs_id_37a2bc281bdc0a18" FOREIGN KEY ("latest_id") REFERENCES "submissions_score" ("id"),
+    CONSTRAINT "highest_id_refs_id_37a2bc281bdc0a18" FOREIGN KEY ("highest_id") REFERENCES "submissions_score" ("id"),
+    CONSTRAINT "student_item_id_refs_id_6183d6a8bd51e768" FOREIGN KEY ("student_item_id") REFERENCES "submissions_studentitem" ("id")
+);
+
+CREATE TABLE "submissions_studentitem" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "student_id" varchar(255) NOT NULL,
+    "course_id" varchar(255) NOT NULL,
+    "item_id" varchar(255) NOT NULL,
+    "item_type" varchar(100) NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "submissions_studentitem_course_id_6a6eccbdec6ffd0b_uniq" ("course_id","student_id","item_id"),
+    KEY "submissions_studentitem_42ff452e" ("student_id"),
+    KEY "submissions_studentitem_ff48d8e5" ("course_id"),
+    KEY "submissions_studentitem_67b70d25" ("item_id")
+);
+
+CREATE TABLE "submissions_submission" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "uuid" varchar(36) NOT NULL,
+    "student_item_id" int NOT NULL,
+    "attempt_number" int unsigned NOT NULL,
+    "submitted_at" TIMESTAMP NOT NULL,
+    "created_at" TIMESTAMP NOT NULL,
+    "raw_answer" TEXT NOT NULL,
+    PRIMARY KEY ("id"),
+    KEY "submissions_submission_2bbc74ae" ("uuid"),
+    KEY "submissions_submission_fa84001" ("student_item_id"),
+    KEY "submissions_submission_4452d192" ("submitted_at"),
+    KEY "submissions_submission_3b1c9c31" ("created_at"),
+    CONSTRAINT "student_item_id_refs_id_1df1d83e00b5cccc" FOREIGN KEY ("student_item_id") REFERENCES "submissions_studentitem" ("id")
+);
+
+CREATE TABLE "track_trackinglog" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "dtcreated" TIMESTAMP NOT NULL,
+    "username" varchar(32) NOT NULL,
+    "ip" varchar(32) NOT NULL,
+    "event_source" varchar(32) NOT NULL,
+    "event_type" varchar(512) NOT NULL,
+    "event" TEXT NOT NULL,
+    "agent" varchar(256) NOT NULL,
+    "page" varchar(512),
+    "time" TIMESTAMP NOT NULL,
+    "host" varchar(64) NOT NULL,
+    PRIMARY KEY ("id")
+);
+
+CREATE TABLE "user_api_usercoursetag" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "user_id" int NOT NULL,
+    "key" varchar(255) NOT NULL,
+    "course_id" varchar(255) NOT NULL,
+    "value" TEXT NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "user_api_usercoursetags_user_id_a734720a0483b08_uniq" ("user_id","course_id","key"),
+    KEY "user_api_usercoursetags_fbfc09f1" ("user_id"),
+    KEY "user_api_usercoursetags_45544485" ("key"),
+    KEY "user_api_usercoursetags_ff48d8e5" ("course_id"),
+    CONSTRAINT "user_id_refs_id_1d26ef6c47a9a367" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "user_api_userpreference" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "user_id" int NOT NULL,
+    "key" varchar(255) NOT NULL,
+    "value" TEXT NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "user_api_userpreference_user_id_4e4942d73f760072_uniq" ("user_id","key"),
+    KEY "user_api_userpreference_fbfc09f1" ("user_id"),
+    KEY "user_api_userpreference_45544485" ("key"),
+    CONSTRAINT "user_id_refs_id_2839c1f4f3473b9e" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "verify_student_softwaresecurephotoverification" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "status" varchar(100) NOT NULL,
+    "status_changed" TIMESTAMP NOT NULL,
+    "user_id" int NOT NULL,
+    "name" varchar(255) NOT NULL,
+    "face_image_url" varchar(255) NOT NULL,
+    "photo_id_image_url" varchar(255) NOT NULL,
+    "receipt_id" varchar(255) NOT NULL,
+    "created_at" TIMESTAMP NOT NULL,
+    "updated_at" TIMESTAMP NOT NULL,
+    "submitted_at" TIMESTAMP DEFAULT NULL,
+    "reviewing_user_id" int DEFAULT NULL,
+    "reviewing_service" varchar(255) NOT NULL,
+    "error_msg" TEXT NOT NULL,
+    "error_code" varchar(50) NOT NULL,
+    "photo_id_key" TEXT NOT NULL,
+    "window_id" int,
+    "display" SMALLINT NOT NULL,
+    PRIMARY KEY ("id"),
+    KEY "verify_student_softwaresecurephotoverification_fbfc09f1" ("user_id"),
+    KEY "verify_student_softwaresecurephotoverification_8713c555" ("receipt_id"),
+    KEY "verify_student_softwaresecurephotoverification_3b1c9c31" ("created_at"),
+    KEY "verify_student_softwaresecurephotoverification_f84f7de6" ("updated_at"),
+    KEY "verify_student_softwaresecurephotoverification_4452d192" ("submitted_at"),
+    KEY "verify_student_softwaresecurephotoverification_b2c165b4" ("reviewing_user_id"),
+    KEY "verify_student_softwaresecurephotoverification_7343ffda" ("window_id"),
+    KEY "verify_student_softwaresecurephotoverification_35eebcb6" ("display"),
+    CONSTRAINT "reviewing_user_id_refs_id_5b90d52ad6ea4207" FOREIGN KEY ("reviewing_user_id") REFERENCES "auth_user" ("id"),
+    CONSTRAINT "user_id_refs_id_5b90d52ad6ea4207" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id"),
+    CONSTRAINT "window_id_refs_id_30f70c30fce8f38a" FOREIGN KEY ("window_id") REFERENCES "reverification_midcoursereverificationwindow" ("id")
+);
+
+CREATE TABLE "waffle_flag" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "name" varchar(100) NOT NULL,
+    "everyone" SMALLINT DEFAULT NULL,
+    "percent" decimal(3,1) DEFAULT NULL,
+    "superusers" SMALLINT NOT NULL,
+    "staff" SMALLINT NOT NULL,
+    "authenticated" SMALLINT NOT NULL,
+    "rollout" SMALLINT NOT NULL,
+    "note" TEXT NOT NULL,
+    "testing" SMALLINT NOT NULL,
+    "created" TIMESTAMP NOT NULL,
+    "modified" TIMESTAMP NOT NULL,
+    "languages" TEXT NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "name" ("name"),
+    KEY "waffle_flag_3216ff68" ("created")
+);
+
+CREATE TABLE "waffle_flag_groups" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "flag_id" int NOT NULL,
+    "group_id" int NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "waffle_flag_groups_flag_id_582896076571ab8b_uniq" ("flag_id","group_id"),
+    KEY "waffle_flag_groups_9bca17e2" ("flag_id"),
+    KEY "waffle_flag_groups_bda51c3c" ("group_id"),
+    CONSTRAINT "group_id_refs_id_66545bd34ea49f34" FOREIGN KEY ("group_id") REFERENCES "auth_group" ("id"),
+    CONSTRAINT "flag_id_refs_id_6f1b152a8e6a807d" FOREIGN KEY ("flag_id") REFERENCES "waffle_flag" ("id")
+);
+
+CREATE TABLE "waffle_flag_users" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "flag_id" int NOT NULL,
+    "user_id" int NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "waffle_flag_users_flag_id_3bb77386107938a3_uniq" ("flag_id","user_id"),
+    KEY "waffle_flag_users_9bca17e2" ("flag_id"),
+    KEY "waffle_flag_users_fbfc09f1" ("user_id"),
+    CONSTRAINT "user_id_refs_id_1fe1cfb8bae2dfc2" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id"),
+    CONSTRAINT "flag_id_refs_id_5034023d8fef0c12" FOREIGN KEY ("flag_id") REFERENCES "waffle_flag" ("id")
+);
+
+CREATE TABLE "waffle_sample" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "name" varchar(100) NOT NULL,
+    "percent" decimal(4,1) NOT NULL,
+    "note" TEXT NOT NULL,
+    "created" TIMESTAMP NOT NULL,
+    "modified" TIMESTAMP NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "name" ("name"),
+    KEY "waffle_sample_3216ff68" ("created")
+);
+
+CREATE TABLE "waffle_switch" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "name" varchar(100) NOT NULL,
+    "active" SMALLINT NOT NULL,
+    "note" TEXT NOT NULL,
+    "created" TIMESTAMP NOT NULL,
+    "modified" TIMESTAMP NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "name" ("name"),
+    KEY "waffle_switch_3216ff68" ("created")
+);
+
+CREATE TABLE "wiki_article" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "current_revision_id" int DEFAULT NULL,
+    "created" TIMESTAMP NOT NULL,
+    "modified" TIMESTAMP NOT NULL,
+    "owner_id" int DEFAULT NULL,
+    "group_id" int DEFAULT NULL,
+    "group_read" SMALLINT NOT NULL,
+    "group_write" SMALLINT NOT NULL,
+    "other_read" SMALLINT NOT NULL,
+    "other_write" SMALLINT NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "current_revision_id" ("current_revision_id"),
+    KEY "wiki_article_5d52dd10" ("owner_id"),
+    KEY "wiki_article_bda51c3c" ("group_id"),
+    CONSTRAINT "group_id_refs_id_10e2d3dd108bfee4" FOREIGN KEY ("group_id") REFERENCES "auth_group" ("id"),
+    CONSTRAINT "current_revision_id_refs_id_1d8d320ebafac304" FOREIGN KEY ("current_revision_id") REFERENCES "wiki_articlerevision" ("id"),
+    CONSTRAINT "owner_id_refs_id_18073b359e14b583" FOREIGN KEY ("owner_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "wiki_articleforobject" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "article_id" int NOT NULL,
+    "content_type_id" int NOT NULL,
+    "object_id" int unsigned NOT NULL,
+    "is_mptt" SMALLINT NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "wiki_articleforobject_content_type_id_27c4cce189b3bcab_uniq" ("content_type_id","object_id"),
+    KEY "wiki_articleforobject_30525a19" ("article_id"),
+    KEY "wiki_articleforobject_e4470c6e" ("content_type_id"),
+    CONSTRAINT "content_type_id_refs_id_6b30567037828764" FOREIGN KEY ("content_type_id") REFERENCES "django_content_type" ("id"),
+    CONSTRAINT "article_id_refs_id_1698e37305099436" FOREIGN KEY ("article_id") REFERENCES "wiki_article" ("id")
+);
+
+CREATE TABLE "wiki_articleplugin" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "article_id" int NOT NULL,
+    "deleted" SMALLINT NOT NULL,
+    "created" TIMESTAMP NOT NULL,
+    PRIMARY KEY ("id"),
+    KEY "wiki_articleplugin_30525a19" ("article_id"),
+    CONSTRAINT "article_id_refs_id_64fa106f92c648ca" FOREIGN KEY ("article_id") REFERENCES "wiki_article" ("id")
+);
+
+CREATE TABLE "wiki_articlerevision" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "revision_number" int NOT NULL,
+    "user_message" TEXT NOT NULL,
+    "automatic_log" TEXT NOT NULL,
+    "ip_address" char(15) DEFAULT NULL,
+    "user_id" int DEFAULT NULL,
+    "modified" TIMESTAMP NOT NULL,
+    "created" TIMESTAMP NOT NULL,
+    "previous_revision_id" int DEFAULT NULL,
+    "deleted" SMALLINT NOT NULL,
+    "locked" SMALLINT NOT NULL,
+    "article_id" int NOT NULL,
+    "content" TEXT NOT NULL,
+    "title" varchar(512) NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "wiki_articlerevision_article_id_4b4e7910c8e7b2d0_uniq" ("article_id","revision_number"),
+    KEY "wiki_articlerevision_fbfc09f1" ("user_id"),
+    KEY "wiki_articlerevision_49bc38cc" ("previous_revision_id"),
+    KEY "wiki_articlerevision_30525a19" ("article_id"),
+    CONSTRAINT "article_id_refs_id_5a3b45ce5c88570a" FOREIGN KEY ("article_id") REFERENCES "wiki_article" ("id"),
+    CONSTRAINT "previous_revision_id_refs_id_7c6fe338a951e36b" FOREIGN KEY ("previous_revision_id") REFERENCES "wiki_articlerevision" ("id"),
+    CONSTRAINT "user_id_refs_id_672c6e4dfbb26714" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "wiki_articlesubscription" (
+    "subscription_ptr_id" int NOT NULL,
+    "articleplugin_ptr_id" int NOT NULL,
+    PRIMARY KEY ("articleplugin_ptr_id"),
+    UNIQUE KEY "subscription_ptr_id" ("subscription_ptr_id"),
+    CONSTRAINT "articleplugin_ptr_id_refs_id_7b2f9df4cbce00e3" FOREIGN KEY ("articleplugin_ptr_id") REFERENCES "wiki_articleplugin" ("id"),
+    CONSTRAINT "subscription_ptr_id_refs_id_4ec3f6dbae89f475" FOREIGN KEY ("subscription_ptr_id") REFERENCES "notify_subscription" ("id")
+);
+
+CREATE TABLE "wiki_attachment" (
+    "reusableplugin_ptr_id" int NOT NULL,
+    "current_revision_id" int DEFAULT NULL,
+    "original_filename" varchar(256) DEFAULT NULL,
+    PRIMARY KEY ("reusableplugin_ptr_id"),
+    UNIQUE KEY "current_revision_id" ("current_revision_id"),
+    CONSTRAINT "current_revision_id_refs_id_66561e6e2198feb4" FOREIGN KEY ("current_revision_id") REFERENCES "wiki_attachmentrevision" ("id"),
+    CONSTRAINT "reusableplugin_ptr_id_refs_articleplugin_ptr_id_79d179a16644e87a" FOREIGN KEY ("reusableplugin_ptr_id") REFERENCES "wiki_reusableplugin" ("articleplugin_ptr_id")
+);
+
+CREATE TABLE "wiki_attachmentrevision" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "revision_number" int NOT NULL,
+    "user_message" TEXT NOT NULL,
+    "automatic_log" TEXT NOT NULL,
+    "ip_address" char(15) DEFAULT NULL,
+    "user_id" int DEFAULT NULL,
+    "modified" TIMESTAMP NOT NULL,
+    "created" TIMESTAMP NOT NULL,
+    "previous_revision_id" int DEFAULT NULL,
+    "deleted" SMALLINT NOT NULL,
+    "locked" SMALLINT NOT NULL,
+    "attachment_id" int NOT NULL,
+    "file" varchar(100) NOT NULL,
+    "description" TEXT NOT NULL,
+    PRIMARY KEY ("id"),
+    KEY "wiki_attachmentrevision_fbfc09f1" ("user_id"),
+    KEY "wiki_attachmentrevision_49bc38cc" ("previous_revision_id"),
+    KEY "wiki_attachmentrevision_edee6011" ("attachment_id"),
+    CONSTRAINT "attachment_id_refs_reusableplugin_ptr_id_33d8cf1f640583da" FOREIGN KEY ("attachment_id") REFERENCES "wiki_attachment" ("reusableplugin_ptr_id"),
+    CONSTRAINT "previous_revision_id_refs_id_5521ecec0041bbf5" FOREIGN KEY ("previous_revision_id") REFERENCES "wiki_attachmentrevision" ("id"),
+    CONSTRAINT "user_id_refs_id_2822eb682eaca84c" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "wiki_image" (
+    "revisionplugin_ptr_id" int NOT NULL,
+    PRIMARY KEY ("revisionplugin_ptr_id"),
+    CONSTRAINT "revisionplugin_ptr_id_refs_articleplugin_ptr_id_1a20f885fc42a0b1" FOREIGN KEY ("revisionplugin_ptr_id") REFERENCES "wiki_revisionplugin" ("articleplugin_ptr_id")
+);
+
+CREATE TABLE "wiki_imagerevision" (
+    "revisionpluginrevision_ptr_id" int NOT NULL,
+    "image" varchar(2000),
+    "width" smallint,
+    "height" smallint,
+    PRIMARY KEY ("revisionpluginrevision_ptr_id"),
+    CONSTRAINT "revisionpluginrevision_ptr_id_refs_id_5da3ee545b9fc791" FOREIGN KEY ("revisionpluginrevision_ptr_id") REFERENCES "wiki_revisionpluginrevision" ("id")
+);
+
+CREATE TABLE "wiki_reusableplugin" (
+    "articleplugin_ptr_id" int NOT NULL,
+    PRIMARY KEY ("articleplugin_ptr_id"),
+    CONSTRAINT "articleplugin_ptr_id_refs_id_2a5c48de4ca661fd" FOREIGN KEY ("articleplugin_ptr_id") REFERENCES "wiki_articleplugin" ("id")
+);
+
+CREATE TABLE "wiki_reusableplugin_articles" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "reusableplugin_id" int NOT NULL,
+    "article_id" int NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "wiki_reusableplugin_art_reusableplugin_id_6e34ac94afa8f9f2_uniq" ("reusableplugin_id","article_id"),
+    KEY "wiki_reusableplugin_articles_28b0b358" ("reusableplugin_id"),
+    KEY "wiki_reusableplugin_articles_30525a19" ("article_id"),
+    CONSTRAINT "article_id_refs_id_854477c2f51faad" FOREIGN KEY ("article_id") REFERENCES "wiki_article" ("id"),
+    CONSTRAINT "reusableplugin_id_refs_articleplugin_ptr_id_496cabe744b45e30" FOREIGN KEY ("reusableplugin_id") REFERENCES "wiki_reusableplugin" ("articleplugin_ptr_id")
+);
+
+CREATE TABLE "wiki_revisionplugin" (
+    "articleplugin_ptr_id" int NOT NULL,
+    "current_revision_id" int,
+    PRIMARY KEY ("articleplugin_ptr_id"),
+    UNIQUE KEY "current_revision_id" ("current_revision_id"),
+    CONSTRAINT "current_revision_id_refs_id_2732d4b244938e26" FOREIGN KEY ("current_revision_id") REFERENCES "wiki_revisionpluginrevision" ("id"),
+    CONSTRAINT "articleplugin_ptr_id_refs_id_2b8f815fcac31401" FOREIGN KEY ("articleplugin_ptr_id") REFERENCES "wiki_articleplugin" ("id")
+);
+
+CREATE TABLE "wiki_revisionpluginrevision" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "revision_number" int NOT NULL,
+    "user_message" TEXT NOT NULL,
+    "automatic_log" TEXT NOT NULL,
+    "ip_address" char(15) DEFAULT NULL,
+    "user_id" int DEFAULT NULL,
+    "modified" TIMESTAMP NOT NULL,
+    "created" TIMESTAMP NOT NULL,
+    "previous_revision_id" int DEFAULT NULL,
+    "deleted" SMALLINT NOT NULL,
+    "locked" SMALLINT NOT NULL,
+    "plugin_id" int NOT NULL,
+    PRIMARY KEY ("id"),
+    KEY "wiki_revisionpluginrevision_fbfc09f1" ("user_id"),
+    KEY "wiki_revisionpluginrevision_49bc38cc" ("previous_revision_id"),
+    KEY "wiki_revisionpluginrevision_2857ccbf" ("plugin_id"),
+    CONSTRAINT "plugin_id_refs_articleplugin_ptr_id_3e044eb541bbc69c" FOREIGN KEY ("plugin_id") REFERENCES "wiki_revisionplugin" ("articleplugin_ptr_id"),
+    CONSTRAINT "previous_revision_id_refs_id_3348918678fffe43" FOREIGN KEY ("previous_revision_id") REFERENCES "wiki_revisionpluginrevision" ("id"),
+    CONSTRAINT "user_id_refs_id_21540d2c32d8f395" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id")
+);
+
+CREATE TABLE "wiki_simpleplugin" (
+    "articleplugin_ptr_id" int NOT NULL,
+    "article_revision_id" int NOT NULL,
+    PRIMARY KEY ("articleplugin_ptr_id"),
+    KEY "wiki_simpleplugin_b3dc49fe" ("article_revision_id"),
+    CONSTRAINT "article_revision_id_refs_id_2252033b6df37b12" FOREIGN KEY ("article_revision_id") REFERENCES "wiki_articlerevision" ("id"),
+    CONSTRAINT "articleplugin_ptr_id_refs_id_6704e8c7a25cbfd2" FOREIGN KEY ("articleplugin_ptr_id") REFERENCES "wiki_articleplugin" ("id")
+);
+
+CREATE TABLE "wiki_urlpath" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "slug" varchar(50) DEFAULT NULL,
+    "site_id" int NOT NULL,
+    "parent_id" int DEFAULT NULL,
+    "lft" int unsigned NOT NULL,
+    "rght" int unsigned NOT NULL,
+    "tree_id" int unsigned NOT NULL,
+    "level" int unsigned NOT NULL,
+    "article_id" int NOT NULL DEFAULT '1',
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "wiki_urlpath_site_id_124f6aa7b2cc9b82_uniq" ("site_id","parent_id","slug"),
+    KEY "wiki_urlpath_a951d5d6" ("slug"),
+    KEY "wiki_urlpath_6223029" ("site_id"),
+    KEY "wiki_urlpath_63f17a16" ("parent_id"),
+    KEY "wiki_urlpath_42b06ff6" ("lft"),
+    KEY "wiki_urlpath_91543e5a" ("rght"),
+    KEY "wiki_urlpath_efd07f28" ("tree_id"),
+    KEY "wiki_urlpath_2a8f42e8" ("level"),
+    KEY "wiki_urlpath_30525a19" ("article_id"),
+    CONSTRAINT "article_id_refs_id_23bd80e7971759c9" FOREIGN KEY ("article_id") REFERENCES "wiki_article" ("id"),
+    CONSTRAINT "parent_id_refs_id_62afe7c752d1e703" FOREIGN KEY ("parent_id") REFERENCES "wiki_urlpath" ("id"),
+    CONSTRAINT "site_id_refs_id_462d2bc7f4bbaaa2" FOREIGN KEY ("site_id") REFERENCES "django_site" ("id")
+);
+
+CREATE TABLE "workflow_assessmentworkflow" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "created" TIMESTAMP NOT NULL,
+    "modified" TIMESTAMP NOT NULL,
+    "status" varchar(100) NOT NULL,
+    "status_changed" TIMESTAMP NOT NULL,
+    "submission_uuid" varchar(36) NOT NULL,
+    "uuid" varchar(36) NOT NULL,
+    "course_id" varchar(255) NOT NULL,
+    "item_id" varchar(255) NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE KEY "submission_uuid" ("submission_uuid"),
+    UNIQUE KEY "uuid" ("uuid"),
+    KEY "workflow_assessmentworkflow_course_id_21b427c69fc666ad" ("course_id","item_id","status"),
+    KEY "workflow_assessmentworkflow_ff48d8e5" ("course_id"),
+    KEY "workflow_assessmentworkflow_67b70d25" ("item_id")
+);
+
+CREATE TABLE "workflow_assessmentworkflowstep" (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "workflow_id" int NOT NULL,
+    "name" varchar(20) NOT NULL,
+    "submitter_completed_at" TIMESTAMP DEFAULT NULL,
+    "assessment_completed_at" TIMESTAMP DEFAULT NULL,
+    "order_num" int unsigned NOT NULL,
+    PRIMARY KEY ("id"),
+    KEY "workflow_assessmentworkflowstep_26cddbc7" ("workflow_id"),
+    CONSTRAINT "workflow_id_refs_id_4e31588b69d0b483" FOREIGN KEY ("workflow_id") REFERENCES "workflow_assessmentworkflow" ("id")
+);

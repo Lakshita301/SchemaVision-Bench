@@ -1,0 +1,58 @@
+-- Source: https://github.com/PetroPochynok/cars-project/blob/302c2f4b579ee82009378041c9f18ab6d28cfbe7/sql-scripts/sql-cars-project.sql?raw=true
+-- Tables detected: 5 | FK constraints: 4
+
+CREATE TABLE `car` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `brand` varchar(50) DEFAULT NULL,
+  `model` varchar(50) DEFAULT NULL,
+  `color` varchar(50) DEFAULT NULL,
+  `seats` int DEFAULT NULL,
+  `fuel_type` varchar(50) DEFAULT NULL,
+  `status` varchar(20) DEFAULT NULL,
+  `mileage` double DEFAULT NULL,
+  `price` int DEFAULT NULL,
+  CONSTRAINT `car_PK` PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=82 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `info` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `status` varchar(20) DEFAULT NULL,
+  `user_id` int DEFAULT NULL,
+  `paid_days` int DEFAULT NULL,
+  `car_id` int DEFAULT NULL,
+  `date` date DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `car_id` (`car_id`),
+  CONSTRAINT `info_user_FK` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `info_car_FK` FOREIGN KEY (`car_id`) REFERENCES `car` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `role` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) DEFAULT NULL,
+  CONSTRAINT `role_PK` PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `user` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `username` varchar(50) NOT NULL,
+  `password` char(80) NOT NULL,
+  `first_name` varchar(50) NOT NULL,
+  `last_name` varchar(50) NOT NULL,
+  `gender` varchar(20) NOT NULL,
+  `email` varchar(128) NOT NULL,
+  `money` double NOT NULL,
+  CONSTRAINT `user_PK` PRIMARY KEY (`id`),
+  CONSTRAINT `user_username_UQ` UNIQUE KEY (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `users_roles` (
+  `user_id` int NOT NULL,
+  `role_id` int NOT NULL,
+  PRIMARY KEY (`user_id`,`role_id`),
+  KEY `role_id` (`role_id`),
+  CONSTRAINT `users_roles_role_FK` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`) ON DELETE RESTRICT,
+  CONSTRAINT `users_roles_user_FK` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+

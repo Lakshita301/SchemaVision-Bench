@@ -1,0 +1,37 @@
+# Prepared final-run manifest. Do not execute until the audits, evaluator
+# controls, fresh pilot validation, and Mistral cost estimate are pinned below.
+version: 1
+experiment:
+  name: paper-final-v6-mistral
+  output_root: outputs/experiments/paper-final-v6-mistral
+  phase: final
+  split_file: config/paper_splits_v5_eligible.json
+  oracle_audit: docs/audits/final_oracle_v12.json # exact v6 eligible ID set; candidate references plus locked-policy evidence
+  evaluator_validation: docs/audits/evaluator_mutations_v7_structural_20261012.json # current-source mutation evidence, zero model calls
+  protocol_file: config/paper_protocol_v6.yaml
+  protocol_sha256: aefe519259c9220f5e2d0b9ca96120ea2ad29c264a5b066941834c39a0ee687d
+  reference_status_manifest: data/reference_status_manifest_v1.csv
+  reference_status_manifest_sha256: a50c32fa70c86c2bffbcc34d7de70b6579a00ea1761d1d958ed6c7f38c455fec
+  tiers: [tier1, tier2, tier3]
+  common_only: true
+  resume: true
+  verify: true
+  evaluate: true
+  stop_on_error: true
+  require_complete_model_metadata: true
+  prompts_frozen: true
+  # Quality outcomes (IR validity/truncation) are reported, not go/no-go gates;
+  # see docs/audits/pilot_readiness_amendment_20261012.md.
+  pilot_validation: outputs/experiments/paper-pilot-v6-mistral/reports/pilot_validation.json
+  contamination_split_file: config/paper_splits_v5.json
+  contamination_audit: docs/audits/dataset_contamination_v6.json
+  contamination_audit_sha256: d03b1d6de44ee5127afe38befc0309a626a0842b69a2ad49fd0b3e0f390c7a63
+models:
+  - name: mistral-small-4-v26.03
+    config: config/models/mistral-small-4.yaml
+    arms: [structured, direct]
+    prompt_version: paper-v3-shared-postgres-prompt
+    expected_cost_usd: 6.0 # pilot-based estimate: $0.1803 / 33 pilot cells scaled to 792 final cells, with margin
+    cost_tolerance_fraction: 0.25
+    minimum_success_rate: 0.9
+    max_rate_limit_events: 5

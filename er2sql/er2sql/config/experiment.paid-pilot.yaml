@@ -1,0 +1,51 @@
+version: 1
+
+experiment:
+  name: paid-heldout-pilot-paper-v1
+  output_root: outputs/experiments/paid-heldout-pilot-paper-v1
+  tiers: [tier1, tier2, tier3]
+  common_only: true
+  # Pre-registered common-tier schemas with no existing result JSON at the
+  # time of selection. Keep this list identical for every model.
+  schema_ids:
+    - schema_0131
+    - schema_0132
+    - schema_0133
+    - schema_0134
+    - schema_0135
+    - schema_0137
+    - schema_0141
+    - schema_0142
+    - schema_0143
+    - schema_0145
+    - schema_0146
+    - schema_0147
+    - schema_0148
+    - schema_0150
+    - schema_0151
+    - schema_0152
+    - schema_0153
+    - schema_0155
+    - schema_0157
+    - schema_0160
+  resume: true
+  verify: true
+  evaluate: true
+  stop_on_error: true
+  require_complete_model_metadata: true
+  prompts_frozen: true
+
+models:
+  - name: mistral-small-4-v26.03
+    config: config/models/mistral-small-4.yaml
+    arms: [structured, direct]
+    prompt_version: paper-pilot-v1
+    # Provisional ceiling for both arms across 20 schemas x 3 tiers. The pilot
+    # report checks actual recorded cost against this value plus tolerance.
+    expected_cost_usd: 0.25
+    cost_tolerance_fraction: 0.50
+    minimum_success_rate: 0.90
+    max_rate_limit_events: 5
+
+  # Add the remaining selected models only after creating and validating one
+  # exact config/model file for each of them.

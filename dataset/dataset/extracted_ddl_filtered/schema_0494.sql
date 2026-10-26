@@ -1,0 +1,36 @@
+-- Source: https://github.com/QuadFlask/comment-system/blob/478f0dbc5559355932915187af6f53f1aaf1a484/src/main/resources/makeTable.sql?raw=true
+-- Tables detected: 4 | FK/REFERENCES mentions: 5
+
+create table user(
+	id varchar(20) primary key,
+	name varchar(20) not null,
+	password varchar(20) not null,
+	explanation varchar(100)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table comment(
+	comment_id int auto_increment primary key,
+	writer_id varchar(20) not null,
+	contents varchar(500),
+	recommendation_count int default 0,
+	opposition_count int default 0,
+	regdttm char(12),
+	foreign key (`writer_id`) references `user`(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table recommended_comment(
+	comment_id int not null,
+	recommend_user_id varchar(20) not null,
+	primary key (comment_id, recommend_user_id),
+	foreign key (`comment_id`) references `comment`(`comment_id`) on delete cascade,
+	foreign key (`recommend_user_id`) references `user`(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table opposited_comment(
+	comment_id int not null,
+	opposited_user_id varchar(20) not null,
+	primary key (comment_id, opposited_user_id),
+	foreign key (`comment_id`) references `comment`(`comment_id`) on delete cascade,
+	foreign key (`opposited_user_id`) references `user`(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+

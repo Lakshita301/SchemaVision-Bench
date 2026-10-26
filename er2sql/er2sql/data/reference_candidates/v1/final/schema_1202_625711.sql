@@ -1,0 +1,128 @@
+-- Source: https://github.com/jary0719/bookstore/blob/fe617d5439531716fc2f1c8922405b5c03ec10c0/bookstore.sql?raw=true
+-- Tables detected: 13 | FK constraints: 12
+CREATE TABLE "book_author"  (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "author" varchar(40) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+    PRIMARY KEY ("id") USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+
+CREATE TABLE "book_press"  (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "press" varchar(11) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+    PRIMARY KEY ("id") USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+
+CREATE TABLE "book_type"  (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "type" varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+    PRIMARY KEY ("id") USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+
+CREATE TABLE "bs_book"  (
+    "b_id" int NOT NULL AUTO_INCREMENT,
+    "bt_id" int NULL DEFAULT NULL,
+    "bp_id" int NULL DEFAULT NULL,
+    "ba_id" int NULL DEFAULT NULL,
+    "name" varchar(40) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+    "price" float NULL DEFAULT NULL,
+    "stock" int NULL DEFAULT NULL,
+    "counter" int NULL DEFAULT NULL,
+    "content" varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+    "status" int NULL DEFAULT NULL,
+    PRIMARY KEY ("b_id") USING BTREE,
+    INDEX "bt_id"("bt_id") USING BTREE,
+    INDEX "bp_id"("bp_id") USING BTREE,
+    INDEX "ba_id"("ba_id") USING BTREE,
+    CONSTRAINT "bs_book_ibfk_1" FOREIGN KEY ("bt_id") REFERENCES "book_type" ("id") ON DELETE RESTRICT ON UPDATE RESTRICT,
+    CONSTRAINT "bs_book_ibfk_2" FOREIGN KEY ("bp_id") REFERENCES "book_press" ("id") ON DELETE RESTRICT ON UPDATE RESTRICT,
+    CONSTRAINT "bs_book_ibfk_3" FOREIGN KEY ("ba_id") REFERENCES "book_author" ("id") ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 59 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+
+CREATE TABLE "bs_order"  (
+    "user_id" varchar(80) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+    "order_number" varchar(60) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
+    "order_time" TIMESTAMP NULL DEFAULT NULL,
+    "status" int NULL DEFAULT 0,
+    PRIMARY KEY ("order_number") USING BTREE,
+    INDEX "FK_Relationship_8"("user_id") USING BTREE,
+    CONSTRAINT "FK_Relationship_8" FOREIGN KEY ("user_id") REFERENCES "bs_user" ("user_id") ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+
+CREATE TABLE "bs_role"  (
+    "role_id" int NOT NULL AUTO_INCREMENT,
+    "role" varchar(40) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+    "display_name" varchar(40) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+    PRIMARY KEY ("role_id") USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+
+CREATE TABLE "bs_user"  (
+    "user_id" varchar(80) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+    "username" varchar(40) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+    "password" varchar(80) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+    "nick_name" varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+    "phone" varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+    "email" varchar(40) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+    "create_time" TIMESTAMP NULL DEFAULT NULL,
+    "last_login_time" TIMESTAMP NULL DEFAULT NULL,
+    "status" int NULL DEFAULT NULL,
+    PRIMARY KEY ("user_id") USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+
+CREATE TABLE "fk_book_img"  (
+    "book_id" int NOT NULL DEFAULT 0,
+    "img_id" int NOT NULL DEFAULT 0,
+    PRIMARY KEY ("book_id", "img_id") USING BTREE,
+    INDEX "FK_fk_book_img2"("img_id") USING BTREE,
+    CONSTRAINT "FK_fk_book_img" FOREIGN KEY ("book_id") REFERENCES "bs_book" ("b_id") ON DELETE RESTRICT ON UPDATE RESTRICT,
+    CONSTRAINT "FK_fk_book_img2" FOREIGN KEY ("img_id") REFERENCES "upload_image" ("id") ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+
+CREATE TABLE "fk_order_book"  (
+    "order_number" varchar(60) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
+    "book_id" int NOT NULL DEFAULT 0,
+    "quant" int NULL DEFAULT 1,
+    PRIMARY KEY ("order_number", "book_id") USING BTREE,
+    INDEX "FK_fk_order_book2"("book_id") USING BTREE,
+    CONSTRAINT "FK_fk_order_book1" FOREIGN KEY ("order_number") REFERENCES "bs_order" ("order_number") ON DELETE RESTRICT ON UPDATE RESTRICT,
+    CONSTRAINT "FK_fk_order_book2" FOREIGN KEY ("book_id") REFERENCES "bs_book" ("b_id") ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+
+CREATE TABLE "fk_user_role"  (
+    "user_id" varchar(80) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+    "role_id" int NOT NULL,
+    PRIMARY KEY ("user_id", "role_id") USING BTREE,
+    INDEX "FK_fk_user_role2"("role_id") USING BTREE,
+    CONSTRAINT "FK_fk_user_role1" FOREIGN KEY ("user_id") REFERENCES "bs_user" ("user_id") ON DELETE RESTRICT ON UPDATE RESTRICT,
+    CONSTRAINT "FK_fk_user_role2" FOREIGN KEY ("role_id") REFERENCES "bs_role" ("role_id") ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+
+CREATE TABLE "persistent_logins"  (
+    "username" varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+    "series" varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+    "token" varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+    "last_used" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY ("series") USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+
+CREATE TABLE "shop_cart"  (
+    "cart_id" int NOT NULL AUTO_INCREMENT,
+    "user_id" varchar(80) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+    "book_id" int NULL DEFAULT NULL,
+    "quantity" int NULL DEFAULT 1,
+    PRIMARY KEY ("cart_id") USING BTREE,
+    INDEX "FK_fk_cart_book"("book_id") USING BTREE,
+    INDEX "FK_fk_user_cart"("user_id") USING BTREE,
+    CONSTRAINT "FK_fk_cart_book" FOREIGN KEY ("book_id") REFERENCES "bs_book" ("b_id") ON DELETE RESTRICT ON UPDATE RESTRICT,
+    CONSTRAINT "FK_fk_user_cart" FOREIGN KEY ("user_id") REFERENCES "bs_user" ("user_id") ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+
+CREATE TABLE "upload_image"  (
+    "id" int NOT NULL AUTO_INCREMENT,
+    "original_name" varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+    "save_name" varchar(60) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+    "file_size" bigint NULL DEFAULT NULL,
+    "file_type" varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+    "upload_time" timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+    "path" varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+    PRIMARY KEY ("id") USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 57 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;

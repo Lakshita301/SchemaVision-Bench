@@ -1,0 +1,60 @@
+protocol_version: 3
+amendment_date: '2026-10-06'
+status: frozen_methodology_amendment_before_new_paid_runs
+supersedes_for_future_runs: config/paper_protocol_v2.yaml
+repair: false
+arms:
+  structured: image_to_json_to_sql
+  direct: image_to_sql
+primary:
+  endpoint: planned_constraint_pass_rate
+  reference: module1_ground_truth_sql
+  paired_reference_rule: The planned test suite is generated deterministically from the Module 1 ground-truth SQL, never from a model's predicted IR or SQL, and the identical suite is the denominator for both structured and direct arms and every model on that schema-tier cell.
+  paired_comparison_guard: compare_gold_sql_sha256_and_planned_test_counts_per_schema_tier_cell
+  definition: passed tests from the shared Module 1 gold behavioral constraint suite divided by all planned tests in that suite; generation, parsing, and DDL failures contribute zero successes
+  macro_companion: macro_cer_all
+  comparison: structured_minus_direct_within_model_on_same_schema_tier_cells
+secondary:
+  - execution_conditional_constraint_enforcement_rate
+  - planned_test_pass_rate
+  - execution_conditional_test_pass_rate
+  - compile_rate
+  - final_sql_structural_precision_recall_f1
+  - latency_tokens_cost_and_failure_breakdowns
+  - tier_dropoff
+selection:
+  development_registry: config/development_schemas.json
+  automatic_exclusions: false
+  truncation_policy: exclude_paired_schema_tier_cell_from_both_arms
+  truncation_reason: confirmed_unusable_output_after_provider_output_limit
+  truncation_confirmation: A provider length/max_tokens finish reason is necessary but not sufficient; require an unusable output at that stage (Module 2 parse/validation failure, or generated SQL missing/failed with a parser/end-of-input syntax error). A length finish with valid parsed/validated IR or usable SQL is retained and scored; omissions count as model errors, not exclusions.
+  exclude_and_document: true
+  unaffected_tiers_for_same_schema_remain_included: true
+  chunking_or_regeneration: false
+models:
+  arms: [structured, direct]
+  repair_arm: false
+  common_output_token_cap: 16384
+  provider_cannot_support_cap: report_as_provider_or_model_tier_limitation
+  per_model_cap_reduction: prohibited
+module3:
+  shared_prompt: src/er2sql/module3_generation/prompts.py
+  postgres_only: true
+  requirements:
+    - explicit_mysql_to_postgresql_type_mapping
+    - quote_reserved_identifiers
+    - create_tables_before_deferred_foreign_keys
+    - foreign_keys_must_target_primary_or_unique_key
+statistics:
+  inference_mode: descriptive_effect_sizes_and_pointwise_intervals
+  resampling_unit: schema_id_with_all_paired_tiers
+  bootstrap_replicates: 5000
+  bootstrap_seed: 20260930
+  confidence_level: 0.95
+reporting:
+  truncation_exclusions_are_logged: true
+  distinguish_provider_output_limit_finish_from_confirmed_unusable_truncation: true
+  report_planned_denominator_primary_and_execution_conditional_secondary: true
+  historic_v1_v2_pilot_reports_are_preserved: true
+  budget_projection_arms: [direct, structured]
+  repair_cost_included: false

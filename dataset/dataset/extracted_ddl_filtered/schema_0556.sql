@@ -1,0 +1,13 @@
+-- Source: https://github.com/sivaguru362002/MY_-SQL/blob/4a9fd403b38a8ff1778c815960a894b96037a55b/dp%20script%202.sql?raw=true
+-- Tables detected: 5 | FK/REFERENCES mentions: 4
+
+create table countries1(country_id int not null,country_name varchar(30),region_id int,primary key (country_id));
+
+create table job_histry1(emp_id int not null,start_date date,end_date date,job_id int ,dept_id int,primary key (emp_id),foreign key (job_id)references job(job_id));
+
+create table countries2(country_id int UNIQUE auto_increment,country_name varchar(30),region_id int);
+
+create table job_history2(emp_id int not null ,start_date date,end_date date,job_id int ,dept_id int,primary key (emp_id),foreign key (job_id)references job(job_id));
+
+create table  job(job_id int ,title varchar(20),minsalary decimal(6,0),maxsalary decimal(6,0),primary key (job_id));
+

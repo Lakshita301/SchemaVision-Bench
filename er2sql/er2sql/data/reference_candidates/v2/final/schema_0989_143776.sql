@@ -1,0 +1,37 @@
+-- Source: https://github.com/newskyinc/examples/blob/ba69d391cc7f5f8a26d256e69c71102916beceec/SpringMVCHibernateWithSpringSecurityExample/target/classes/db.sql?raw=true
+-- Tables detected: 4 | FK constraints: 2
+
+create table APP_USER (
+   id BIGINT NOT NULL AUTO_INCREMENT,
+   sso_id VARCHAR(30) NOT NULL,
+   password VARCHAR(100) NOT NULL,
+   first_name VARCHAR(30) NOT NULL,
+   last_name  VARCHAR(30) NOT NULL,
+   email VARCHAR(30) NOT NULL,
+   state VARCHAR(30) NOT NULL,  
+   PRIMARY KEY (id),
+   UNIQUE (sso_id)
+);
+
+create table USER_PROFILE(
+   id BIGINT NOT NULL AUTO_INCREMENT,
+   type VARCHAR(30) NOT NULL,
+   PRIMARY KEY (id),
+   UNIQUE (type)
+);
+
+CREATE TABLE APP_USER_USER_PROFILE (
+    user_id BIGINT NOT NULL,
+    USER_PROFILE_id BIGINT NOT NULL,
+    PRIMARY KEY (user_id, USER_PROFILE_id),
+    CONSTRAINT FK_APP_USER FOREIGN KEY (user_id) REFERENCES APP_USER (id),
+    CONSTRAINT FK_USER_PROFILE FOREIGN KEY (USER_PROFILE_id) REFERENCES USER_PROFILE (id)
+);
+
+CREATE TABLE PERSISTENT_LOGINS (
+    series VARCHAR(30) NOT NULL primary key,
+    USERNAME VARCHAR(50) NOT NULL,
+    TOKEN VARCHAR(30) NOT NULL,
+    last_used timestamp
+);
+

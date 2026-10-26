@@ -1,0 +1,31 @@
+-- Source: https://github.com/marin0v89/JavaDB-MySQL/blob/ba080dbc9f891268fbb7cbd0e28669fade05845c/BasicCRUD/Lab.sql?raw=true
+-- Tables detected: 4 | FK/REFERENCES mentions: 3
+CREATE TABLE departments (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(50)
+);
+
+CREATE TABLE employees (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    job_title VARCHAR(50) NOT NULL,
+    department_id INT NOT NULL,
+    salary DOUBLE PRECISION NOT NULL,
+    CONSTRAINT "fk_department_id" FOREIGN KEY ("department_id") REFERENCES "departments" ("id")
+);
+
+CREATE TABLE rooms (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    "type" VARCHAR(30)
+);
+
+CREATE TABLE clients (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    room_id INT NOT NULL,
+    CONSTRAINT fk_clients_rooms
+    FOREIGN KEY (room_id)
+    REFERENCES rooms(id)
+);

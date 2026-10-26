@@ -1,0 +1,46 @@
+# Copy to config/experiment.yaml and edit before a pilot or final run.
+# Each model points to its own ordinary pipeline config so exact provider,
+# model, pricing, retry, database, and dataset settings remain explicit.
+
+version: 1
+
+experiment:
+  name: pilot-model-panel
+  output_root: outputs/experiments/pilot-model-panel
+  tiers: [tier1, tier2, tier3]
+  common_only: true
+  limit: 20                 # null for the full selected corpus
+  # For a true held-out pilot, replace `limit` with an explicit preregistered
+  # list, e.g. schema_ids: [schema_0100, schema_0142, ...]. Do not set both.
+  resume: true
+  verify: true
+  evaluate: true
+  stop_on_error: true
+  # Set true for the paid/final run. This makes the orchestrator reject any
+  # model config that omits version, endpoint, vision, pricing or retry fields.
+  require_complete_model_metadata: false
+  # Set true only after the prompt files have been reviewed and declared final.
+  # Their exact contents and SHA-256 hashes are snapshotted into the run output.
+  prompts_frozen: false
+
+models:
+  - name: current-model
+    config: config/config.yaml
+    arms: [structured, direct]
+    prompt_version: pilot-v1
+    # Required when require_complete_model_metadata=true.
+    expected_cost_usd: null
+    cost_tolerance_fraction: 0.25
+    minimum_success_rate: 0.90
+    max_rate_limit_events: 5
+
+  # Add one entry per purchased model. Give every entry a unique label and
+  # a separate config file. The supported arms are `structured` and `direct`.
+  # - name: mistral-small-4
+  #   config: config/models/mistral-small-4.yaml
+  #   arms: [structured, direct]
+  #   prompt_version: final-v1
+  #   expected_cost_usd: 0.00
+  #   cost_tolerance_fraction: 0.25
+  #   minimum_success_rate: 0.90
+  #   max_rate_limit_events: 5

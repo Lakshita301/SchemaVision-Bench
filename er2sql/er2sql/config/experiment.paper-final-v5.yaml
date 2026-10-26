@@ -1,0 +1,37 @@
+# Prepared final-run manifest. Do not execute until the v5 audit, exact
+# PostgreSQL reference audit, current evaluator controls, fresh pilot, and
+# Mistral cost estimate have been regenerated and pinned below.
+version: 1
+experiment:
+  name: paper-final-v5-mistral
+  output_root: outputs/experiments/paper-final-v5-mistral
+  phase: final
+  # Score only schemas whose PostgreSQL references passed the frozen gate.
+  split_file: config/paper_splits_v5_eligible.json
+  oracle_audit: docs/audits/final_oracle_v5.json # generate for this exact 264-ID set
+  evaluator_validation: docs/audits/evaluator_mutations_v5.json # refresh against current verifier
+  protocol_file: config/paper_protocol_v5.yaml
+  protocol_sha256: a62d44e4903555fcbf28131435f89170b71edbb4f4683c8062f9e5611eaf2d73
+  tiers: [tier1, tier2, tier3]
+  common_only: true
+  resume: true
+  verify: true
+  evaluate: true
+  stop_on_error: true
+  require_complete_model_metadata: true
+  prompts_frozen: true
+  # Must point to the passing fresh Mistral pilot before final execution.
+  pilot_validation: outputs/experiments/paper-pilot-v5-mistral/reports/pilot_validation.json
+  contamination_split_file: config/paper_splits_v5.json
+  contamination_audit: docs/audits/dataset_contamination_v5.json
+  # Replace with SHA-256 from the completed v5 audit report before execution.
+  contamination_audit_sha256: UPDATE_AFTER_V5_AUDIT
+models:
+  - name: mistral-small-4-v26.03
+    config: config/models/mistral-small-4.yaml
+    arms: [structured, direct]
+    prompt_version: paper-v3-shared-postgres-prompt
+    # Fill from the fresh pilot; required for final-run budget validation.
+    expected_cost_usd: null
+    minimum_success_rate: 0.9
+    max_rate_limit_events: 5

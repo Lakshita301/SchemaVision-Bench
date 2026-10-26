@@ -1,0 +1,66 @@
+# Frozen Groq Qwen 3.8 27B config for the Tier 2/Tier 3 Module 7 run.
+# Official model metadata reviewed 30 September 2026.
+# https://console.groq.com/docs/model/qwen/qwen3.8-27b
+
+llm:
+  module2_parsing: &groq_qwen
+    provider: groq
+    model: qwen/qwen3.8-27b
+    model_revision: preview-2026-09-30
+    api_base: https://api.groq.com/openai/v1
+    api_key_env: GROQ_API_KEY
+    vision_capable: true
+    image_url_format: openai
+    temperature: 0.2
+    # Shared paper-protocol cap; do not lower per provider. If this profile or
+    # account cannot sustain it, report the provider limitation and exclude
+    # token-truncated schema IDs using the frozen protocol policy.
+    max_completion_tokens: 16384
+    token_limit_parameter: max_completion_tokens
+    reasoning_effort: none
+    response_format_json: true
+    input_cost_per_million: 0.80
+    output_cost_per_million: 4.00
+    request_timeout: 120
+    max_retries: 3
+    retry_initial_delay_seconds: 1
+    retry_max_delay_seconds: 60
+    retry_backoff_multiplier: 2
+    retry_jitter_seconds: 0.25
+    max_retry_cost_usd: 0.030
+    estimated_cost_per_attempt_usd: 0.015
+
+  module3_generation:
+    <<: *groq_qwen
+    vision_capable: false
+    response_format_json: false
+
+  module6_direct_baseline:
+    <<: *groq_qwen
+    response_format_json: false
+
+sql_dialect: postgres
+
+database:
+  host: localhost
+  port: 5432
+  dbname: er2sql_paper_verify
+  user: er2sql_runner
+  password_env: ER2SQL_VERIFY_DB_PASSWORD
+  schema_prefix: er2sql_verify
+  statement_timeout_ms: 5000
+
+dataset:
+  tiers:
+    tier1:
+      diagrams_dir: C:/Users/anika/OneDrive/Desktop/dataset/erd_tier1
+      sql_dir: C:/Users/anika/OneDrive/Desktop/dataset/extracted_ddl_filtered
+    tier2:
+      diagrams_dir: C:/Users/anika/OneDrive/Desktop/dataset/erd_tier2
+      sql_dir: C:/Users/anika/OneDrive/Desktop/dataset/extracted_ddl_filtered
+    tier3:
+      diagrams_dir: C:/Users/anika/OneDrive/Desktop/dataset/erd_tier3
+      sql_dir: C:/Users/anika/OneDrive/Desktop/dataset/extracted_ddl_filtered
+
+output:
+  base_dir: outputs

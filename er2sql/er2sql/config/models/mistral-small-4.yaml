@@ -1,0 +1,69 @@
+# Frozen candidate config for Mistral Small 4 (v26.03).
+# Official model ID/pricing reviewed 30 September 2026.
+# Reconfirm provider pricing immediately before the paid run.
+# Model: https://docs.mistral.ai/models/mistral-small-4-0-26-03
+# Pricing: https://docs.mistral.ai/inference/pricing
+# API compatibility: https://docs.mistral.ai/resources/migration-guides
+
+llm:
+  module2_parsing: &mistral_small_4
+    provider: mistral
+    model: mistral-small-2603
+    model_revision: v26.03
+    api_base: https://api.mistral.ai/v1
+    api_key_env: MISTRAL_API_KEY
+    vision_capable: true
+    image_url_format: string
+    temperature: 0.2
+    # Candidate budget; pilot must demonstrate no truncation before final use.
+    max_completion_tokens: 16384
+    validation_retries: 0
+    token_limit_parameter: max_tokens
+    reasoning_effort: none
+    response_format_json: true
+    input_cost_per_million: 0.15
+    output_cost_per_million: 0.60
+    request_timeout: 120
+    max_retries: 3
+    retry_initial_delay_seconds: 1
+    retry_max_delay_seconds: 30
+    retry_backoff_multiplier: 2
+    retry_jitter_seconds: 0.25
+    # Conservative retry estimate for the larger output budget; not a provider billing cap.
+    max_retry_cost_usd: 0.04
+    estimated_cost_per_attempt_usd: 0.02
+
+  module3_generation:
+    <<: *mistral_small_4
+    vision_capable: false
+    response_format_json: false
+
+  module6_direct_baseline:
+    <<: *mistral_small_4
+    response_format_json: false
+
+sql_dialect: postgres
+
+database:
+  host: localhost
+  port: 5432
+  dbname: er2sql_paper_verify
+  user: er2sql_runner
+  password_env: ER2SQL_VERIFY_DB_PASSWORD
+  schema_prefix: er2sql_verify
+  statement_timeout_ms: 5000
+
+dataset:
+  tiers:
+    tier1:
+      diagrams_dir: C:/Users/anika/OneDrive/Desktop/dataset/erd_tier1
+      sql_dir: C:/Users/anika/OneDrive/Desktop/dataset/extracted_ddl_filtered
+    tier2:
+      diagrams_dir: C:/Users/anika/OneDrive/Desktop/dataset/erd_tier2
+      sql_dir: C:/Users/anika/OneDrive/Desktop/dataset/extracted_ddl_filtered
+    tier3:
+      diagrams_dir: C:/Users/anika/OneDrive/Desktop/dataset/erd_tier3
+      sql_dir: C:/Users/anika/OneDrive/Desktop/dataset/extracted_ddl_filtered
+
+output:
+  base_dir: outputs

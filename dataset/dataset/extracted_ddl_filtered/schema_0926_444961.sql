@@ -1,0 +1,100 @@
+-- Source: https://github.com/DanAndresSanchez/Databse-Final-Project/blob/d1c42873a485db35d608fd3c6ddff32e7e50ab96/data/database.sql?raw=true
+-- Tables detected: 10 | FK constraints: 9
+
+CREATE TABLE `contains` (
+  `orderID` int NOT NULL AUTO_INCREMENT,
+  `UPC` int NOT NULL,
+  `quantity` tinyint NOT NULL,
+  PRIMARY KEY (`orderID`,`UPC`),
+  KEY `UPC` (`UPC`),
+  CONSTRAINT `contains_ibfk_1` FOREIGN KEY (`orderID`) REFERENCES `orders` (`orderID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `contains_ibfk_2` FOREIGN KEY (`UPC`) REFERENCES `product` (`UPC`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=91 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `customer` (
+  `customerID` int NOT NULL AUTO_INCREMENT,
+  `Fname` varchar(20) DEFAULT NULL,
+  `Lname` varchar(30) DEFAULT NULL,
+  `caddress` varchar(100) DEFAULT NULL,
+  `ccity` varchar(20) DEFAULT NULL,
+  `cstate` char(2) DEFAULT NULL,
+  `czip` char(5) DEFAULT NULL,
+  PRIMARY KEY (`customerID`)
+) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `orders` (
+  `orderID` int NOT NULL AUTO_INCREMENT,
+  `orderdate` date DEFAULT NULL,
+  `shipdate` date DEFAULT NULL,
+  `payment_type` varchar(20) DEFAULT NULL,
+  `CCN` char(16) DEFAULT NULL,
+  `customerID` int DEFAULT NULL,
+  PRIMARY KEY (`orderID`),
+  KEY `orders_ibfk_1` (`customerID`),
+  CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`customerID`) REFERENCES `customer` (`customerID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=91 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `prod_category` (
+  `UPC` int NOT NULL,
+  `category` varchar(15) NOT NULL,
+  PRIMARY KEY (`UPC`,`category`),
+  CONSTRAINT `prod_category_ibfk_1` FOREIGN KEY (`UPC`) REFERENCES `product` (`UPC`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `product` (
+  `UPC` int NOT NULL AUTO_INCREMENT,
+  `Pname` varchar(40) DEFAULT NULL,
+  `price` decimal(10,2) DEFAULT NULL,
+  `Sname` varchar(30) DEFAULT NULL,
+  `amount` int DEFAULT NULL,
+  `reorderlevel` int DEFAULT NULL,
+  PRIMARY KEY (`UPC`),
+  KEY `Sname` (`Sname`),
+  CONSTRAINT `product_ibfk_1` FOREIGN KEY (`Sname`) REFERENCES `supplier` (`Sname`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `products_rated` (
+  `UPC` int NOT NULL,
+  `Pname` varchar(40) DEFAULT NULL,
+  `price` decimal(10,2) DEFAULT NULL,
+  `rating` decimal(7,4) DEFAULT NULL,
+  `amount` bigint NOT NULL DEFAULT '0',
+  `cataegory` varchar(45) DEFAULT NULL,
+  KEY `catagory_idx` (`cataegory`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `rated` (
+  `customerID` int NOT NULL,
+  `UPC` int NOT NULL,
+  `rating` tinyint DEFAULT NULL,
+  `ratingdate` date DEFAULT NULL,
+  PRIMARY KEY (`customerID`,`UPC`),
+  KEY `rated_ibfk_2` (`UPC`),
+  CONSTRAINT `rated_ibfk_1` FOREIGN KEY (`customerID`) REFERENCES `customer` (`customerID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `rated_ibfk_2` FOREIGN KEY (`UPC`) REFERENCES `product` (`UPC`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `supplier` (
+  `Sname` varchar(30) NOT NULL,
+  `scity` varchar(20) DEFAULT NULL,
+  `szip` char(5) DEFAULT NULL,
+  PRIMARY KEY (`Sname`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `top_products` (
+  `UPC` int NOT NULL,
+  `Pname` varchar(40) DEFAULT NULL,
+  `price` decimal(10,2) DEFAULT NULL,
+  `rating` decimal(7,4) DEFAULT NULL,
+  `amount` bigint NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `wishes` (
+  `customerID` int NOT NULL,
+  `UPC` int NOT NULL,
+  PRIMARY KEY (`customerID`,`UPC`),
+  KEY `UPC` (`UPC`),
+  CONSTRAINT `wishes_ibfk_1` FOREIGN KEY (`customerID`) REFERENCES `customer` (`customerID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `wishes_ibfk_2` FOREIGN KEY (`UPC`) REFERENCES `product` (`UPC`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+

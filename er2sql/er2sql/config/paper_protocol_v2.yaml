@@ -1,0 +1,130 @@
+protocol_version: 2
+frozen_on: '2026-10-05'
+status: frozen_before_paid_model_runs
+supersedes: config/paper_protocol_v1.yaml
+scope: architecture_study_not_model_leaderboard
+research_question: Does explicit image-to-JSON-to-SQL mediation improve executable schema correctness over direct image-to-SQL generation?
+arms:
+  structured: image_to_json_to_sql
+  direct: image_to_sql
+repair: false
+verification_is_evaluation_only: true
+tiers:
+  tier1: full_keys_and_cardinality
+  tier2: key_badges_hidden_relationship_lines_retained
+  tier3: cardinality_hidden_key_badges_retained
+ground_truth:
+  existing_dataset_is_authoritative: true
+  intentional_tier_omissions_are_valid: true
+  rerun_module1: false
+  import_upstream_information_absent_from_dataset: false
+  generation_sees_ground_truth_sql: false
+populations:
+  structural:
+    split_file: config/paper_splits.json
+    final_schema_ids: 618
+    include_every_frozen_schema: true
+    metrics:
+      - diagram_ir_structure
+      - final_sql_structure
+      - generation_and_compile_rate
+      - latency_tokens_cost_failures
+      - paired_tier_dropoff
+  behavioral:
+    eligibility_is_schema_level: true
+    eligibility_determined_before_paid_outputs: true
+    same_ids_across_models_arms_tiers: true
+    minimum_reviewed_final_schema_ids: 200
+    pilot_schema_ids: 20
+    pilot_drawn_from_nonfinal_pool: true
+    unresolved_or_partially_testable_schema_is_ineligible_for_primary_cer: true
+    constraint_level_cherry_picking: false
+    primary_cer_population: reviewed_postgresql_executable_subset
+    eligibility_coverage_must_be_reported: true
+eligibility:
+  require_postgresql_ddl_success: true
+  require_all_planned_gold_tests_pass: true
+  require_no_parser_generator_fixture_or_attribution_warnings: true
+  require_semantic_review_for_changed_reference: true
+  require_source_and_reference_hashes: true
+  require_primary_reviewer_and_independent_verifier: true
+  eligibility_failures_are_not_model_failures: true
+  no_automatic_exclusions_after_model_outputs: true
+  known_primary_cer_exclusions:
+    schema_0517: undefined_local_status_type_do_not_import_upstream_enum
+    schema_0213: upstream_primary_keys_absent_from_dataset_and_diagram
+    schema_1052_673818: missing_or_ambiguous_column_types
+    schema_1211_489168: contradictory_duplicate_table_definitions
+    schema_1224_512880: ambiguous_non_postgresql_bracket_like_semantics
+translation_policy:
+  purpose: reviewed_postgresql_evaluation_reference_only
+  allow_semantics_preserving_syntax_and_type_translation: true
+  allowed_examples:
+    - identifier_quoting
+    - equivalent_type_names_with_preserved_domain
+    - auto_increment_to_identity
+    - enum_or_set_to_equivalent_domain_constraint
+    - unsigned_type_to_equivalent_range_constraint
+    - deferred_fk_installation_for_creation_order
+    - removal_of_nonsemantic_storage_engine_and_charset_clauses
+    - equivalent_defaults_binary_sizes_and_referential_actions
+  forbidden:
+    - invent_missing_types_keys_or_constraints
+    - remove_constraints_to_make_reference_compile
+    - import_upstream_information_absent_from_dataset
+    - choose_or_merge_contradictory_variants_without_dataset_evidence
+    - replace_constrained_domains_with_unrestricted_text
+    - use_model_predictions_to_construct_reference
+inference:
+  completed_responses_per_stage: 1
+  validation_retries: 0
+  repair_retries: 0
+  transport_retries: bounded_by_frozen_model_profile
+  structured_generator_sees_image: false
+  invalid_or_truncated_completed_output: scored_failure_not_regenerated
+  unresolved_transport_outcome: incomplete_run_requires_reconciliation
+  model_roster: freeze_each_exact_profile_before_its_pilot
+primary:
+  endpoint: macro_cer_all_on_behaviorally_eligible_subset
+  comparison: structured_minus_direct_within_each_model
+  aggregation: equal_schema_tier_weight_on_complete_paired_behavioral_matrix
+  model_generation_or_compilation_failure_score: 0
+  direction: higher_is_better
+mandatory_companion_metrics:
+  - behavioral_reference_coverage_rate
+  - behavioral_eligible_and_excluded_schema_counts_by_reason
+  - full_population_ddl_execution_rate
+  - conditional_constraint_enforcement_rate
+  - unconditional_constraint_coverage
+  - end_to_end_success_rate
+  - valid_operation_acceptance_rate
+  - invalid_operation_rejection_rate
+secondary:
+  - full_population_final_sql_structural_precision_recall_f1
+  - full_population_ir_structural_precision_recall_f1_structured_only
+  - paired_tier1_minus_tier2_dropoff
+  - paired_tier1_minus_tier3_dropoff
+  - per_constraint_type_pass_rates
+  - latency_tokens_cost_and_failure_breakdowns
+statistics:
+  inference_mode: descriptive_effect_sizes_and_pointwise_intervals
+  hypothesis_p_values: not_claimed
+  multiplicity: no_familywise_significance_claims_from_pointwise_intervals
+  resampling_unit: schema_id_with_all_paired_tiers
+  bootstrap_replicates: 5000
+  bootstrap_seed: 20260930
+  confidence_level: 0.95
+  small_sample_threshold: 30
+  cross_model_averaging: not_a_primary_endpoint
+reporting:
+  partial_runs: exploratory_only_not_final_paper_matrix
+  undefined_empty_structural_categories: null_not_perfect
+  unsupported_constraints: disclose_and_exclude_schema_from_primary_cer
+  pricing_cost: estimate_until_reconciled_with_provider_billing
+  structural_claim_scope: complete_frozen_dataset
+  behavioral_claim_scope: prospectively_eligible_reviewed_postgresql_subset
+  forbidden_claim: full_cross_dialect_behavioral_equivalence
+amendments:
+  change_requires_new_protocol_hash: true
+  preserve_old_artifacts: true
+  after_paid_model_outputs: label_changes_post_hoc_and_use_new_experiment_version

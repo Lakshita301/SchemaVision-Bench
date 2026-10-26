@@ -1,0 +1,91 @@
+-- Source: https://github.com/nhulong2201/COVID-19-Tracing-Website/blob/96c875b5f94b9ade8e47bdb1ef8763cae13a90f8/schema_and_%20queries.sql?raw=true
+-- Tables detected: 6 | FK/REFERENCES mentions: 17
+
+CREATE TABLE hotspots(
+    id INT UNIQUE NOT NULL AUTO_INCREMENT,
+    venue_id INT,
+    start_date DATETIME NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (venue_id) REFERENCES venue(venue_id) ON DELETE SET NULL
+);
+
+CREATE TABLE admin(
+    employeeID VARCHAR(8) UNIQUE NOT NULL,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    phone VARCHAR(20) ,
+    email VARCHAR(100) UNIQUE,
+    password_hash  VARCHAR(256),
+    PRIMARY KEY (employeeID)
+);
+
+CREATE TABLE manager(
+    id INT UNIQUE NOT NULL AUTO_INCREMENT,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    email VARCHAR(100) UNIQUE,
+    password_hash VARCHAR(256),
+    username VARCHAR(100) UNIQUE,
+    phone VARCHAR(20) ,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE individual (
+indi_id int not null auto_increment,
+first_name varchar(255),
+last_name varchar(255),
+DOB varchar(15),
+email varchar(255) UNIQUE,
+phone varchar(15),
+adress varchar(256),
+username varchar(100) UNIQUE,
+password_hash varchar(256),
+role INT not null,
+primary key (indi_id)
+);
+
+CREATE TABLE venue (
+    venue_id int not null auto_increment,
+    name varchar(255),
+    number_venue varchar(20),
+    street varchar(255),
+    suburb varchar(100),
+    postcode int,
+    city varchar(100),
+    state varchar(100),
+    code int,
+    longitude double(180, 8),
+    latitude double(180,8),
+    manager_id int,
+
+    PRIMARY KEY (venue_id),
+    FOREIGN KEY (manager_id) REFERENCES manager(id) ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+create table checkin (
+    checkin_id int not null auto_increment,
+    checkin_date DATETIME,
+    indi_id int,
+    venue_id int,
+    primary key (checkin_id),
+    FOREIGN KEY (venue_id) REFERENCES venue(venue_id) ON DELETE SET NULL ON UPDATE CASCADE,
+    FOREIGN KEY (indi_id) REFERENCES individual(indi_id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- Foreign keys added via ALTER TABLE:
+ALTER TABLE venue DROP FOREIGN KEY fk_manager_id;
+
+ALTER TABLE venue ADD CONSTRAINT fk_manager_id FOREIGN KEY (manager_id) REFERENCES manager(id) ON DELETE SET NULL ON UPDATE CASCADE;
+
+ALTER TABLE checkin
+DROP FOREIGN KEY checkin_ibfk_4;
+
+ALTER TABLE checkin
+ADD FOREIGN KEY (venue_id) REFERENCES venue(venue_id) ON DELETE SET NULL ON UPDATE CASCADE;
+
+ALTER TABLE checkin
+DROP FOREIGN KEY checkin_ibfk_1;
+
+ALTER TABLE checkin
+ADD FOREIGN KEY (indi_id) REFERENCES individual(indi_id) ON DELETE CASCADE ON UPDATE CASCADE;
+

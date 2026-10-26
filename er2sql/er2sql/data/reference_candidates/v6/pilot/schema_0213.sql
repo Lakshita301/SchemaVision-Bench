@@ -1,0 +1,148 @@
+-- Source: https://github.com/Brampaap/polytech_BD_project/blob/c008783dabf8546398edafbff45371f5406834dd/backup/std_1257_18.05.20.sql?raw=true
+-- Tables detected: 17 | FK/REFERENCES mentions: 19
+CREATE TABLE access_levels (
+    id int NOT NULL,
+    access_level int DEFAULT NULL
+);
+CREATE TABLE bonus (
+    id_pr int NOT NULL,
+    id int NOT NULL,
+    score int DEFAULT '0'
+);
+CREATE TABLE contacts (
+    id int NOT NULL,
+    email varchar(25) DEFAULT NULL,
+    city varchar(255) DEFAULT NULL,
+    address varchar(255) DEFAULT NULL,
+    work_phone varchar(50) DEFAULT NULL
+);
+CREATE TABLE courier_in_order (
+    id int NOT NULL,
+    iddelivery int NOT NULL,
+    idcourier int NOT NULL
+);
+CREATE TABLE delivery (
+    id int NOT NULL,
+    d_date date NOT NULL,
+    s_time time NOT NULL,
+    e_time time NOT NULL
+);
+CREATE TABLE details (
+    id int NOT NULL,
+    bik int DEFAULT NULL,
+    inn bigint DEFAULT NULL,
+    okpo int DEFAULT NULL,
+    kpp varchar(255) DEFAULT NULL,
+    recipiet varchar(255) DEFAULT NULL,
+    kc varchar(255) DEFAULT NULL
+);
+CREATE TABLE orders (
+    id int NOT NULL,
+    o_date date NOT NULL,
+    o_time time NOT NULL,
+    payments varchar(255) DEFAULT NULL,
+    discount varchar(255) DEFAULT NULL,
+    sum int NOT NULL
+);
+CREATE TABLE product (
+    id int NOT NULL,
+    status int NOT NULL,
+    name varchar(40) NOT NULL,
+    description text NOT NULL,
+    price int NOT NULL
+);
+CREATE TABLE product_in_restaurants (
+    id int NOT NULL,
+    idrest int NOT NULL,
+    idprod int NOT NULL
+);
+CREATE TABLE prod_and_deliv_in_order (
+    id int NOT NULL,
+    iddelivery int NOT NULL,
+    idorder int NOT NULL,
+    idproduct int NOT NULL
+);
+CREATE TABLE restaurants (
+    id int NOT NULL,
+    name varchar(255) DEFAULT NULL,
+    id_bank_details int DEFAULT NULL,
+    id_contacts int DEFAULT NULL,
+    status_r bit(1) DEFAULT NULL,
+    id_admin int DEFAULT NULL,
+    description text,
+    image varchar(255) NOT NULL,
+    img_name varchar(50) NOT NULL,
+    site_link varchar(255) NOT NULL
+);
+CREATE TABLE social_networks (
+    id_pr int NOT NULL,
+    id int NOT NULL,
+    instagramm int DEFAULT NULL,
+    facebook int DEFAULT NULL,
+    vk int DEFAULT NULL,
+    viber int DEFAULT NULL
+);
+CREATE TABLE userdata (
+    id int NOT NULL,
+    f_name varchar(20) DEFAULT NULL,
+    l_name varchar(20) DEFAULT NULL,
+    t_name varchar(20) DEFAULT NULL,
+    d_of_reg varchar(20) NOT NULL,
+    born text,
+    id_contacts int DEFAULT NULL,
+    card_number int DEFAULT NULL,
+    gender text NOT NULL
+);
+CREATE TABLE users (
+    id_user int NOT NULL,
+    login varchar(20) NOT NULL,
+    password varchar(255) NOT NULL
+);
+CREATE TABLE users_order (
+    id int NOT NULL,
+    iduser int NOT NULL,
+    idorder int NOT NULL
+);
+CREATE TABLE user_in_data (
+    id int NOT NULL,
+    id_user int NOT NULL,
+    id_userdata int DEFAULT NULL
+);
+CREATE TABLE user_in_level (
+    id int NOT NULL,
+    id_user int NOT NULL,
+    id_level int DEFAULT NULL
+);
+ALTER TABLE courier_in_order
+  ADD CONSTRAINT courier_in_order_ibfk_1 FOREIGN KEY (iddelivery) REFERENCES delivery (id),
+  ADD CONSTRAINT courier_in_order_ibfk_2 FOREIGN KEY (idcourier) REFERENCES users (id_user);
+ALTER TABLE product_in_restaurants
+  ADD CONSTRAINT product_in_restaurants_ibfk_1 FOREIGN KEY (idrest) REFERENCES restaurants (id),
+  ADD CONSTRAINT product_in_restaurants_ibfk_2 FOREIGN KEY (idprod) REFERENCES product (id);
+ALTER TABLE prod_and_deliv_in_order
+  ADD CONSTRAINT prod_and_deliv_in_order_ibfk_1 FOREIGN KEY (iddelivery) REFERENCES delivery (id),
+  ADD CONSTRAINT prod_and_deliv_in_order_ibfk_2 FOREIGN KEY (idproduct) REFERENCES product (id),
+  ADD CONSTRAINT prod_and_deliv_in_order_ibfk_3 FOREIGN KEY (idorder) REFERENCES orders (id);
+ALTER TABLE restaurants
+  ADD CONSTRAINT restaurants_ibfk_3 FOREIGN KEY (id_admin) REFERENCES users (id_user),
+  ADD CONSTRAINT restaurants_ibfk_4 FOREIGN KEY (id_contacts) REFERENCES contacts (id),
+  ADD CONSTRAINT restaurants_ibfk_5 FOREIGN KEY (id_bank_details) REFERENCES details (id);
+ALTER TABLE users_order
+  ADD CONSTRAINT users_order_ibfk_1 FOREIGN KEY (iduser) REFERENCES users (id_user),
+  ADD CONSTRAINT users_order_ibfk_2 FOREIGN KEY (idorder) REFERENCES orders (id);
+ALTER TABLE user_in_data
+  ADD CONSTRAINT user_in_data_ibfk_1 FOREIGN KEY (id_userdata) REFERENCES userdata (id),
+  ADD CONSTRAINT user_in_data_ibfk_2 FOREIGN KEY (id_user) REFERENCES users (id_user);
+ALTER TABLE user_in_level
+  ADD CONSTRAINT user_in_level_ibfk_1 FOREIGN KEY (id_user) REFERENCES users (id_user),
+  ADD CONSTRAINT user_in_level_ibfk_2 FOREIGN KEY (id_level) REFERENCES access_levels (id);
+ALTER TABLE bonus ADD CONSTRAINT bonus_ibfk_1 FOREIGN KEY (id) REFERENCES userdata (id);
+ALTER TABLE courier_in_order ADD CONSTRAINT courier_in_order_ibfk_1 FOREIGN KEY (iddelivery) REFERENCES delivery (id);
+ALTER TABLE product_in_restaurants ADD CONSTRAINT product_in_restaurants_ibfk_1 FOREIGN KEY (idrest) REFERENCES restaurants (id);
+ALTER TABLE prod_and_deliv_in_order ADD CONSTRAINT prod_and_deliv_in_order_ibfk_1 FOREIGN KEY (iddelivery) REFERENCES delivery (id);
+ALTER TABLE restaurants ADD CONSTRAINT restaurants_ibfk_3 FOREIGN KEY (id_admin) REFERENCES users (id_user);
+ALTER TABLE social_networks ADD CONSTRAINT social_networks_ibfk_1 FOREIGN KEY (id) REFERENCES userdata (id);
+ALTER TABLE userdata ADD CONSTRAINT userdata_ibfk_3 FOREIGN KEY (id_contacts) REFERENCES contacts (id);
+ALTER TABLE users_order ADD CONSTRAINT users_order_ibfk_1 FOREIGN KEY (iduser) REFERENCES users (id_user);
+ALTER TABLE user_in_data ADD CONSTRAINT user_in_data_ibfk_1 FOREIGN KEY (id_userdata) REFERENCES userdata (id);
+ALTER TABLE user_in_level ADD CONSTRAINT user_in_level_ibfk_1 FOREIGN KEY (id_user) REFERENCES users (id_user);

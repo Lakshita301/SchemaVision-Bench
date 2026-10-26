@@ -1,0 +1,67 @@
+-- Source: https://github.com/magarena/magarena/blob/40cc5a3ea2dd0ac0c9cb18c7cd53137d7ac46330/resources/h2/stats/schema_0.sql?raw=true
+-- Tables detected: 6 | FK constraints: 4
+
+create table GAMESTATS_SETTINGS (
+  SCHEMA_VERSION varchar(25) 
+);
+
+create table PLAYER (
+  ID int identity, 
+  AI_TYPE varchar(25), 
+  AI_LEVEL int, 
+  AI_XLIFE int, 
+  PLAYER_PROFILE varchar(36)  -- Human-only player profile guid.
+);
+
+create table DECK_TYPE (
+  ID int identity, 
+  NAME varchar(15) not null 
+);
+
+create table DECK (
+  ID int identity, 
+  NAME varchar(100),    -- assumes a deck name will be 100 chars or less.
+  FILE_CHECKSUM bigint, 
+  DECK_TYPE_ID int, 
+  DECK_SIZE int, 
+  DECK_COLOR varchar(5)
+);
+
+create table GAME (
+  TIME_START bigint primary KEY,    -- game start time as epoch
+  MAG_VERSION varchar(7),           -- magarena version
+  CONCEDED boolean,
+  TURNS int,
+  START_HAND int,
+  START_LIFE int,
+  WINNING_PLAYER_NUMBER int
+);
+
+create table GAME_PLAYER (
+  GAME_TIME_START bigint NOT NULL,
+  PLAYER_NUMBER int NOT NULL,    -- during a game, eg. player 1, player 2, etc.
+  PLAYER_ID int, 
+  DECK_ID int
+);
+
+-- Foreign keys added via ALTER TABLE:
+alter table DECK 
+  add constraint DECK_TYPE_CONSTRAINT 
+  foreign key (DECK_TYPE_ID) 
+  references DECK_TYPE (ID);
+
+alter table GAME_PLAYER 
+  add constraint GAME_CONSTRAINT 
+  foreign key (GAME_TIME_START) 
+  references GAME (TIME_START);
+
+alter table GAME_PLAYER 
+  add constraint PLAYER_CONSTRAINT 
+  foreign key (PLAYER_ID) 
+  references PLAYER (ID);
+
+alter table GAME_PLAYER 
+  add constraint DECK_CONSTRAINT 
+  foreign key (DECK_ID) 
+  references DECK (ID);
+

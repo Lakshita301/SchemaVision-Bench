@@ -1,0 +1,131 @@
+# Copy this file to config/config.yaml and edit it.
+#
+# config.yaml never contains a raw API key. Each `api_key_env` value below
+# names an environment variable (set via your .env file, see .env.example)
+# that the CLI will read the actual key from at runtime.
+
+llm:
+  # Module 2: ER Diagram Parsing Agent. MUST be a vision-capable model,
+  # since it receives the ER diagram image.
+  module2_parsing:
+    provider: openai
+    model: gpt-4o-mini              # any vision-capable model your provider exposes
+    model_revision: gpt-4o-mini-2024-07-18
+    api_base: https://api.openai.com/v1
+    api_key_env: OPENAI_API_KEY
+    vision_capable: true
+    image_url_format: openai
+    temperature: 0.2
+    max_completion_tokens: 16384
+    token_limit_parameter: max_completion_tokens
+    max_retries: 3
+    request_timeout: 120
+    response_format_json: true
+    input_cost_per_million: null    # fill from the provider's dated price sheet
+    output_cost_per_million: null
+    retry_initial_delay_seconds: 1
+    retry_max_delay_seconds: 30
+    retry_backoff_multiplier: 2
+    retry_jitter_seconds: 0.25
+    max_retry_cost_usd: null        # set both retry-cost fields for paid runs
+    estimated_cost_per_attempt_usd: null
+
+  # Module 3: SQL Generation Agent. Text-only -- receives ONLY the JSON IR,
+  # never the image. Can be a different (cheaper/text-only) model than
+  # Module 2 if you want.
+  module3_generation:
+    provider: openai
+    model: gpt-4o-mini
+    model_revision: gpt-4o-mini-2024-07-18
+    api_base: https://api.openai.com/v1
+    api_key_env: OPENAI_API_KEY
+    vision_capable: false
+    image_url_format: openai
+    temperature: 0.2
+    max_completion_tokens: 16384
+    token_limit_parameter: max_completion_tokens
+    max_retries: 3
+    request_timeout: 120
+    response_format_json: false
+    input_cost_per_million: null
+    output_cost_per_million: null
+    retry_initial_delay_seconds: 1
+    retry_max_delay_seconds: 30
+    retry_backoff_multiplier: 2
+    retry_jitter_seconds: 0.25
+    max_retry_cost_usd: null
+    estimated_cost_per_attempt_usd: null
+
+  # Module 6: direct experimental baseline. This MUST be vision-capable:
+  # image -> SQL in one LLM call, with no JSON IR or Module 3 involved.
+  # Use the same vision model as Module 2 for a controlled comparison.
+  module6_direct_baseline:
+    provider: openai
+    model: gpt-4o-mini
+    model_revision: gpt-4o-mini-2024-07-18
+    api_base: https://api.openai.com/v1
+    api_key_env: OPENAI_API_KEY
+    vision_capable: true
+    image_url_format: openai
+    temperature: 0.2
+    max_completion_tokens: 16384
+    token_limit_parameter: max_completion_tokens
+    max_retries: 3
+    request_timeout: 120
+    response_format_json: false
+    input_cost_per_million: null
+    output_cost_per_million: null
+    retry_initial_delay_seconds: 1
+    retry_max_delay_seconds: 30
+    retry_backoff_multiplier: 2
+    retry_jitter_seconds: 0.25
+    max_retry_cost_usd: null
+    estimated_cost_per_attempt_usd: null
+
+# --- Example: pointing Module 2 at Gemini's OpenAI-compatible endpoint ---
+# module2_parsing:
+#   model: gemini-2.5-flash
+#   api_base: https://generativelanguage.googleapis.com/v1beta/openai/
+#   api_key_env: GEMINI_API_KEY
+#   temperature: 0.2
+#   max_retries: 3
+
+# --- Example: routing everything through OpenRouter with one key ---
+# module3_generation:
+#   model: qwen/qwen-2.5-72b-instruct
+#   api_base: https://openrouter.ai/api/v1
+#   api_key_env: OPENROUTER_API_KEY
+#   temperature: 0.2
+#   max_retries: 3
+
+sql_dialect: postgres   # only affects prompt wording for Module 3 right now
+
+# Optional. If this whole 'database' section is omitted, Modules 4/5
+# (Constraint Test Generator + SQL Verification) are skipped entirely
+# and the pipeline behaves exactly like Module 2 + Module 3 only.
+# Requires a real, reachable Postgres server -- see README.md section
+# "Setting up Postgres for Module 4/5 verification" for setup options
+# (local install or Docker) and exactly what to put here.
+database:
+  host: localhost
+  port: 5432
+  dbname: er2sql_paper_verify
+  user: er2sql_runner
+  password_env: ER2SQL_VERIFY_DB_PASSWORD
+  schema_prefix: er2sql_verify   # namespace prefix Module 5 creates per schema, always rolled back
+  statement_timeout_ms: 5000     # safety cap per SQL statement during verification
+
+dataset:
+  tiers:
+    tier1:
+      diagrams_dir: data/tier1/diagrams
+      sql_dir: data/tier1/ground_truth_sql
+    tier2:
+      diagrams_dir: data/tier2/diagrams
+      sql_dir: data/tier2/ground_truth_sql
+    tier3:
+      diagrams_dir: data/tier3/diagrams
+      sql_dir: data/tier3/ground_truth_sql
+
+output:
+  base_dir: outputs

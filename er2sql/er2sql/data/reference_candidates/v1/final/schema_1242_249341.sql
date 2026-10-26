@@ -1,0 +1,122 @@
+-- Source: https://github.com/amf133/263_Assignment/blob/9e1ea721e51df432eb52cbab9e77ba98fc8896ba/tserver.sql?raw=true
+-- Tables detected: 11 | FK constraints: 12
+CREATE TABLE "front_action" (
+    "action_id" int unsigned NOT NULL AUTO_INCREMENT,
+    "event_id" int unsigned DEFAULT NULL,
+    "time_offset" time DEFAULT NULL,
+    "cluster_id" int unsigned DEFAULT NULL,
+    "activate" int unsigned DEFAULT NULL,
+    PRIMARY KEY ("action_id"),
+    KEY "event_fk_idx" ("event_id"),
+    KEY "cluster_fk_idx" ("cluster_id"),
+    CONSTRAINT "actiion_event_fk" FOREIGN KEY ("event_id") REFERENCES "front_event" ("event_id"),
+    CONSTRAINT "action_cluster_fk" FOREIGN KEY ("cluster_id") REFERENCES "front_cluster" ("cluster_id")
+) ENGINE=InnoDB AUTO_INCREMENT=830 DEFAULT CHARSET=latin1;
+
+CREATE TABLE "front_client" (
+    "client_id" int unsigned NOT NULL DEFAULT '0',
+    "mac" char(17) CHARACTER SET latin1 NOT NULL,
+    "group_id" int unsigned NOT NULL COMMENT 'The machine group the terminal belongs to',
+    "room_id" int unsigned DEFAULT NULL,
+    "serial_no" varchar(128) CHARACTER SET latin1 NOT NULL,
+    "position" int DEFAULT NULL,
+    "ip_addr" char(24) CHARACTER SET latin1 DEFAULT NULL,
+    "default_printer_id" int DEFAULT NULL,
+    PRIMARY KEY ("client_id"),
+    KEY "room_fk_idx" ("room_id"),
+    KEY "group_fk_idx" ("group_id"),
+    CONSTRAINT "client_group_fk" FOREIGN KEY ("group_id") REFERENCES "front_group" ("group_id"),
+    CONSTRAINT "room_fk" FOREIGN KEY ("room_id") REFERENCES "front_room" ("room_id")
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE "front_cluster" (
+    "cluster_id" int unsigned NOT NULL AUTO_INCREMENT,
+    "cluster_name" varchar(128) DEFAULT NULL,
+    "cluster_description" varchar(255) DEFAULT NULL,
+    "connection_type_id" int unsigned NOT NULL,
+    "account_series_id" int unsigned DEFAULT NULL,
+    "cluster_domain" varchar(128) NOT NULL DEFAULT '',
+    PRIMARY KEY ("cluster_id")
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=latin1;
+
+CREATE TABLE "front_daily" (
+    "daily_id" int NOT NULL AUTO_INCREMENT,
+    "event_id" int unsigned DEFAULT NULL,
+    "group_id" int unsigned DEFAULT NULL,
+    "day_of_week" int unsigned DEFAULT NULL,
+    "start_time" time DEFAULT NULL,
+    PRIMARY KEY ("daily_id"),
+    KEY "group_id_idx" ("group_id"),
+    KEY "event_fk_idx" ("event_id"),
+    KEY "dow_fk_idx" ("day_of_week"),
+    CONSTRAINT "dow_fk" FOREIGN KEY ("day_of_week") REFERENCES "front_day_of_week" ("day_of_week"),
+    CONSTRAINT "event_fk" FOREIGN KEY ("event_id") REFERENCES "front_event" ("event_id"),
+    CONSTRAINT "group_fk" FOREIGN KEY ("group_id") REFERENCES "front_group" ("group_id")
+) ENGINE=InnoDB AUTO_INCREMENT=732 DEFAULT CHARSET=latin1;
+
+CREATE TABLE "front_day_of_week" (
+    "day_of_week" int unsigned NOT NULL,
+    "day" char(32) NOT NULL,
+    PRIMARY KEY ("day_of_week")
+);
+
+CREATE TABLE "front_event" (
+    "event_id" int unsigned NOT NULL AUTO_INCREMENT,
+    "event_name" varchar(255) NOT NULL,
+    "status" int NOT NULL,
+    PRIMARY KEY ("event_id"),
+    UNIQUE KEY "event_name" ("event_name")
+) ENGINE=InnoDB AUTO_INCREMENT=173 DEFAULT CHARSET=latin1;
+
+CREATE TABLE "front_event_log" (
+    "log_id" int NOT NULL AUTO_INCREMENT,
+    "event_id" int unsigned DEFAULT NULL,
+    "action_id" int unsigned DEFAULT NULL,
+    "daily_id" int unsigned DEFAULT NULL,
+    "weekly_id" int unsigned DEFAULT NULL,
+    "status" int DEFAULT NULL,
+    "ran" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY ("log_id"),
+    UNIQUE KEY "event_index" ("event_id","action_id","daily_id","weekly_id"),
+    KEY "log_action_fk" ("action_id"),
+    KEY "log_daily_fk_idx" ("daily_id"),
+    KEY "log_weekly_fk_idx" ("weekly_id"),
+    CONSTRAINT "log_action_fk" FOREIGN KEY ("action_id") REFERENCES "front_action" ("action_id"),
+    CONSTRAINT "log_daily_fk" FOREIGN KEY ("daily_id") REFERENCES "front_daily" ("event_id"),
+    CONSTRAINT "log_event_fk" FOREIGN KEY ("event_id") REFERENCES "front_event" ("event_id"),
+    CONSTRAINT "log_weekly_fk" FOREIGN KEY ("weekly_id") REFERENCES "front_weekly" ("weekly_id")
+) ENGINE=InnoDB AUTO_INCREMENT=5485 DEFAULT CHARSET=latin1;
+
+CREATE TABLE "front_group" (
+    "group_id" int unsigned NOT NULL AUTO_INCREMENT,
+    "machine_group" varchar(100) NOT NULL DEFAULT '',
+    "menu_id" int unsigned NOT NULL,
+    "message_id" int unsigned NOT NULL DEFAULT '1',
+    "version" int unsigned NOT NULL DEFAULT '0',
+    PRIMARY KEY ("group_id"),
+    KEY "idxGroup" ("machine_group")
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=latin1;
+
+CREATE TABLE "front_room" (
+    "room_id" int unsigned NOT NULL DEFAULT '0',
+    "room_name" varchar(127) CHARACTER SET latin1 NOT NULL,
+    "printer_id" int DEFAULT NULL,
+    PRIMARY KEY ("room_id")
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE "front_weekly" (
+    "weekly_id" int unsigned NOT NULL AUTO_INCREMENT,
+    "event_id" int unsigned NOT NULL,
+    "week_of_year" int unsigned NOT NULL,
+    "event_year" year(4) NOT NULL,
+    PRIMARY KEY ("weekly_id"),
+    KEY "weekly_event_fk_idx" ("event_id"),
+    CONSTRAINT "weekly_event_fk" FOREIGN KEY ("event_id") REFERENCES "front_event" ("event_id")
+) ENGINE=InnoDB AUTO_INCREMENT=289 DEFAULT CHARSET=latin1;
+
+CREATE TABLE "user" (
+    "user_id" int NOT NULL AUTO_INCREMENT,
+    "username" varchar(32) NOT NULL,
+    "password" varchar(64) NOT NULL,
+    PRIMARY KEY (user_id)
+);

@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "description": "Pre-registered public-schema memorization-risk candidates. A match flags a schema for sensitivity reporting; it is not evidence that a model's training data included it.",
+  "candidates": [
+    {
+      "catalog_id": "sakila",
+      "aliases": ["Sakila", "Sakila sample database"],
+      "risk_level": "high",
+      "basis": "Named as a widely known tutorial schema in the locked research plan."
+    },
+    {
+      "catalog_id": "chinook",
+      "aliases": ["Chinook", "Chinook sample database"],
+      "risk_level": "high",
+      "basis": "Named as a widely known tutorial schema in the locked research plan."
+    },
+    {
+      "catalog_id": "northwind",
+      "aliases": ["Northwind", "Northwind sample database"],
+      "risk_level": "high",
+      "basis": "Named as a widely known tutorial schema in the locked research plan."
+    }
+  ]
+}

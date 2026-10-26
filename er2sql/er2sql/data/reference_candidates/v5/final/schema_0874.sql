@@ -1,0 +1,303 @@
+-- Source: https://github.com/shaoweiwei/jeesite/blob/e2703660e1880fd417cff27b7e81282465ca8af1/db/act/create/activiti.oracle.create.engine.sql?raw=true
+-- Tables detected: 13 | FK/REFERENCES mentions: 42
+-- Foreign keys added via ALTER TABLE:
+create table ACT_GE_PROPERTY (
+    NAME_ VARCHAR(64),
+    VALUE_ VARCHAR(300),
+    REV_ INTEGER,
+    primary key (NAME_)
+);
+
+create table ACT_GE_BYTEARRAY (
+    ID_ VARCHAR(64),
+    REV_ INTEGER,
+    NAME_ VARCHAR(255),
+    DEPLOYMENT_ID_ VARCHAR(64),
+    BYTES_ BYTEA,
+    GENERATED_ NUMERIC(1,0) CHECK (GENERATED_ IN (1,0)),
+    primary key (ID_)
+);
+
+create table ACT_RE_DEPLOYMENT (
+    ID_ VARCHAR(64),
+    NAME_ VARCHAR(255),
+    CATEGORY_ VARCHAR(255),
+    TENANT_ID_ VARCHAR(255) DEFAULT '',
+    DEPLOY_TIME_ TIMESTAMP(6),
+    primary key (ID_)
+);
+
+create table ACT_RE_MODEL (
+    ID_ VARCHAR(64) not null,
+    REV_ INTEGER,
+    NAME_ VARCHAR(255),
+    KEY_ VARCHAR(255),
+    CATEGORY_ VARCHAR(255),
+    CREATE_TIME_ TIMESTAMP(6),
+    LAST_UPDATE_TIME_ TIMESTAMP(6),
+    VERSION_ INTEGER,
+    META_INFO_ VARCHAR(2000),
+    DEPLOYMENT_ID_ VARCHAR(64),
+    EDITOR_SOURCE_VALUE_ID_ VARCHAR(64),
+    EDITOR_SOURCE_EXTRA_VALUE_ID_ VARCHAR(64),
+    TENANT_ID_ VARCHAR(255) DEFAULT '',
+    primary key (ID_)
+);
+
+create table ACT_RU_EXECUTION (
+    ID_ VARCHAR(64),
+    REV_ INTEGER,
+    PROC_INST_ID_ VARCHAR(64),
+    BUSINESS_KEY_ VARCHAR(255),
+    PARENT_ID_ VARCHAR(64),
+    PROC_DEF_ID_ VARCHAR(64),
+    SUPER_EXEC_ VARCHAR(64),
+    ACT_ID_ VARCHAR(255),
+    IS_ACTIVE_ NUMERIC(1,0) CHECK (IS_ACTIVE_ IN (1,0)),
+    IS_CONCURRENT_ NUMERIC(1,0) CHECK (IS_CONCURRENT_ IN (1,0)),
+    IS_SCOPE_ NUMERIC(1,0) CHECK (IS_SCOPE_ IN (1,0)),
+    IS_EVENT_SCOPE_ NUMERIC(1,0) CHECK (IS_EVENT_SCOPE_ IN (1,0)),
+    SUSPENSION_STATE_ INTEGER,
+    CACHED_ENT_STATE_ INTEGER,
+    TENANT_ID_ VARCHAR(255) DEFAULT '',
+    NAME_ VARCHAR(255),
+    LOCK_TIME_ TIMESTAMP(6),
+    primary key (ID_)
+);
+
+create table ACT_RU_JOB (
+    ID_ VARCHAR(64) NOT NULL,
+    REV_ INTEGER,
+    TYPE_ VARCHAR(255) NOT NULL,
+    LOCK_EXP_TIME_ TIMESTAMP(6),
+    LOCK_OWNER_ VARCHAR(255),
+    EXCLUSIVE_ NUMERIC(1,0) CHECK (EXCLUSIVE_ IN (1,0)),
+    EXECUTION_ID_ VARCHAR(64),
+    PROCESS_INSTANCE_ID_ VARCHAR(64),
+    PROC_DEF_ID_ VARCHAR(64),
+    RETRIES_ INTEGER,
+    EXCEPTION_STACK_ID_ VARCHAR(64),
+    EXCEPTION_MSG_ VARCHAR(2000),
+    DUEDATE_ TIMESTAMP(6),
+    REPEAT_ VARCHAR(255),
+    HANDLER_TYPE_ VARCHAR(255),
+    HANDLER_CFG_ VARCHAR(2000),
+    TENANT_ID_ VARCHAR(255) DEFAULT '',
+    primary key (ID_)
+);
+
+create table ACT_RE_PROCDEF (
+    ID_ VARCHAR(64) NOT NULL,
+    REV_ INTEGER,
+    CATEGORY_ VARCHAR(255),
+    NAME_ VARCHAR(255),
+    KEY_ VARCHAR(255) NOT NULL,
+    VERSION_ INTEGER NOT NULL,
+    DEPLOYMENT_ID_ VARCHAR(64),
+    RESOURCE_NAME_ VARCHAR(2000),
+    DGRM_RESOURCE_NAME_ varchar(4000),
+    DESCRIPTION_ VARCHAR(2000),
+    HAS_START_FORM_KEY_ NUMERIC(1,0) CHECK (HAS_START_FORM_KEY_ IN (1,0)),
+    HAS_GRAPHICAL_NOTATION_ NUMERIC(1,0) CHECK (HAS_GRAPHICAL_NOTATION_ IN (1,0)),
+    SUSPENSION_STATE_ INTEGER,
+    TENANT_ID_ VARCHAR(255) DEFAULT '',
+    primary key (ID_)
+);
+
+create table ACT_RU_TASK (
+    ID_ VARCHAR(64),
+    REV_ INTEGER,
+    EXECUTION_ID_ VARCHAR(64),
+    PROC_INST_ID_ VARCHAR(64),
+    PROC_DEF_ID_ VARCHAR(64),
+    NAME_ VARCHAR(255),
+    PARENT_TASK_ID_ VARCHAR(64),
+    DESCRIPTION_ VARCHAR(2000),
+    TASK_DEF_KEY_ VARCHAR(255),
+    OWNER_ VARCHAR(255),
+    ASSIGNEE_ VARCHAR(255),
+    DELEGATION_ VARCHAR(64),
+    PRIORITY_ INTEGER,
+    CREATE_TIME_ TIMESTAMP(6),
+    DUE_DATE_ TIMESTAMP(6),
+    CATEGORY_ VARCHAR(255),
+    SUSPENSION_STATE_ INTEGER,
+    TENANT_ID_ VARCHAR(255) DEFAULT '',
+    FORM_KEY_ VARCHAR(255),
+    primary key (ID_)
+);
+
+create table ACT_RU_IDENTITYLINK (
+    ID_ VARCHAR(64),
+    REV_ INTEGER,
+    GROUP_ID_ VARCHAR(255),
+    TYPE_ VARCHAR(255),
+    USER_ID_ VARCHAR(255),
+    TASK_ID_ VARCHAR(64),
+    PROC_INST_ID_ VARCHAR(64),
+    PROC_DEF_ID_ VARCHAR(64),
+    primary key (ID_)
+);
+
+create table ACT_RU_VARIABLE (
+    ID_ VARCHAR(64) not null,
+    REV_ INTEGER,
+    TYPE_ VARCHAR(255) not null,
+    NAME_ VARCHAR(255) not null,
+    EXECUTION_ID_ VARCHAR(64),
+    PROC_INST_ID_ VARCHAR(64),
+    TASK_ID_ VARCHAR(64),
+    BYTEARRAY_ID_ VARCHAR(64),
+    DOUBLE_ NUMBER(*,10),
+    LONG_ NUMERIC(19,0),
+    TEXT_ VARCHAR(2000),
+    TEXT2_ VARCHAR(2000),
+    primary key (ID_)
+);
+
+create table ACT_RU_EVENT_SUBSCR (
+    ID_ VARCHAR(64) not null,
+    REV_ integer,
+    EVENT_TYPE_ VARCHAR(255) not null,
+    EVENT_NAME_ VARCHAR(255),
+    EXECUTION_ID_ VARCHAR(64),
+    PROC_INST_ID_ VARCHAR(64),
+    ACTIVITY_ID_ VARCHAR(64),
+    CONFIGURATION_ VARCHAR(255),
+    CREATED_ TIMESTAMP(6) not null,
+    PROC_DEF_ID_ VARCHAR(64),
+    TENANT_ID_ VARCHAR(255) DEFAULT '',
+    primary key (ID_)
+);
+
+create table ACT_EVT_LOG (
+    LOG_NR_ NUMERIC(19),
+    TYPE_ VARCHAR(64),
+    PROC_DEF_ID_ VARCHAR(64),
+    PROC_INST_ID_ VARCHAR(64),
+    EXECUTION_ID_ VARCHAR(64),
+    TASK_ID_ VARCHAR(64),
+    TIME_STAMP_ TIMESTAMP(6) not null,
+    USER_ID_ VARCHAR(255),
+    DATA_ BYTEA,
+    LOCK_OWNER_ VARCHAR(255),
+    LOCK_TIME_ TIMESTAMP(6) null,
+    IS_PROCESSED_ NUMERIC(3) default 0,
+    primary key (LOG_NR_)
+);
+
+create table ACT_PROCDEF_INFO (
+    ID_ VARCHAR(64) not null,
+    PROC_DEF_ID_ VARCHAR(64) not null,
+    REV_ integer,
+    INFO_JSON_ID_ VARCHAR(64),
+    primary key (ID_)
+);
+
+
+                         
+
+alter table ACT_GE_BYTEARRAY
+    add constraint ACT_FK_BYTEARR_DEPL
+    foreign key (DEPLOYMENT_ID_) 
+    references ACT_RE_DEPLOYMENT (ID_);
+
+alter table ACT_RU_EXECUTION
+    add constraint ACT_FK_EXE_PROCINST
+    foreign key (PROC_INST_ID_) 
+    references ACT_RU_EXECUTION (ID_);
+
+alter table ACT_RU_EXECUTION
+    add constraint ACT_FK_EXE_PARENT
+    foreign key (PARENT_ID_) 
+    references ACT_RU_EXECUTION (ID_);
+
+alter table ACT_RU_EXECUTION
+    add constraint ACT_FK_EXE_SUPER
+    foreign key (SUPER_EXEC_) 
+    references ACT_RU_EXECUTION (ID_);
+
+alter table ACT_RU_EXECUTION
+    add constraint ACT_FK_EXE_PROCDEF 
+    foreign key (PROC_DEF_ID_) 
+    references ACT_RE_PROCDEF (ID_);
+
+alter table ACT_RU_IDENTITYLINK
+    add constraint ACT_FK_TSKASS_TASK
+    foreign key (TASK_ID_) 
+    references ACT_RU_TASK (ID_);
+
+alter table ACT_RU_IDENTITYLINK
+    add constraint ACT_FK_ATHRZ_PROCEDEF
+    foreign key (PROC_DEF_ID_) 
+    references ACT_RE_PROCDEF (ID_);
+
+alter table ACT_RU_IDENTITYLINK
+    add constraint ACT_FK_IDL_PROCINST
+    foreign key (PROC_INST_ID_) 
+    references ACT_RU_EXECUTION (ID_);
+
+alter table ACT_RU_TASK
+    add constraint ACT_FK_TASK_EXE
+    foreign key (EXECUTION_ID_)
+    references ACT_RU_EXECUTION (ID_);
+
+alter table ACT_RU_TASK
+    add constraint ACT_FK_TASK_PROCINST
+    foreign key (PROC_INST_ID_)
+    references ACT_RU_EXECUTION (ID_);
+
+alter table ACT_RU_TASK
+  add constraint ACT_FK_TASK_PROCDEF
+  foreign key (PROC_DEF_ID_)
+  references ACT_RE_PROCDEF (ID_);
+
+alter table ACT_RU_VARIABLE 
+    add constraint ACT_FK_VAR_EXE
+    foreign key (EXECUTION_ID_) 
+    references ACT_RU_EXECUTION (ID_);
+
+alter table ACT_RU_VARIABLE
+    add constraint ACT_FK_VAR_PROCINST
+    foreign key (PROC_INST_ID_)
+    references ACT_RU_EXECUTION(ID_);
+
+alter table ACT_RU_VARIABLE 
+    add constraint ACT_FK_VAR_BYTEARRAY 
+    foreign key (BYTEARRAY_ID_) 
+    references ACT_GE_BYTEARRAY (ID_);
+
+alter table ACT_RU_JOB 
+    add constraint ACT_FK_JOB_EXCEPTION
+    foreign key (EXCEPTION_STACK_ID_) 
+    references ACT_GE_BYTEARRAY (ID_);
+
+alter table ACT_RU_EVENT_SUBSCR
+    add constraint ACT_FK_EVENT_EXEC
+    foreign key (EXECUTION_ID_)
+    references ACT_RU_EXECUTION(ID_);
+
+alter table ACT_RE_MODEL 
+    add constraint ACT_FK_MODEL_SOURCE 
+    foreign key (EDITOR_SOURCE_VALUE_ID_) 
+    references ACT_GE_BYTEARRAY (ID_);
+
+alter table ACT_RE_MODEL 
+    add constraint ACT_FK_MODEL_SOURCE_EXTRA 
+    foreign key (EDITOR_SOURCE_EXTRA_VALUE_ID_) 
+    references ACT_GE_BYTEARRAY (ID_);
+
+alter table ACT_RE_MODEL 
+    add constraint ACT_FK_MODEL_DEPLOYMENT 
+    foreign key (DEPLOYMENT_ID_) 
+    references ACT_RE_DEPLOYMENT (ID_);
+
+alter table ACT_PROCDEF_INFO 
+    add constraint ACT_FK_INFO_JSON_BA 
+    foreign key (INFO_JSON_ID_) 
+    references ACT_GE_BYTEARRAY (ID_);
+
+alter table ACT_PROCDEF_INFO 
+    add constraint ACT_FK_INFO_PROCDEF 
+    foreign key (PROC_DEF_ID_) 
+    references ACT_RE_PROCDEF (ID_);

@@ -1,0 +1,99 @@
+-- Source: https://github.com/w0441213/School_Projects/blob/7c59df0cdf7b10e56cc11191ddd41ff5a1853d68/Data_Fundamentals/Assignment4/WestCon_CableCompany.sql?raw=true
+-- Tables detected: 7 | FK constraints: 7
+-- Foreign keys added via ALTER TABLE:
+CREATE TABLE Customer
+(
+    CustomerID INT NOT NULL AUTO_INCREMENT,
+    CustomerFirstName VARCHAR(32) NOT NULL,
+    CustomerLastName VARCHAR(32) NOT NULL,
+    CustomerAddress VARCHAR(255) NOT NULL,
+    SubscriptionStartDate TIMESTAMP NOT NULL,
+    PRIMARY KEY (CustomerID)
+);
+
+CREATE TABLE ChannelPackage
+(
+    ChannelPackageID INT NOT NULL AUTO_INCREMENT,
+    ChannelPackageName VARCHAR(32) NOT NULL,
+    ChannelPackagePrice FLOAT NOT NULL,
+    PRIMARY KEY (ChannelPackageID)
+);
+
+CREATE TABLE Channel
+(
+    ChannelID INT NOT NULL AUTO_INCREMENT,
+    ChannelNum INT NOT NULL,
+    ChannelName VARCHAR(32) NOT NULL,
+    PRIMARY KEY (ChannelID)
+);
+
+CREATE TABLE PayPerViewEvent
+(
+    PPVEventID INT NOT NULL AUTO_INCREMENT,
+    PPVEventDate TIMESTAMP NOT NULL,
+    PPVEventName VARCHAR(32) NOT NULL,
+    PPVEventPrice FLOAT NOT NULL,
+    ChannelID INT NOT NULL,
+    PRIMARY KEY (PPVEventID)
+);
+
+CREATE TABLE ChannelPackageChannel
+(
+    ChannelID INT NOT NULL,
+    ChannelPackageID INT NOT NULL,
+    PRIMARY KEY (ChannelID, ChannelPackageID)
+);
+
+CREATE TABLE CustomerChannelPackage
+(
+    CustomerID INT NOT NULL,
+    ChannelPackageID INT NOT NULL,
+    PRIMARY KEY (CustomerID, ChannelPackageID)
+);
+
+CREATE TABLE CustomerPayPerViewEvent
+(
+    PPVEventID INT NOT NULL,
+    CustomerID INT NOT NULL,
+    PaidOrUnpaid SMALLINT NOT NULL,
+    PPVAmountDue FLOAT NULL,
+    PRIMARY KEY (PPVEventID, CustomerID)
+);
+
+
+                         
+
+ALTER TABLE CustomerChannelPackage
+    ADD CONSTRAINT FK__CustomerChannelPackage__Customer__CustomerID
+    FOREIGN KEY (CustomerID)
+    REFERENCES Customer (CustomerID);
+
+ALTER TABLE CustomerChannelPackage
+    ADD CONSTRAINT FK__CustomerChannelPackage__ChannelPackage__ChannelPackageID
+    FOREIGN KEY (ChannelPackageID)
+    REFERENCES ChannelPackage (ChannelPackageID);
+
+ALTER TABLE ChannelPackageChannel
+    ADD CONSTRAINT FK__ChannelPackageChannel__Channel__ChannelID
+    FOREIGN KEY (ChannelID)
+    REFERENCES Channel (ChannelID);
+
+ALTER TABLE ChannelPackageChannel
+    ADD CONSTRAINT FK__ChannelPackageChannel__ChannelPackage__ChannelPackageID
+    FOREIGN KEY (ChannelPackageID)
+    REFERENCES ChannelPackage (ChannelPackageID);
+
+ALTER TABLE CustomerPayPerViewEvent
+    ADD CONSTRAINT FK__CustomerPayPerViewEvent__Customer__CustomerID
+    FOREIGN KEY (CustomerID)
+    REFERENCES Customer (CustomerID);
+
+ALTER TABLE CustomerPayPerViewEvent
+    ADD CONSTRAINT FK__PayPerViewEvent__PPVEventID
+    FOREIGN KEY (PPVEventID)
+    REFERENCES PayPerViewEvent (PPVEventID);
+
+ALTER TABLE PayPerViewEvent
+    ADD CONSTRAINT FK__PayPerViewEvent__Channel__ChannelID
+    FOREIGN KEY (ChannelID)
+    REFERENCES Channel (ChannelID);

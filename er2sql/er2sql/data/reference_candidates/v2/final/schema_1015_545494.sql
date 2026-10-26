@@ -1,0 +1,25 @@
+-- Source: https://github.com/lid363/Projects/blob/bba65f1b17223fc97b85da46b142e53078f674d6/MySQL%20Project/Final_Li.sql?raw=true
+-- Tables detected: 3 | FK constraints: 2
+CREATE TABLE Player(
+    PlayerID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    Player_FirstN VARCHAR(80) NOT NULL,
+    Player_LastN VARCHAR(80) NOT NULL,
+    Enroll_Time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    Coin INT
+);
+
+CREATE TABLE Bag(
+    BagID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    CropID INT,
+    Crop_Num INT,
+    PlayerID INT,
+    FOREIGN KEY (PlayerID) REFERENCES Player(PlayerID) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY(CropID) REFERENCES Crop(CropID) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE Crop(
+    CropID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    CropName VARCHAR (80) NOT NULL,
+    Buy_Price INT,
+    Sell_Price INT
+);

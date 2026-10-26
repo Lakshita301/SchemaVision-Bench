@@ -1,0 +1,32 @@
+version: 1
+experiment:
+  name: paper-final-v3
+  output_root: outputs/experiments/paper-final-v3
+  phase: final
+  split_file: config/paper_splits_v3.json
+  oracle_audit: docs/audits/final_oracle.json
+  evaluator_validation: docs/audits/evaluator_mutations_v3.json
+  protocol_file: config/paper_protocol_v3.yaml
+  protocol_sha256: 4b6f7652683decb3e1d43309a78a5a4b875bf9a238520f43d8a11d4328c807cb
+  tiers:
+  - tier1
+  - tier2
+  - tier3
+  common_only: true
+  resume: true
+  verify: true
+  evaluate: true
+  stop_on_error: true
+  require_complete_model_metadata: true
+  prompts_frozen: true
+  pilot_validation: outputs/experiments/paper-pilot-v3/reports/pilot_validation.json
+models:
+- name: mistral-small-4-v26.03
+  config: config/models/mistral-small-4.yaml
+  arms:
+  - structured
+  - direct
+  prompt_version: paper-v3
+  expected_cost_usd: null
+  minimum_success_rate: 0.9
+  max_rate_limit_events: 5

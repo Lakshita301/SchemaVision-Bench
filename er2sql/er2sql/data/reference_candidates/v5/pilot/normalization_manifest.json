@@ -1,0 +1,311 @@
+{
+  "policy": "postgres-reference-candidates-v3",
+  "model_calls": 0,
+  "originals_modified": false,
+  "auto_approved": false,
+  "normalizer_sha256": "d09aa7baf7121e8147e0f33136e9c187d2e477c429be223fd470335287162d91",
+  "gold_parser_sha256": "a5e6a631f95cbdbe513cfc9955403833ece5f3c5b89d7bc4532df323952e592d",
+  "phase": "pilot",
+  "split_sha256": "8c915ff2366aa3e43c4df5199f516cfd8511636aa923e8bb3daab74d635c8e68",
+  "rows": [
+    {
+      "schema_id": "schema_0661",
+      "source_path": "C:\\Users\\anika\\OneDrive\\Desktop\\dataset\\extracted_ddl_filtered\\schema_0661.sql",
+      "source_sha256": "61fdb83731348277be7824657ac02965931fee9b3835e349e72fa0aead172ab5",
+      "reference_path": "C:\\Users\\anika\\OneDrive\\Desktop\\er2sql\\data\\reference_candidates\\v5\\pilot\\schema_0661.sql",
+      "reference_sha256": "f32d6b36d6c2cc7109df209517ae1836412b5d82ccf5e3cdfc626d4c4a39627f",
+      "status": "candidate_requires_review",
+      "changes": [
+        "Type longvarbinary -> BYTEA; domain/storage differences require review.",
+        "Type double -> DOUBLE PRECISION; domain/storage differences require review.",
+        "Type clob -> TEXT; domain/storage differences require review."
+      ],
+      "blockers": []
+    },
+    {
+      "schema_id": "schema_1152_259631",
+      "source_path": "C:\\Users\\anika\\OneDrive\\Desktop\\dataset\\extracted_ddl_filtered\\schema_1152_259631.sql",
+      "source_sha256": "270954f708b97db1fecd47f611c89a702a4f61897391b9cfdb951e4bcdce8505",
+      "reference_path": "C:\\Users\\anika\\OneDrive\\Desktop\\er2sql\\data\\reference_candidates\\v5\\pilot\\schema_1152_259631.sql",
+      "reference_sha256": "f278b8af60b647f9d3017e5f44b5aa882e05701cd8ee18ecf76adf86fa1da82e",
+      "status": "blocked",
+      "changes": [
+        "Type nvarchar2 -> VARCHAR; domain/storage differences require review.",
+        "Type number -> NUMERIC; domain/storage differences require review.",
+        "Type nclob -> TEXT; domain/storage differences require review."
+      ],
+      "blockers": [
+        "Unsupported ALTER TABLE target: 'add constraint ACT_FK_VAR_CASE_EXE\\n    foreign key (CASE_EXECUTION_ID_)\\n    references ACT_RU_CASE_EXECUTION(ID_)'",
+        "Unsupported ALTER TABLE target: 'add constraint ACT_FK_VAR_CASE_INST\\n    foreign key (CASE_INST_ID_)\\n    references ACT_RU_CASE_EXECUTION(ID_)'",
+        "Unsupported ALTER TABLE target: 'add constraint ACT_FK_TASK_CASE_EXE\\n    foreign key (CASE_EXECUTION_ID_)\\n    references ACT_RU_CASE_EXECUTION(ID_)'",
+        "Unsupported ALTER TABLE target: 'add constraint ACT_FK_TASK_CASE_DEF\\n  foreign key (CASE_DEF_ID_)\\n  references ACT_RE_CASE_DEF(ID_)'"
+      ]
+    },
+    {
+      "schema_id": "schema_0973_254233",
+      "source_path": "C:\\Users\\anika\\OneDrive\\Desktop\\dataset\\extracted_ddl_filtered\\schema_0973_254233.sql",
+      "source_sha256": "0ab1525f0e1910d824bfe0ab472aa87004888ae013643132c3d47f15f3675a67",
+      "reference_path": "C:\\Users\\anika\\OneDrive\\Desktop\\er2sql\\data\\reference_candidates\\v5\\pilot\\schema_0973_254233.sql",
+      "reference_sha256": "effcf814082731504e77be631d076cda2a01d6d561a3878c36f650133cf2a71d",
+      "status": "candidate_requires_review",
+      "changes": [
+        "Type varchar2 -> VARCHAR; domain/storage differences require review.",
+        "Type number -> NUMERIC; domain/storage differences require review."
+      ],
+      "blockers": []
+    },
+    {
+      "schema_id": "schema_1175_025608",
+      "source_path": "C:\\Users\\anika\\OneDrive\\Desktop\\dataset\\extracted_ddl_filtered\\schema_1175_025608.sql",
+      "source_sha256": "1193f4d3bd6bf637846deda2d26af96f5c8e7666b3eee66b1db20665e9f2cbda",
+      "reference_path": "C:\\Users\\anika\\OneDrive\\Desktop\\er2sql\\data\\reference_candidates\\v5\\pilot\\schema_1175_025608.sql",
+      "reference_sha256": "edc5fb4243a64788e85f7e2304915a50985a345e7f0f87097f9471a92be7eb35",
+      "status": "blocked",
+      "changes": [
+        "Type longblob -> BYTEA; domain/storage differences require review."
+      ],
+      "blockers": [
+        "Collation/template/automatic timestamp semantics require explicit review."
+      ]
+    },
+    {
+      "schema_id": "schema_0921_180722",
+      "source_path": "C:\\Users\\anika\\OneDrive\\Desktop\\dataset\\extracted_ddl_filtered\\schema_0921_180722.sql",
+      "source_sha256": "13b4546ba3ccede907421e17dbdaae91a80ebcb6792fb226c31da5f8a07255df",
+      "reference_path": "C:\\Users\\anika\\OneDrive\\Desktop\\er2sql\\data\\reference_candidates\\v5\\pilot\\schema_0921_180722.sql",
+      "reference_sha256": "743d0f87b184138887935291b76e99131ce2d27c7dc1d34c65e48d4d373d4d27",
+      "status": "blocked",
+      "changes": [
+        "Backtick identifier -> PostgreSQL quoted identifier (case policy review required).",
+        "Removed integer display width; verify source does not rely on display formatting.",
+        "Identity spelling -> GENERATED BY DEFAULT AS IDENTITY; source seed/increment retained when explicit. NULL/zero, explicit-value sequence advancement and exhaustion differ across engines; review required.",
+        "Type double -> DOUBLE PRECISION; domain/storage differences require review.",
+        "Type tinyint -> SMALLINT; domain/storage differences require review.",
+        "Column COMMENT literal -> COMMENT ON COLUMN; metadata text retained.",
+        "Inline ordinary index -> standalone unnamed PostgreSQL index; columns retained, index name is not a scored constraint.",
+        "Named UNIQUE KEY/INDEX -> UNIQUE constraint; exact ordered columns retained.",
+        "Removed physical ENGINE/table encoding option; encoding/collation review required.",
+        "Installed FKs after additive table/key definitions to support forward/cyclic declarations; targets, columns and actions retained; no FK or key was added or removed."
+      ],
+      "blockers": [
+        "Collation/template/automatic timestamp semantics require explicit review."
+      ]
+    },
+    {
+      "schema_id": "schema_0499",
+      "source_path": "C:\\Users\\anika\\OneDrive\\Desktop\\dataset\\extracted_ddl_filtered\\schema_0499.sql",
+      "source_sha256": "ad706e60b4166f506a333381ec46bd71779f373a8c7df6f237ddeb339988c98f",
+      "reference_path": "C:\\Users\\anika\\OneDrive\\Desktop\\er2sql\\data\\reference_candidates\\v5\\pilot\\schema_0499.sql",
+      "reference_sha256": "ad706e60b4166f506a333381ec46bd71779f373a8c7df6f237ddeb339988c98f",
+      "status": "unchanged",
+      "changes": [],
+      "blockers": []
+    },
+    {
+      "schema_id": "schema_1264_630818",
+      "source_path": "C:\\Users\\anika\\OneDrive\\Desktop\\dataset\\extracted_ddl_filtered\\schema_1264_630818.sql",
+      "source_sha256": "6ac1c497f629dbaa17f1c2476bc51bdcbcd7e12d3605ec30c55ccb49b8b61751",
+      "reference_path": "C:\\Users\\anika\\OneDrive\\Desktop\\er2sql\\data\\reference_candidates\\v5\\pilot\\schema_1264_630818.sql",
+      "reference_sha256": "973bb478e88b1e8318f5f7df5b9125d4c6364d15904574ce36204d441d15af21",
+      "status": "blocked",
+      "changes": [
+        "Backtick identifier -> PostgreSQL quoted identifier (case policy review required).",
+        "Removed integer display width; verify source does not rely on display formatting.",
+        "Identity spelling -> GENERATED BY DEFAULT AS IDENTITY; source seed/increment retained when explicit. NULL/zero, explicit-value sequence advancement and exhaustion differ across engines; review required.",
+        "Column COMMENT literal -> COMMENT ON COLUMN; metadata text retained.",
+        "Type tinyint -> SMALLINT; domain/storage differences require review.",
+        "Type datetime -> TIMESTAMP; domain/storage differences require review.",
+        "Named UNIQUE KEY/INDEX -> UNIQUE constraint; exact ordered columns retained.",
+        "Inline ordinary index -> standalone unnamed PostgreSQL index; columns retained, index name is not a scored constraint.",
+        "Removed physical ENGINE/table encoding option; encoding/collation review required.",
+        "Installed FKs after additive table/key definitions to support forward/cyclic declarations; targets, columns and actions retained; no FK or key was added or removed."
+      ],
+      "blockers": [
+        "ENUM/SET domain needs reviewed PostgreSQL representation; left unchanged.",
+        "Identity combined with a default/unsigned domain needs review; left unchanged.",
+        "Unsigned/range semantics need explicit conversion; left unchanged.",
+        "Collation/template/automatic timestamp semantics require explicit review."
+      ]
+    },
+    {
+      "schema_id": "schema_0310",
+      "source_path": "C:\\Users\\anika\\OneDrive\\Desktop\\dataset\\extracted_ddl_filtered\\schema_0310.sql",
+      "source_sha256": "c1d4660aea489f03f0c08ed84570d135fd9c5c12449eac2b18852ccba81a878b",
+      "reference_path": "C:\\Users\\anika\\OneDrive\\Desktop\\er2sql\\data\\reference_candidates\\v5\\pilot\\schema_0310.sql",
+      "reference_sha256": "c1d4660aea489f03f0c08ed84570d135fd9c5c12449eac2b18852ccba81a878b",
+      "status": "unchanged",
+      "changes": [],
+      "blockers": []
+    },
+    {
+      "schema_id": "schema_0836",
+      "source_path": "C:\\Users\\anika\\OneDrive\\Desktop\\dataset\\extracted_ddl_filtered\\schema_0836.sql",
+      "source_sha256": "fb13bcdc933dfa22bbe5190412baabda89a5093124f09e66682c02fa30b2c827",
+      "reference_path": "C:\\Users\\anika\\OneDrive\\Desktop\\er2sql\\data\\reference_candidates\\v5\\pilot\\schema_0836.sql",
+      "reference_sha256": "b9d868963a1353356cb25fbe877d9d07e4e95fef3d3f45bce968354a7e771ff9",
+      "status": "candidate_requires_review",
+      "changes": [
+        "Identity spelling -> GENERATED BY DEFAULT AS IDENTITY; source seed/increment retained when explicit. NULL/zero, explicit-value sequence advancement and exhaustion differ across engines; review required.",
+        "Type blob -> BYTEA; domain/storage differences require review.",
+        "Type datetime -> TIMESTAMP; domain/storage differences require review."
+      ],
+      "blockers": []
+    },
+    {
+      "schema_id": "schema_0778",
+      "source_path": "C:\\Users\\anika\\OneDrive\\Desktop\\dataset\\extracted_ddl_filtered\\schema_0778.sql",
+      "source_sha256": "4dc19c560f94a818ade2814c119e69830b94552868c0082c6978fd93db4de4b0",
+      "reference_path": "C:\\Users\\anika\\OneDrive\\Desktop\\er2sql\\data\\reference_candidates\\v5\\pilot\\schema_0778.sql",
+      "reference_sha256": "fefcd0658581e38ae96bb5ca13a119565833919fb30120eab638a6e58befae4f",
+      "status": "candidate_requires_review",
+      "changes": [
+        "Backtick identifier -> PostgreSQL quoted identifier (case policy review required).",
+        "Removed integer display width; verify source does not rely on display formatting.",
+        "Identity spelling -> GENERATED BY DEFAULT AS IDENTITY; source seed/increment retained when explicit. NULL/zero, explicit-value sequence advancement and exhaustion differ across engines; review required.",
+        "Inline ordinary index -> standalone unnamed PostgreSQL index; columns retained, index name is not a scored constraint.",
+        "Removed physical ENGINE/table encoding option; encoding/collation review required."
+      ],
+      "blockers": []
+    },
+    {
+      "schema_id": "schema_0335",
+      "source_path": "C:\\Users\\anika\\OneDrive\\Desktop\\dataset\\extracted_ddl_filtered\\schema_0335.sql",
+      "source_sha256": "a274b2a8023275fc1c1e4ebd8fdf750d0aa73f141025ed9caac98fff8451bfbf",
+      "reference_path": "C:\\Users\\anika\\OneDrive\\Desktop\\er2sql\\data\\reference_candidates\\v5\\pilot\\schema_0335.sql",
+      "reference_sha256": "d805b94f271077b6c42714cd9015f9c4b174757f9f4367f6fa241d35e12a2507",
+      "status": "candidate_requires_review",
+      "changes": [
+        "Removed physical ENGINE/table encoding option; encoding/collation review required."
+      ],
+      "blockers": []
+    },
+    {
+      "schema_id": "schema_1061_295385",
+      "source_path": "C:\\Users\\anika\\OneDrive\\Desktop\\dataset\\extracted_ddl_filtered\\schema_1061_295385.sql",
+      "source_sha256": "f95d7d63909cc7ccf0b6163ca22b6fa87c6789cf0c471ba1f368eb8ba14308ff",
+      "reference_path": "C:\\Users\\anika\\OneDrive\\Desktop\\er2sql\\data\\reference_candidates\\v5\\pilot\\schema_1061_295385.sql",
+      "reference_sha256": "bf39adf12c2614fa4959bd86fc4d039a8201127e1cbc27086181839d6a6c47b0",
+      "status": "blocked",
+      "changes": [
+        "Backtick identifier -> PostgreSQL quoted identifier (case policy review required).",
+        "Named UNIQUE KEY/INDEX -> UNIQUE constraint; exact ordered columns retained.",
+        "Inline ordinary index -> standalone unnamed PostgreSQL index; columns retained, index name is not a scored constraint.",
+        "Removed integer display width; verify source does not rely on display formatting.",
+        "Type longtext -> TEXT; domain/storage differences require review.",
+        "Type tinyint -> SMALLINT; domain/storage differences require review.",
+        "Type datetime -> TIMESTAMP; domain/storage differences require review.",
+        "Installed FKs after additive table/key definitions to support forward/cyclic declarations; targets, columns and actions retained; no FK or key was added or removed."
+      ],
+      "blockers": [
+        "DOUBLE precision/scale has dialect-dependent rounding semantics; left unchanged.",
+        "Identity combined with a default/unsigned domain needs review; left unchanged.",
+        "Unsigned/range semantics need explicit conversion; left unchanged.",
+        "Collation/template/automatic timestamp semantics require explicit review."
+      ]
+    },
+    {
+      "schema_id": "schema_1008_176453",
+      "source_path": "C:\\Users\\anika\\OneDrive\\Desktop\\dataset\\extracted_ddl_filtered\\schema_1008_176453.sql",
+      "source_sha256": "17520233573695cfe0b22ca0272265ef144a00c6748b6a292ab49793bc9877c8",
+      "reference_path": "C:\\Users\\anika\\OneDrive\\Desktop\\er2sql\\data\\reference_candidates\\v5\\pilot\\schema_1008_176453.sql",
+      "reference_sha256": "d43ce00fb89249d02e7ee944c59f38aeabc4062a7e79763fa893da8087579c1a",
+      "status": "candidate_requires_review",
+      "changes": [
+        "Type blob -> BYTEA; domain/storage differences require review.",
+        "Removed integer display width; verify source does not rely on display formatting."
+      ],
+      "blockers": []
+    },
+    {
+      "schema_id": "schema_0635",
+      "source_path": "C:\\Users\\anika\\OneDrive\\Desktop\\dataset\\extracted_ddl_filtered\\schema_0635.sql",
+      "source_sha256": "453d553afd78ebb5a34b0ce3932184232ae1006d586f76056c4b10f42a247874",
+      "reference_path": "C:\\Users\\anika\\OneDrive\\Desktop\\er2sql\\data\\reference_candidates\\v5\\pilot\\schema_0635.sql",
+      "reference_sha256": "453d553afd78ebb5a34b0ce3932184232ae1006d586f76056c4b10f42a247874",
+      "status": "unchanged",
+      "changes": [],
+      "blockers": []
+    },
+    {
+      "schema_id": "schema_1010_080239",
+      "source_path": "C:\\Users\\anika\\OneDrive\\Desktop\\dataset\\extracted_ddl_filtered\\schema_1010_080239.sql",
+      "source_sha256": "0e3fb2d45102a96b4ac79e09305596d80dc43d1b74b6a9c3085b3e4813a7b465",
+      "reference_path": "C:\\Users\\anika\\OneDrive\\Desktop\\er2sql\\data\\reference_candidates\\v5\\pilot\\schema_1010_080239.sql",
+      "reference_sha256": "0e3fb2d45102a96b4ac79e09305596d80dc43d1b74b6a9c3085b3e4813a7b465",
+      "status": "unchanged",
+      "changes": [],
+      "blockers": []
+    },
+    {
+      "schema_id": "schema_0909_091015",
+      "source_path": "C:\\Users\\anika\\OneDrive\\Desktop\\dataset\\extracted_ddl_filtered\\schema_0909_091015.sql",
+      "source_sha256": "009c991c5578fa388c9ee796f93fb67ba3c8790fd4105902b361a601bc9308f0",
+      "reference_path": "C:\\Users\\anika\\OneDrive\\Desktop\\er2sql\\data\\reference_candidates\\v5\\pilot\\schema_0909_091015.sql",
+      "reference_sha256": "2d3792c0f400c1c81a64aafa2bf759b4bcf4b343d38d211069ab8ed20250c023",
+      "status": "blocked",
+      "changes": [
+        "Backtick identifier -> PostgreSQL quoted identifier (case policy review required).",
+        "Removed integer display width; verify source does not rely on display formatting.",
+        "Identity spelling -> GENERATED BY DEFAULT AS IDENTITY; source seed/increment retained when explicit. NULL/zero, explicit-value sequence advancement and exhaustion differ across engines; review required.",
+        "Inline ordinary index -> standalone unnamed PostgreSQL index; columns retained, index name is not a scored constraint.",
+        "Removed physical ENGINE/table encoding option; encoding/collation review required."
+      ],
+      "blockers": [
+        "Collation/template/automatic timestamp semantics require explicit review."
+      ]
+    },
+    {
+      "schema_id": "schema_1116_107207",
+      "source_path": "C:\\Users\\anika\\OneDrive\\Desktop\\dataset\\extracted_ddl_filtered\\schema_1116_107207.sql",
+      "source_sha256": "3352063d21dd4bbd809a202e688b0054b8bd0c4c3051a7bd96dc5b5a9cbe9540",
+      "reference_path": "C:\\Users\\anika\\OneDrive\\Desktop\\er2sql\\data\\reference_candidates\\v5\\pilot\\schema_1116_107207.sql",
+      "reference_sha256": "000961f7727a9d0ee734b0507a1e33e295f87cd44b08d0cb6925ca1f6d5297f1",
+      "status": "blocked",
+      "changes": [
+        "Backtick identifier -> PostgreSQL quoted identifier (case policy review required).",
+        "Removed integer display width; verify source does not rely on display formatting.",
+        "Identity spelling -> GENERATED BY DEFAULT AS IDENTITY; source seed/increment retained when explicit. NULL/zero, explicit-value sequence advancement and exhaustion differ across engines; review required.",
+        "Named UNIQUE KEY/INDEX -> UNIQUE constraint; exact ordered columns retained.",
+        "Inline ordinary index -> standalone unnamed PostgreSQL index; columns retained, index name is not a scored constraint.",
+        "Type tinyint -> SMALLINT; domain/storage differences require review.",
+        "Type mediumint -> INTEGER; domain/storage differences require review.",
+        "Type longtext -> TEXT; domain/storage differences require review.",
+        "Removed physical ENGINE/table encoding option; encoding/collation review required.",
+        "Installed FKs after additive table/key definitions to support forward/cyclic declarations; targets, columns and actions retained; no FK or key was added or removed."
+      ],
+      "blockers": [
+        "Collation/template/automatic timestamp semantics require explicit review."
+      ]
+    },
+    {
+      "schema_id": "schema_0300",
+      "source_path": "C:\\Users\\anika\\OneDrive\\Desktop\\dataset\\extracted_ddl_filtered\\schema_0300.sql",
+      "source_sha256": "6573e2f6a541c018ed356bd7d115b5b5a6517f2ce248e72d5c78b12c04b16f6a",
+      "reference_path": "C:\\Users\\anika\\OneDrive\\Desktop\\er2sql\\data\\reference_candidates\\v5\\pilot\\schema_0300.sql",
+      "reference_sha256": "6573e2f6a541c018ed356bd7d115b5b5a6517f2ce248e72d5c78b12c04b16f6a",
+      "status": "unchanged",
+      "changes": [],
+      "blockers": []
+    },
+    {
+      "schema_id": "schema_0937_462804",
+      "source_path": "C:\\Users\\anika\\OneDrive\\Desktop\\dataset\\extracted_ddl_filtered\\schema_0937_462804.sql",
+      "source_sha256": "e536578092c7349c17a7632f768446dac885dee09485f790218de3648e1d7556",
+      "reference_path": "C:\\Users\\anika\\OneDrive\\Desktop\\er2sql\\data\\reference_candidates\\v5\\pilot\\schema_0937_462804.sql",
+      "reference_sha256": "e536578092c7349c17a7632f768446dac885dee09485f790218de3648e1d7556",
+      "status": "unchanged",
+      "changes": [],
+      "blockers": []
+    },
+    {
+      "schema_id": "schema_0546",
+      "source_path": "C:\\Users\\anika\\OneDrive\\Desktop\\dataset\\extracted_ddl_filtered\\schema_0546.sql",
+      "source_sha256": "73b80ada4546c93cac6055a1393894f69bc72e5e7f9580a4cb4c0bf21e287979",
+      "reference_path": "C:\\Users\\anika\\OneDrive\\Desktop\\er2sql\\data\\reference_candidates\\v5\\pilot\\schema_0546.sql",
+      "reference_sha256": "73b80ada4546c93cac6055a1393894f69bc72e5e7f9580a4cb4c0bf21e287979",
+      "status": "unchanged",
+      "changes": [],
+      "blockers": []
+    }
+  ]
+}

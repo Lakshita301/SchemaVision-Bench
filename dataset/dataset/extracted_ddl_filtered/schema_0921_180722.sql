@@ -1,0 +1,273 @@
+-- Source: https://github.com/inuryuutarou/forex/blob/c8864db0879ba836b787fc20577cc9101154c031/forex.sql?raw=true
+-- Tables detected: 10 | FK constraints: 5
+
+CREATE TABLE `broker` (
+  `id_broker` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL,
+  `link_ib` varchar(300) NOT NULL,
+  `link_client` varchar(300) DEFAULT NULL,
+  `jual` int(11) NOT NULL DEFAULT '0',
+  `beli` int(11) NOT NULL DEFAULT '0',
+  `stock` double NOT NULL DEFAULT '0',
+  `absolute_ib` tinyint(4) NOT NULL DEFAULT '0',
+  `absolute_client` tinyint(4) NOT NULL DEFAULT '0',
+  `deleted` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id_broker`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `changer` (
+  `id_changer` int(11) NOT NULL AUTO_INCREMENT,
+  `id_member` int(11) NOT NULL COMMENT '0->beli 1->jual',
+  `id_broker` int(11) NOT NULL,
+  `jenis_transaksi` tinyint(4) NOT NULL DEFAULT '0',
+  `nilai` int(11) NOT NULL,
+  `nilai_tukar` int(11) NOT NULL,
+  `no_akun_trading` varchar(150) DEFAULT NULL,
+  `nama_akun_trading` varchar(300) DEFAULT NULL,
+  `nama_bank` varchar(300) DEFAULT NULL,
+  `no_rek` varchar(150) DEFAULT NULL,
+  `nama_rek` varchar(300) DEFAULT NULL,
+  `notes` text,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `approved` tinyint(4) NOT NULL DEFAULT '0',
+  `approve_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id_changer`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `config` (
+  `config_name` varchar(300) NOT NULL,
+  `value` varchar(500) NOT NULL,
+  PRIMARY KEY (`config_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `log` (
+  `id_log` int(11) NOT NULL AUTO_INCREMENT,
+  `id_member` int(11) NOT NULL,
+  `action_text` text NOT NULL,
+  `query` text NOT NULL,
+  `time_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_log`),
+  KEY `id_member` (`id_member`),
+  CONSTRAINT `log_ibfk_1` FOREIGN KEY (`id_member`) REFERENCES `member` (`id_member`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `member` (
+  `id_member` int(11) NOT NULL AUTO_INCREMENT,
+  `id_refferer` int(11) DEFAULT NULL,
+  `username` varchar(500) NOT NULL,
+  `email` varchar(500) NOT NULL,
+  `password` varchar(500) NOT NULL,
+  `pin` varchar(500) DEFAULT NULL,
+  `flag` int(11) DEFAULT '2',
+  `first_name` varchar(500) DEFAULT NULL,
+  `last_name` varchar(500) DEFAULT NULL,
+  `country` varchar(100) DEFAULT NULL,
+  `province` varchar(100) DEFAULT NULL,
+  `city` varchar(100) DEFAULT NULL,
+  `address` text,
+  `postal` varchar(50) DEFAULT NULL,
+  `id_card_number` varchar(100) DEFAULT NULL,
+  `phone` varchar(100) DEFAULT NULL,
+  `bank_name` varchar(300) DEFAULT NULL,
+  `bank_branch` varchar(300) DEFAULT NULL,
+  `bank_acc_name` varchar(300) DEFAULT NULL,
+  `bank_acc_num` varchar(100) DEFAULT NULL,
+  `im` varchar(100) DEFAULT NULL,
+  `fb_username` varchar(100) DEFAULT NULL,
+  `fb_link` varchar(200) DEFAULT NULL,
+  `valid` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0=profile, 1=broker, 2=admin valid, 3=valid',
+  `id_broker` int(11) DEFAULT NULL,
+  `nominal_deposit` double DEFAULT NULL,
+  `register_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `last_update` timestamp NULL DEFAULT NULL,
+  `valid_date` timestamp NULL DEFAULT NULL,
+  `level_status` tinyint(1) DEFAULT '0' COMMENT '0->member | 1->super admin',
+  PRIMARY KEY (`id_member`),
+  UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `email` (`email`),
+  KEY `id_refferer` (`id_refferer`),
+  CONSTRAINT `member_ibfk_1` FOREIGN KEY (`id_refferer`) REFERENCES `member` (`id_member`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `member_broker` (
+  `id_member` int(11) NOT NULL,
+  `id_broker` int(11) NOT NULL,
+  `link_ib` varchar(300) NOT NULL,
+  `link_client` varchar(300) DEFAULT NULL,
+  `broker_username` varchar(300) NOT NULL,
+  `real_account` varchar(300) NOT NULL,
+  PRIMARY KEY (`id_member`,`id_broker`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `message` (
+  `id_message` int(11) NOT NULL AUTO_INCREMENT,
+  `id_member_from` int(11) NOT NULL,
+  `message` text NOT NULL,
+  `id_member_to` int(11) NOT NULL,
+  `send_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `delete_from` tinyint(1) NOT NULL DEFAULT '0',
+  `delete_to` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id_message`),
+  KEY `id_member_from` (`id_member_from`),
+  KEY `id_member_to` (`id_member_to`),
+  CONSTRAINT `message_ibfk_1` FOREIGN KEY (`id_member_from`) REFERENCES `member` (`id_member`),
+  CONSTRAINT `message_ibfk_2` FOREIGN KEY (`id_member_to`) REFERENCES `member` (`id_member`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `news` (
+  `id_news` int(11) NOT NULL AUTO_INCREMENT,
+  `id_member` int(11) NOT NULL,
+  `text` text NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `delete` tinyint(4) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id_news`),
+  KEY `id_member` (`id_member`),
+  CONSTRAINT `news_ibfk_1` FOREIGN KEY (`id_member`) REFERENCES `member` (`id_member`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `wall_comment` (
+  `id_comment` int(11) NOT NULL AUTO_INCREMENT,
+  `id_wall_post` int(11) NOT NULL,
+  `id_member` int(11) NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `content` text NOT NULL,
+  `deleted` tinyint(4) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id_comment`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `wall_post` (
+  `id_wall_post` int(11) NOT NULL AUTO_INCREMENT,
+  `id_member` int(11) NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `content` text NOT NULL,
+  `deleted` tinyint(4) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id_wall_post`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE  `vw_changer`(
+ `id_changer` int(11) ,
+ `id_member` int(11) ,
+ `username` varchar(500) ,
+ `first_name` varchar(500) ,
+ `last_name` varchar(500) ,
+ `id_broker` int(11) ,
+ `name` varchar(200) ,
+ `stock` double ,
+ `jenis_transaksi` tinyint(4) ,
+ `nilai` int(11) ,
+ `nilai_tukar` int(11) ,
+ `no_akun_trading` varchar(150) ,
+ `nama_akun_trading` varchar(300) ,
+ `nama_bank` varchar(300) ,
+ `no_rek` varchar(150) ,
+ `nama_rek` varchar(300) ,
+ `notes` text ,
+ `timestamp` timestamp ,
+ `approved` tinyint(4) ,
+ `approve_time` timestamp 
+)*/;
+
+CREATE TABLE  `vw_member`(
+ `id_refferer` int(11) ,
+ `refferer_username` varchar(500) ,
+ `refferer_first_name` varchar(500) ,
+ `refferer_last_name` varchar(500) ,
+ `id_member` int(11) ,
+ `username` varchar(500) ,
+ `email` varchar(500) ,
+ `password` varchar(500) ,
+ `pin` varchar(500) ,
+ `flag` int(11) ,
+ `first_name` varchar(500) ,
+ `last_name` varchar(500) ,
+ `country` varchar(100) ,
+ `province` varchar(100) ,
+ `city` varchar(100) ,
+ `address` text ,
+ `postal` varchar(50) ,
+ `id_card_number` varchar(100) ,
+ `phone` varchar(100) ,
+ `bank_name` varchar(300) ,
+ `bank_branch` varchar(300) ,
+ `bank_acc_name` varchar(300) ,
+ `bank_acc_num` varchar(100) ,
+ `im` varchar(100) ,
+ `fb_username` varchar(100) ,
+ `fb_link` varchar(200) ,
+ `valid` tinyint(1) ,
+ `id_broker` int(11) ,
+ `broker_name` varchar(200) ,
+ `register_date` timestamp ,
+ `deleted` tinyint(1) ,
+ `last_update` timestamp ,
+ `valid_date` timestamp ,
+ `level_status` tinyint(1) 
+)*/;
+
+CREATE TABLE  `vw_member_broker`(
+ `name` varchar(200) ,
+ `link_ib_main` varchar(300) ,
+ `link_client_main` varchar(300) ,
+ `id_member` int(11) ,
+ `id_broker` int(11) ,
+ `link_ib` varchar(300) ,
+ `link_client` varchar(300) ,
+ `broker_username` varchar(300) ,
+ `real_account` varchar(300) ,
+ `absolute_ib` tinyint(4) ,
+ `absolute_client` tinyint(4) ,
+ `deleted_broker` tinyint(1) ,
+ `id_refferer` int(11) ,
+ `username` varchar(500) ,
+ `email` varchar(500) ,
+ `password` varchar(500) ,
+ `pin` varchar(500) ,
+ `flag` int(11) ,
+ `first_name` varchar(500) ,
+ `last_name` varchar(500) ,
+ `country` varchar(100) ,
+ `province` varchar(100) ,
+ `city` varchar(100) ,
+ `address` text ,
+ `postal` varchar(50) ,
+ `id_card_number` varchar(100) ,
+ `phone` varchar(100) ,
+ `bank_name` varchar(300) ,
+ `bank_branch` varchar(300) ,
+ `bank_acc_name` varchar(300) ,
+ `bank_acc_num` varchar(100) ,
+ `im` varchar(100) ,
+ `fb_username` varchar(100) ,
+ `fb_link` varchar(200) ,
+ `valid` tinyint(1) ,
+ `register_date` timestamp ,
+ `deleted` tinyint(1) ,
+ `last_update` timestamp ,
+ `valid_date` timestamp ,
+ `level_status` tinyint(1) 
+)*/;
+
+CREATE TABLE  `vw_wall_comment`(
+ `id_comment` int(11) ,
+ `id_wall_post` int(11) ,
+ `id_member` int(11) ,
+ `username` varchar(500) ,
+ `first_name` varchar(500) ,
+ `last_name` varchar(500) ,
+ `timestamp` timestamp ,
+ `content` text ,
+ `deleted` tinyint(4) 
+)*/;
+
+CREATE TABLE  `vw_wall_post`(
+ `id_wall_post` int(11) ,
+ `id_member` int(11) ,
+ `username` varchar(500) ,
+ `first_name` varchar(500) ,
+ `last_name` varchar(500) ,
+ `timestamp` timestamp ,
+ `content` text ,
+ `deleted` tinyint(4) 
+)*/;
+

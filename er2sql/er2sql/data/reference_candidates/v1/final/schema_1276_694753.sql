@@ -1,0 +1,44 @@
+-- Source: https://github.com/gbutb/room-reservation-system/blob/a47b9dbf8b309624117a171944bb347a11486b9d/src/main/resources/mockDatabase.sql?raw=true
+-- Tables detected: 4 | FK constraints: 3
+CREATE TABLE rooms
+(
+    room_id INT PRIMARY KEY,
+    room_size INT,
+    floor INT,
+    air_conditioner BOOLEAN,
+    projector BOOLEAN,
+    render_data VARCHAR(255)
+);
+
+CREATE TABLE room_comments
+(
+    comment_id INT NOT NULL AUTO_INCREMENT,
+    comment_date TIMESTAMP,
+    user_comment VARCHAR(255),
+    room_id INT,
+    FOREIGN KEY (room_id) REFERENCES rooms (room_id),
+    PRIMARY KEY (comment_id)
+);
+
+CREATE TABLE accounts
+(
+    account_id INT NOT NULL AUTO_INCREMENT,
+    username VARCHAR(255) UNIQUE,
+    encryptedPassword VARCHAR(255),
+    email VARCHAR(255) UNIQUE,
+    phoneNumber VARCHAR(255),
+    PRIMARY KEY (account_id)
+);
+
+CREATE TABLE reservations
+(
+    reservation_id INT NOT NULL AUTO_INCREMENT,
+    room_id INT,
+    start_date TIMESTAMP,
+    end_date TIMESTAMP,
+    do_repeat BOOLEAN,
+    account_id INT,
+    FOREIGN KEY (room_id) REFERENCES rooms (room_id),
+    FOREIGN KEY (account_id) REFERENCES accounts (account_id),
+    PRIMARY KEY (reservation_id)
+);

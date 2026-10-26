@@ -1,0 +1,195 @@
+{
+  "policy": "postgres-reference-candidates-v5.2",
+  "converter_version": "postgres-reference-candidates-v5.2.0",
+  "cohort_label": "paper-v6-eligible-pilot",
+  "model_calls": 0,
+  "originals_modified": false,
+  "auto_approved": false,
+  "normalizer_sha256": "a440fb71f46fd605f64db387f581939b8cd775c2747d397aa41e4de8fc980949",
+  "gold_parser_sha256": "8ffd420ccbbe327fa5129a0d8c8e6ffe0b0d5ec34af92186480922c40be4bd50",
+  "phase": "pilot",
+  "split_sha256": "739ba02c8130d3a7f89983f3025e18f0d3615d2c3b1c86bd8f042b9ca76a7dd9",
+  "rows": [
+    {
+      "schema_id": "schema_0456",
+      "source_path": "C:\\Users\\anika\\OneDrive\\Desktop\\dataset\\extracted_ddl_filtered\\schema_0456.sql",
+      "source_sha256": "f1ff14be1a137cb2079b52d8246486ba32d94cd216b7288314b56d8a55f0a039",
+      "reference_path": "C:\\Users\\anika\\OneDrive\\Desktop\\er2sql\\data\\reference_candidates\\v12\\pilot\\schema_0456.sql",
+      "reference_sha256": "88ef9151663a6895ad8f8897d93e85e1c9a95a0cb107be80ff0bdc9e7a7eaff4",
+      "status": "policy_candidate_pending_postgres_gate",
+      "policy_approval_categories": [
+        "approved_type_mapping",
+        "integer_display_width_removal"
+      ],
+      "policy_eligible": true,
+      "changes": [
+        "Type blob -> BYTEA; domain/storage differences require review.",
+        "Removed integer display width; verify source does not rely on display formatting."
+      ],
+      "blockers": []
+    },
+    {
+      "schema_id": "schema_0463",
+      "source_path": "C:\\Users\\anika\\OneDrive\\Desktop\\dataset\\extracted_ddl_filtered\\schema_0463.sql",
+      "source_sha256": "7cfb2dc7cdbb056949db86be502a78d4b71a4cf613eb3a96497fe110631c3380",
+      "reference_path": "C:\\Users\\anika\\OneDrive\\Desktop\\er2sql\\data\\reference_candidates\\v12\\pilot\\schema_0463.sql",
+      "reference_sha256": "7cfb2dc7cdbb056949db86be502a78d4b71a4cf613eb3a96497fe110631c3380",
+      "status": "unchanged",
+      "policy_approval_categories": [],
+      "policy_eligible": true,
+      "changes": [],
+      "blockers": []
+    },
+    {
+      "schema_id": "schema_0546",
+      "source_path": "C:\\Users\\anika\\OneDrive\\Desktop\\dataset\\extracted_ddl_filtered\\schema_0546.sql",
+      "source_sha256": "73b80ada4546c93cac6055a1393894f69bc72e5e7f9580a4cb4c0bf21e287979",
+      "reference_path": "C:\\Users\\anika\\OneDrive\\Desktop\\er2sql\\data\\reference_candidates\\v12\\pilot\\schema_0546.sql",
+      "reference_sha256": "73b80ada4546c93cac6055a1393894f69bc72e5e7f9580a4cb4c0bf21e287979",
+      "status": "unchanged",
+      "policy_approval_categories": [],
+      "policy_eligible": true,
+      "changes": [],
+      "blockers": []
+    },
+    {
+      "schema_id": "schema_0609",
+      "source_path": "C:\\Users\\anika\\OneDrive\\Desktop\\dataset\\extracted_ddl_filtered\\schema_0609.sql",
+      "source_sha256": "5acf530d9c0c45db5a69a1524cfbebe3b29aaac280bb43ab68fd99822f535f35",
+      "reference_path": "C:\\Users\\anika\\OneDrive\\Desktop\\er2sql\\data\\reference_candidates\\v12\\pilot\\schema_0609.sql",
+      "reference_sha256": "5acf530d9c0c45db5a69a1524cfbebe3b29aaac280bb43ab68fd99822f535f35",
+      "status": "unchanged",
+      "policy_approval_categories": [],
+      "policy_eligible": true,
+      "changes": [],
+      "blockers": []
+    },
+    {
+      "schema_id": "schema_0682",
+      "source_path": "C:\\Users\\anika\\OneDrive\\Desktop\\dataset\\extracted_ddl_filtered\\schema_0682.sql",
+      "source_sha256": "f65b5fa659e17f12c455d5fcfd1b77caa08eff8ff0d7f2fa3a73cea39770a247",
+      "reference_path": "C:\\Users\\anika\\OneDrive\\Desktop\\er2sql\\data\\reference_candidates\\v12\\pilot\\schema_0682.sql",
+      "reference_sha256": "e3ee44a39bc091ccb323612bfb6562f7c98b660cf32c57d1b11c1413a33328ac",
+      "status": "policy_candidate_pending_postgres_gate",
+      "policy_approval_categories": [
+        "foreign_key_relocation",
+        "resolved_source_alter_state"
+      ],
+      "policy_eligible": true,
+      "changes": [
+        "Applied source ALTER TABLE ADD in source order (ACT_ID_MEMBERSHIP).",
+        "Installed FKs after additive table/key definitions to support forward/cyclic declarations; targets, columns and actions retained; no FK or key was added or removed."
+      ],
+      "blockers": []
+    },
+    {
+      "schema_id": "schema_0704",
+      "source_path": "C:\\Users\\anika\\OneDrive\\Desktop\\dataset\\extracted_ddl_filtered\\schema_0704.sql",
+      "source_sha256": "4e93fdafe35f7424dd07980b284682a3916950440369c10114cf1893cc28ce16",
+      "reference_path": "C:\\Users\\anika\\OneDrive\\Desktop\\er2sql\\data\\reference_candidates\\v12\\pilot\\schema_0704.sql",
+      "reference_sha256": "4e93fdafe35f7424dd07980b284682a3916950440369c10114cf1893cc28ce16",
+      "status": "unchanged",
+      "policy_approval_categories": [],
+      "policy_eligible": true,
+      "changes": [],
+      "blockers": []
+    },
+    {
+      "schema_id": "schema_0793",
+      "source_path": "C:\\Users\\anika\\OneDrive\\Desktop\\dataset\\extracted_ddl_filtered\\schema_0793.sql",
+      "source_sha256": "7b50d18c5a4ef184fc90c9fc73e86a9fd71860c8e22d752a170211051bcf3ca8",
+      "reference_path": "C:\\Users\\anika\\OneDrive\\Desktop\\er2sql\\data\\reference_candidates\\v12\\pilot\\schema_0793.sql",
+      "reference_sha256": "7b50d18c5a4ef184fc90c9fc73e86a9fd71860c8e22d752a170211051bcf3ca8",
+      "status": "unchanged",
+      "policy_approval_categories": [],
+      "policy_eligible": true,
+      "changes": [],
+      "blockers": []
+    },
+    {
+      "schema_id": "schema_1106_148168",
+      "source_path": "C:\\Users\\anika\\OneDrive\\Desktop\\dataset\\extracted_ddl_filtered\\schema_1106_148168.sql",
+      "source_sha256": "746412b0a8341c3e63733d6fb55bf2f225779a1bc6907384ec4be45352c69db1",
+      "reference_path": "C:\\Users\\anika\\OneDrive\\Desktop\\er2sql\\data\\reference_candidates\\v12\\pilot\\schema_1106_148168.sql",
+      "reference_sha256": "ba97dfe2d29d2038bdf086a54b49dd303c68f2ef7ab2c9d59be6a9670dd9c89f",
+      "status": "policy_candidate_pending_postgres_gate",
+      "policy_approval_categories": [
+        "approved_type_mapping",
+        "integer_display_width_removal"
+      ],
+      "policy_eligible": true,
+      "changes": [
+        "Type blob -> BYTEA; domain/storage differences require review.",
+        "Removed integer display width; verify source does not rely on display formatting."
+      ],
+      "blockers": []
+    },
+    {
+      "schema_id": "schema_1167_099625",
+      "source_path": "C:\\Users\\anika\\OneDrive\\Desktop\\dataset\\extracted_ddl_filtered\\schema_1167_099625.sql",
+      "source_sha256": "91cc16869b15aa8d774d722447e32a1db935a5074b97333f5ca1502e337fd1f1",
+      "reference_path": "C:\\Users\\anika\\OneDrive\\Desktop\\er2sql\\data\\reference_candidates\\v12\\pilot\\schema_1167_099625.sql",
+      "reference_sha256": "ef7eb1fc37afde9c6ffb8ddb244c429251d1f4b50aac7426c32d8058c3aaa3e7",
+      "status": "policy_candidate_pending_postgres_gate",
+      "policy_approval_categories": [
+        "approved_type_mapping",
+        "binary_to_bytea"
+      ],
+      "policy_eligible": true,
+      "changes": [
+        "BINARY/VARBINARY -> BYTEA; exact length/padding is out of scope.",
+        "Type varbinary -> BYTEA; domain/storage differences require review.",
+        "Type double -> DOUBLE PRECISION; domain/storage differences require review."
+      ],
+      "blockers": []
+    },
+    {
+      "schema_id": "schema_1206_432694",
+      "source_path": "C:\\Users\\anika\\OneDrive\\Desktop\\dataset\\extracted_ddl_filtered\\schema_1206_432694.sql",
+      "source_sha256": "52abc8c9564dc4ae774ade1b58b614479978bcfbc0d67b3560591f9325c08558",
+      "reference_path": "C:\\Users\\anika\\OneDrive\\Desktop\\er2sql\\data\\reference_candidates\\v12\\pilot\\schema_1206_432694.sql",
+      "reference_sha256": "4e542c5c6d09211833d100d636c0522334974d8ae5593416e5fdf3ced07a2662",
+      "status": "policy_candidate_pending_postgres_gate",
+      "policy_approval_categories": [
+        "foreign_key_relocation",
+        "reserved_identifier_quoting",
+        "resolved_source_alter_state"
+      ],
+      "policy_eligible": true,
+      "changes": [
+        "Applied source ALTER TABLE ADD in source order (credit_card_account).",
+        "Applied source ALTER TABLE ADD in source order (expense_subcategory).",
+        "Applied source ALTER TABLE ADD in source order (financial_institution_login).",
+        "Applied source ALTER TABLE ADD in source order (login_challenge).",
+        "Applied source ALTER TABLE ADD in source order (payout_formula).",
+        "Applied source ALTER TABLE ADD in source order (user).",
+        "Applied source ALTER TABLE ADD in source order (user_variable).",
+        "Applied source ALTER TABLE ADD in source order (video).",
+        "Applied source ALTER TABLE ADD in source order (watched_video).",
+        "Applied source ALTER TABLE ADD in source order (watching_video).",
+        "Applied source ALTER TABLE ADD in source order (user_occupation).",
+        "Applied source ALTER TABLE ADD in source order (user_interest).",
+        "Applied source ALTER TABLE ADD in source order (user_zip).",
+        "Installed FKs after additive table/key definitions to support forward/cyclic declarations; targets, columns and actions retained; no FK or key was added or removed.",
+        "Quoted reserved bare table name at a table/reference position using PostgreSQL lowercase folding."
+      ],
+      "blockers": []
+    },
+    {
+      "schema_id": "schema_1244_213519",
+      "source_path": "C:\\Users\\anika\\OneDrive\\Desktop\\dataset\\extracted_ddl_filtered\\schema_1244_213519.sql",
+      "source_sha256": "1c43fec24bc0263fe7d587bd96fbf944983062efa100a1733287ce3d8343d305",
+      "reference_path": "C:\\Users\\anika\\OneDrive\\Desktop\\er2sql\\data\\reference_candidates\\v12\\pilot\\schema_1244_213519.sql",
+      "reference_sha256": "6b32de4a83be4f216d060f334541cae539a1f68455d784590705316d976aa044",
+      "status": "policy_candidate_pending_postgres_gate",
+      "policy_approval_categories": [
+        "identity_by_default"
+      ],
+      "policy_eligible": true,
+      "changes": [
+        "Identity spelling -> GENERATED BY DEFAULT AS IDENTITY; source seed/increment retained when explicit. NULL/zero, explicit-value sequence advancement and exhaustion differ across engines; review required."
+      ],
+      "blockers": []
+    }
+  ]
+}

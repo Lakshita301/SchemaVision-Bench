@@ -1,0 +1,156 @@
+-- Source: https://github.com/Andreyalex/yomayka-bluz/blob/9ebff60cbd43cd3cd75c3846777afdaae8a10e77/structure.ddl?raw=true
+-- Tables detected: 12 | FK constraints: 11
+-- Foreign keys added via ALTER TABLE:
+CREATE TABLE acl_privileges
+(
+    roleId INT UNSIGNED NOT NULL,
+    module VARCHAR(32) NOT NULL,
+    privilege VARCHAR(32) NOT NULL
+);
+
+CREATE TABLE acl_roles
+(
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    PRIMARY KEY ( id, name )
+);
+
+CREATE TABLE acl_users_roles
+(
+    userId BIGINT UNSIGNED NOT NULL,
+    roleId INT UNSIGNED NOT NULL,
+    PRIMARY KEY ( userId, roleId )
+);
+
+CREATE TABLE auth
+(
+    userId BIGINT UNSIGNED NOT NULL,
+    provider VARCHAR(64) NOT NULL,
+    foreignKey VARCHAR(255) NOT NULL,
+    token VARCHAR(64) NOT NULL,
+    tokenSecret VARCHAR(64) NOT NULL,
+    tokenType CHAR(8) NOT NULL,
+    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated TIMESTAMP,
+    expired TIMESTAMP,
+    PRIMARY KEY ( userId, provider )
+);
+
+CREATE TABLE categories
+(
+    id BIGINT UNSIGNED PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    parentId BIGINT UNSIGNED,
+    name VARCHAR(255) NOT NULL,
+    alias VARCHAR(255) NOT NULL,
+    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated TIMESTAMP,
+    "order" BIGINT UNSIGNED DEFAULT 0 NOT NULL
+);
+
+CREATE TABLE com_content
+(
+    id BIGINT UNSIGNED PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    settingsId INT UNSIGNED NOT NULL,
+    foreignKey INT UNSIGNED NOT NULL,
+    userId BIGINT UNSIGNED NOT NULL,
+    parentId BIGINT UNSIGNED,
+    content TEXT,
+    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated TIMESTAMP,
+    status CHAR(7) DEFAULT 'active' NOT NULL
+);
+
+CREATE TABLE com_settings
+(
+    id INT UNSIGNED PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    alias VARCHAR(255) NOT NULL,
+    options TEXT,
+    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated TIMESTAMP,
+    countPerPage SMALLINT DEFAULT 10 NOT NULL,
+    relatedTable VARCHAR(64)
+);
+
+CREATE TABLE media
+(
+    id BIGINT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    userId BIGINT UNSIGNED NOT NULL,
+    module VARCHAR(24) DEFAULT 'users' NOT NULL,
+    title TEXT,
+    type VARCHAR(24),
+    file VARCHAR(255),
+    preview VARCHAR(255),
+    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated TIMESTAMP
+);
+
+CREATE TABLE options
+(
+    namespace VARCHAR(64) DEFAULT 'default' NOT NULL,
+    "key" VARCHAR(255) NOT NULL,
+    value TEXT NOT NULL,
+    description TEXT,
+    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated TIMESTAMP,
+    PRIMARY KEY ( "key", namespace )
+);
+
+CREATE TABLE pages
+(
+    id INT UNSIGNED PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    title TEXT NOT NULL,
+    alias VARCHAR(255) NOT NULL,
+    content TEXT,
+    keywords TEXT,
+    description TEXT,
+    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated TIMESTAMP,
+    userId BIGINT UNSIGNED
+);
+
+CREATE TABLE users
+(
+    id BIGINT UNSIGNED PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    login VARCHAR(255),
+    email VARCHAR(255),
+    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated TIMESTAMP,
+    status CHAR(8) DEFAULT 'disabled' NOT NULL
+);
+
+CREATE TABLE users_actions
+(
+    userId BIGINT UNSIGNED NOT NULL,
+    code VARCHAR(32) NOT NULL,
+    action CHAR(11) NOT NULL,
+    params TEXT,
+    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    expired TIMESTAMP DEFAULT '0000-00-00 00:00:00' NOT NULL,
+    PRIMARY KEY ( userId, code )
+);
+
+
+                          
+
+ALTER TABLE acl_privileges ADD FOREIGN KEY ( roleId ) REFERENCES acl_roles ( id ) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE acl_users_roles ADD FOREIGN KEY ( roleId ) REFERENCES acl_roles ( id ) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE acl_users_roles ADD FOREIGN KEY ( userId ) REFERENCES users ( id ) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE auth ADD FOREIGN KEY ( userId ) REFERENCES users ( id ) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE categories ADD FOREIGN KEY ( parentId ) REFERENCES categories ( id ) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE com_content ADD FOREIGN KEY ( parentId ) REFERENCES com_content ( id ) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE com_content ADD FOREIGN KEY ( settingsId ) REFERENCES com_settings ( id ) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE com_content ADD FOREIGN KEY ( userId ) REFERENCES users ( id ) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE media ADD FOREIGN KEY ( userId ) REFERENCES users ( id ) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE pages ADD FOREIGN KEY ( userId ) REFERENCES users ( id ) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE users_actions ADD FOREIGN KEY ( userId ) REFERENCES users ( id ) ON DELETE CASCADE ON UPDATE CASCADE;

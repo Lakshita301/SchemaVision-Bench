@@ -1,0 +1,81 @@
+-- Source: https://github.com/kimanilewis/argila/blob/5fec6997b20151bf9dd5050cb2c021fd3ed12438/DB/argilaV3.sql?raw=true
+-- Tables detected: 6 | FK/REFERENCES mentions: 2
+CREATE TABLE "coreRequests" (
+    "coreRequestID" int unsigned NOT NULL AUTO_INCREMENT COMMENT 'Primary Key',
+    "accountNumber" varchar(45) NOT NULL,
+    "accountBalance" DOUBLE PRECISION(15,2) NOT NULL DEFAULT '0.00',
+    "expiryDate" TIMESTAMP DEFAULT '0001-01-01 00:00:00',
+    "timestamp" TIMESTAMP DEFAULT NULL,
+    "MSISDN" bigint DEFAULT NULL,
+    "dateCreated" TIMESTAMP NOT NULL DEFAULT '0001-01-01 00:00:00',
+    "dateModified" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "status" SMALLINT NOT NULL DEFAULT '0',
+    "originIP" int DEFAULT NULL,
+    PRIMARY KEY ("coreRequestID"),
+    KEY "accountNumber" ("accountNumber")
+) ENGINE=InnoDB AUTO_INCREMENT=121 DEFAULT CHARSET=latin1;
+
+CREATE TABLE "customerProfileAccounts" (
+    "customerProfileAccountID" int unsigned NOT NULL AUTO_INCREMENT COMMENT 'Primary Key',
+    "customerProfileID" int NOT NULL,
+    "LocationID" varchar(100) DEFAULT NULL COMMENT 'refrence to locations table',
+    "expiryDate" TIMESTAMP DEFAULT '0001-01-01 00:00:00',
+    "amountBalance" DOUBLE PRECISION(15,2) NOT NULL DEFAULT '0.00',
+    "startTime" TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00',
+    "expiryTime" TIMESTAMP DEFAULT NULL,
+    "processingStatus" SMALLINT NOT NULL DEFAULT '0',
+    "active" SMALLINT NOT NULL DEFAULT '2',
+    "dateModified" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "dateCreated" TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00',
+    PRIMARY KEY ("customerProfileAccountID"),
+    KEY "customerProfileID" ("customerProfileID"),
+    KEY "LocationID" ("LocationID"),
+    CONSTRAINT "fk_customerProfileID" FOREIGN KEY ("customerProfileID") REFERENCES "customerProfiles" ("customerProfileID") ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+
+CREATE TABLE "customerProfiles" (
+    "customerProfileID" int NOT NULL AUTO_INCREMENT COMMENT 'Primary Key',
+    "accountNumber" varchar(45) NOT NULL,
+    "MSISDN" bigint DEFAULT NULL,
+    "amount" DOUBLE PRECISION(15,2) NOT NULL DEFAULT '0.00',
+    "statusCode" smallint NOT NULL DEFAULT '0',
+    "statusDescription" text,
+    "active" SMALLINT NOT NULL DEFAULT '2',
+    "dateCreated" TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00',
+    "dateModified" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY ("customerProfileID"),
+    UNIQUE KEY "accountNumber" ("accountNumber")
+) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=latin1;
+
+CREATE TABLE "locations" (
+    "LocationID" varchar(100) NOT NULL COMMENT 'Location Idenity ',
+    "locationName" varchar(225) NOT NULL,
+    "active" SMALLINT NOT NULL DEFAULT '0'
+);
+
+CREATE TABLE "sessionData" (
+    "sessionDataID" int unsigned NOT NULL AUTO_INCREMENT COMMENT 'Primary Key',
+    "customerProfileAccountID" int unsigned NOT NULL,
+    "timeSpent" text,
+    "amountSpent" DOUBLE PRECISION(15,2) NOT NULL DEFAULT '0.00',
+    "syncStatus" SMALLINT NOT NULL DEFAULT '0',
+    "syncStatusDescription" text,
+    "amountBalance" DOUBLE PRECISION(15,2) NOT NULL DEFAULT '0.00',
+    "dateCreated" TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00',
+    "dateModified" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY ("sessionDataID"),
+    KEY "customerProfileAccountID" ("customerProfileAccountID"),
+    CONSTRAINT "fk_customerProfileAccountID" FOREIGN KEY ("customerProfileAccountID") REFERENCES "customerProfileAccounts" ("customerProfileAccountID") ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=89 DEFAULT CHARSET=latin1;
+
+CREATE TABLE "statusCodes" (
+    "statusID" int unsigned NOT NULL AUTO_INCREMENT COMMENT 'Primary Key',
+    "statusCodeID" int NOT NULL,
+    "statusName" varchar(45) DEFAULT NULL,
+    "statusDescription" varchar(150) DEFAULT NULL,
+    "active" SMALLINT NOT NULL DEFAULT '1',
+    "dateCreated" TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00',
+    "dateModified" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY ("statusID"),
+    KEY "statusCodeID" ("statusCodeID")
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;

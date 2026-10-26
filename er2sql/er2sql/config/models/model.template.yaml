@@ -1,0 +1,60 @@
+# Copy to config/models/<paper-model-label>.yaml and replace every placeholder.
+llm:
+  module2_parsing: &vision_model
+    provider: REPLACE_ME
+    model: REPLACE_WITH_EXACT_VERSIONED_MODEL_ID
+    model_revision: REPLACE_WITH_PROVIDER_REVISION_OR_DATE
+    api_base: https://REPLACE_ME/v1
+    api_key_env: REPLACE_ME_API_KEY
+    vision_capable: true
+    image_url_format: openai
+    temperature: 0.2
+    max_completion_tokens: 16384
+    token_limit_parameter: max_completion_tokens
+    reasoning_effort: null
+    response_format_json: true
+    input_cost_per_million: null
+    output_cost_per_million: null
+    request_timeout: 120
+    max_retries: 3
+    retry_initial_delay_seconds: 1
+    retry_max_delay_seconds: 30
+    retry_backoff_multiplier: 2
+    retry_jitter_seconds: 0.25
+    max_retry_cost_usd: null
+    estimated_cost_per_attempt_usd: null
+
+  module3_generation:
+    <<: *vision_model
+    vision_capable: false
+    response_format_json: false
+
+  module6_direct_baseline:
+    <<: *vision_model
+    response_format_json: false
+
+sql_dialect: postgres
+
+database:
+  host: localhost
+  port: 5432
+  dbname: er2sql_paper_verify
+  user: er2sql_runner
+  password_env: ER2SQL_VERIFY_DB_PASSWORD
+  schema_prefix: er2sql_verify
+  statement_timeout_ms: 5000
+
+dataset:
+  tiers:
+    tier1:
+      diagrams_dir: C:/REPLACE_ME/erd_tier1
+      sql_dir: C:/REPLACE_ME/extracted_ddl_filtered
+    tier2:
+      diagrams_dir: C:/REPLACE_ME/erd_tier2
+      sql_dir: C:/REPLACE_ME/extracted_ddl_filtered
+    tier3:
+      diagrams_dir: C:/REPLACE_ME/erd_tier3
+      sql_dir: C:/REPLACE_ME/extracted_ddl_filtered
+
+output:
+  base_dir: outputs

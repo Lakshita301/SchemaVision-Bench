@@ -1,0 +1,33 @@
+# Historical protocol-v1 manifest. Do not use for the paid pilot; protocol v2
+# requires a new eligible-pilot split, reviewed oracle audit and v3 manifest.
+version: 1
+experiment:
+  name: paper-pilot-v2
+  output_root: outputs/experiments/paper-pilot-v2
+  phase: pilot
+  protocol_file: config/paper_protocol_v1.yaml
+  protocol_sha256: 616cde5737584d650e967966dcc8045efcbec32a8944f515f625cf3a4bc974c3
+  evaluator_validation: docs/audits/evaluator_mutations.json
+  split_file: config/paper_splits.json
+  oracle_audit: docs/audits/pilot_candidates_20261004_v5.json
+  tiers:
+  - tier1
+  - tier2
+  - tier3
+  common_only: true
+  resume: true
+  verify: true
+  evaluate: true
+  stop_on_error: true
+  require_complete_model_metadata: true
+  prompts_frozen: true
+models:
+- name: mistral-small-4-v26.03
+  config: config/models/mistral-small-4.yaml
+  arms:
+  - structured
+  - direct
+  prompt_version: paper-v2
+  expected_cost_usd: 2.0
+  minimum_success_rate: 0.9
+  max_rate_limit_events: 5

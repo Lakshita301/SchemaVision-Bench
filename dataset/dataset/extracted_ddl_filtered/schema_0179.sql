@@ -1,0 +1,26 @@
+-- Source: https://github.com/harry-100/employee-tracker/blob/53d78391e288cdc08d8e039977bc14c2d66c0411/db/schema.sql?raw=true
+-- Tables detected: 3 | FK/REFERENCES mentions: 6
+
+CREATE TABLE department (
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    department_name VARCHAR(30)
+);
+
+CREATE TABLE role (
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(30),
+    salary DECIMAL,
+    department_id INTEGER,
+    CONSTRAINT fk_dept FOREIGN KEY (department_id) REFERENCES department(id) ON DELETE SET NULL
+);
+
+CREATE TABLE employee (
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    first_name VARCHAR(30),
+    last_name VARCHAR(30),
+    role_id INTEGER,
+    CONSTRAINT fk_role FOREIGN KEY (role_id) REFERENCES role(id) ON DELETE SET NULL,
+    manager_id INTEGER,
+    CONSTRAINT fk_manager FOREIGN KEY (manager_id) REFERENCES employee(id) ON DELETE SET NULL
+);
+

@@ -1,0 +1,81 @@
+-- Source: https://github.com/htmlacademy-php/71680-readme-12/blob/07d6039a300c6c0904022c9ab94e103777dfe984/schema.sql?raw=true
+-- Tables detected: 9 | FK constraints: 12
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    date_registration TIMESTAMP NOT NULL,
+    email CHAR(128) NOT NULL UNIQUE,
+    login CHAR(128) NOT NULL UNIQUE,
+    password CHAR(128) NOT NULL,
+    avatar_url TEXT
+);
+
+CREATE TABLE hashtags (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    hashtag TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE type_contents (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE,
+    name_icon TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE posts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    date_create TIMESTAMP NOT NULL,
+    title VARCHAR(128) NOT NULL,
+    text_content TEXT,
+    quote_author TEXT,
+    image_url TEXT,
+    video_url TEXT,
+    link TEXT,
+    view_number INT DEFAULT 0,
+    user_id INT,
+    type_id INT,
+    FOREIGN KEY (user_id) REFERENCES users (id),
+    FOREIGN KEY (type_id) REFERENCES type_contents (id)
+);
+
+CREATE TABLE posts_hashtags (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    post_id INT,
+    hashtag_id INT,
+    FOREIGN KEY (post_id) REFERENCES posts (id),
+    FOREIGN KEY (hashtag_id) REFERENCES hashtags (id)
+);
+
+CREATE TABLE comments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    date_create TIMESTAMP NOT NULL,
+    content VARCHAR(128) NOT NULL,
+    user_id INT,
+    post_id INT,
+    FOREIGN KEY (user_id) REFERENCES users (id),
+    FOREIGN KEY (post_id) REFERENCES posts (id)
+);
+
+CREATE TABLE likes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    post_id INT,
+    FOREIGN KEY (user_id) REFERENCES users (id),
+    FOREIGN KEY (post_id) REFERENCES posts (id)
+);
+
+CREATE TABLE subscriptions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    author_id INT,
+    subscription_id INT,
+    FOREIGN KEY (author_id) REFERENCES users (id),
+    FOREIGN KEY (subscription_id) REFERENCES users (id)
+);
+
+CREATE TABLE messages (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    date_create TIMESTAMP NOT NULL,
+    content TEXT NOT NULL,
+    sender_id INT,
+    recipient_id INT,
+    FOREIGN KEY (sender_id) REFERENCES users (id),
+    FOREIGN KEY (recipient_id) REFERENCES users (id)
+);

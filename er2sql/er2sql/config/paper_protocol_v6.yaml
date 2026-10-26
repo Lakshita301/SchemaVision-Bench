@@ -1,0 +1,147 @@
+protocol_version: 6
+amendment_date: '2026-10-10'
+status: prospective_final_run_metrics_and_infrastructure_policy_freeze
+supersedes_for_future_runs: config/paper_protocol_v5.yaml
+repair: false
+arms:
+  structured: image_to_json_to_sql
+  direct: image_to_sql
+primary:
+  endpoints:
+    - strict_planned_constraint_enforcement_rate
+    - paired_compile_success
+  strict_planned_cer:
+    definition: passed constraints from the shared gold-derived suite divided by every planned behavioral constraint test; generation, parsing, and DDL failures contribute zero successes
+    denominator: frozen_gold_suite_for_each_schema_tier_cell
+  compile_success:
+    definition: raw generated SQL DDL executes successfully in the isolated PostgreSQL schema
+    comparison: structured_minus_direct_on_same_schema_tier_cells
+    uncertainty: schema_clustered_paired_bootstrap_with_all_tiers_resampled_per_schema
+  reference: original_scraped_source_ddl_final_resolved_state
+  authoritative_schema_rule: Apply every source ALTER operation in source order; the final relational state of the original scraped DDL is ground truth. Diagrams and model output are not ground truth.
+  paired_reference_rule: The planned test suite is generated deterministically from the same resolved-source gold schema for both arms and all models on each schema-tier cell.
+secondary:
+  - cer_given_compile_on_shared_cells_where_both_arms_compile
+  - per_statement_salvage_fraction_of_gold_tables_created_using_savepoints
+  - normalized_sql_ablation_compile_rate_and_strict_planned_cer_using_frozen_normalizer
+  - planned_test_pass_rate
+  - final_sql_structural_precision_recall_f1
+  - latency_tokens_cost_and_failure_breakdowns
+  - tier_dropoff
+sql_handling:
+  primary_input: raw_model_sql
+  primary_execution: execute_raw_output_without_semantic_rewriting
+  output_extraction: strip_code_fences_only
+  normalized_ablation:
+    normalizer: sqlparse.format
+    version: '0.5.3'
+    options: {keyword_case: upper, reindent: true, strip_comments: false, use_space_around_operators: true}
+    scope: secondary_rollback_only_execution_and_text_comparison; never replaces raw-SQL primary execution
+    preserve: quoted_strings_identifiers_comments_and_statement_order
+  statement_timeout_ms: 5000
+  one_timeout_for_all_arms_models_and_attempts: true
+  no_model_retry_for_sql_errors: true
+infrastructure:
+  retry_count: 1
+  sqlstate_exact: [57014, 57P01]
+  sqlstate_classes: ['08', '53']
+  handling: retry_the_same_verification_once_then_flag_if_the_retry_still_has_a_registered_infrastructure_sqlstate
+  denominator_rule: persistently_infrastructure_failed_schema_tier_cell_excluded_from_both_arms_for_that_model_comparison
+  everything_else: model_failure_including_syntax_type_constraint_and_non_sql_output_errors
+  no_quality_based_exclusions: true
+error_reporting:
+  per_schema_taxonomy: true
+  keys: PostgreSQL_SQLSTATE_with_not_sql_class
+  expected_constraint_rejections_that_pass_the_test: not_counted_as_errors
+salvage_diagnostic:
+  enabled: true
+  method: split_output_into_statements_with_sqlparse_and_run_each_inside_an_individual_savepoint
+  rollback: all_salvage_objects_and_effects_before_primary_raw_execution
+  metric: gold_tables_created_divided_by_gold_table_count
+  role: secondary_diagnostic_only_never_changes_compile_or_primary_cer
+selection:
+  development_registry: config/development_schemas.json
+  exclusions: exclude_and_document_before_scoring_only_under_locked_categories
+  truncation_policy: exclude_paired_schema_tier_cell_from_both_arms_only_after_confirmed_unusable_provider_truncation
+  infrastructure_policy: see_infrastructure_denominator_rule
+  unaffected_tiers_for_same_schema_remain_included: true
+  chunking_or_regeneration: false
+  no_quality_based_exclusions: true
+model_inclusion:
+  readiness_pilot_compile_rate_threshold: 0.20
+  rule: include_model_in_final_comparison_if_compile_rate_is_at_least_threshold_in_at_least_one_arm_on_the_frozen_readiness_pilot
+  low_compile_warning: low_compile_rate_creates_floor_effects_for_sql_quality_metrics; report_compile_success_and_strict_planned_cer_together_and_do_not_filter_noncompiling_outputs
+  apply_to_schema_cells: false
+contamination:
+  audit_policy: er2sql_contamination_risk_v1
+  split_file: config/paper_splits_v5.json
+  eligible_split_file: config/paper_splits_v5_eligible.json
+  required_before_paid_runs: true
+  require_reviewed_metadata_for_every_frozen_split_schema: true
+  require_original_source_sql_sha256_for_every_frozen_split_schema: true
+  block_cross_split_source_family_overlap: true
+  block_cross_split_identical_source_sql: true
+  high_risk_policy: retain_in_frozen_primary_population_and_report_predeclared_low_risk_only_sensitivity
+  never_claim: zero_pretraining_contamination
+  never_tune_prompts_on_final_results: true
+  risk_registry: config/contamination_risk_registry_v2.json
+reference_status:
+  manifest: data/reference_status_manifest_v1.csv
+  classification_script: scripts/build_reference_status_manifest.py
+  source_parser: sqlglot
+  source_parser_version: '30.22.0'
+  status_column: reference_status
+  reason_column: reason_code
+  executable_verified:
+    definition: frozen eligible pilot/final references that loaded on PostgreSQL and passed the reference gate
+    allowed_for: headline_compile_rate_and_CER
+  structural_only:
+    definition: original source parses in its detected source dialect and no unresolved semantic defect is detected, but it lacks executable-reference approval
+    allowed_for: separate_structural_track_only
+    final_sql_parser: PostgreSQL_dialect
+    database_load: false
+    measures: [Module2_IR_table_column_PK_FK_precision_recall_f1, final_SQL_table_column_PK_FK_precision_recall_f1]
+    parse_failure_score: zero_structural_credit
+    report_separately: true
+    optional_run: only_after_primary_run_if_budget_allows
+  defective:
+    definition: source is malformed_or_unparseable or has unresolved relational/type/sequence/duplicate-definition/procedural defects
+    allowed_for: none_of_the_evaluation_tracks
+    release_with_reason_code: true
+  module2_development:
+    allowed_ids: structural_only_ids_in_frozen_development_split_only
+    final_split_ids_allowed: false
+  invariants:
+    all_tiers_share_schema_status: true
+    never_pool_status_tracks: true
+    freeze_before_any_final_model_output: true
+    no_promotions_or_reclassification_after_model_outputs: true
+    no_mysql_verifier: true
+  report_counts_by_status_and_reason_code: true
+reporting:
+  strict_planned_cer_is_primary: true
+  compile_success_is_primary_paired_comparison: true
+  report_both_arm_compile_rate: true
+  report_cer_on_shared_both_compiled_cells: true
+  report_per_schema_sqlstate_taxonomy: true
+  report_salvage_as_secondary_only: true
+  report_raw_sql_primary_and_normalized_ablation: true
+  report_surviving_reference_count_and_exclusion_categories: true
+  report_policy_approvals_with_matching_hashes: true
+  report_named_one_off_reviews: true
+  two_arms_only: true
+  report_all_eligible_cases_as_primary: true
+  report_low_risk_only_sensitivity: true
+  historic_v1_v2_v3_v4_v5_reports_are_preserved: true
+  structural_only_track_must_be_separate_from_executable_verified_headline: true
+models:
+  arms: [structured, direct]
+  common_output_token_cap: 16384
+  provider_cannot_support_cap: report_as_provider_or_model_tier_limitation
+  per_model_cap_reduction: prohibited
+statistics:
+  inference_mode: paired_effect_sizes_and_schema_clustered_bootstrap_intervals
+  resampling_unit: schema_id_with_all_paired_tiers
+  bootstrap_replicates: 5000
+  bootstrap_seed: 20260930
+  confidence_level: 0.95

@@ -1,0 +1,32 @@
+version: 1
+
+experiment:
+  name: groq-qwen38-tier23-8-paper-v2
+  output_root: outputs/experiments/groq-qwen38-tier23-8-paper-v2
+  tiers: [tier2, tier3]
+  common_only: true
+  schema_ids:
+    - schema_0131
+    - schema_0132
+    - schema_0133
+    - schema_0134
+    - schema_0135
+    - schema_0137
+    - schema_0141
+    - schema_0142
+  resume: true
+  verify: true
+  evaluate: true
+  stop_on_error: false
+  require_complete_model_metadata: true
+  prompts_frozen: true
+
+models:
+  - name: groq-qwen3.8-27b
+    config: config/models/groq-qwen3.8-27b.yaml
+    arms: [structured, direct]
+    prompt_version: paper-pilot-v1
+    expected_cost_usd: 0.50
+    cost_tolerance_fraction: 0.50
+    minimum_success_rate: 0.90
+    max_rate_limit_events: 5

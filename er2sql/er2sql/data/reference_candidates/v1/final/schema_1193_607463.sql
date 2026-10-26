@@ -1,0 +1,77 @@
+-- Source: https://github.com/joshmeidl/VirtualSal/blob/b2ed7a34d74d0cbd57cce7684dc5d84b98ba5cb6/src/Backend/Database/database.sql?raw=true
+-- Tables detected: 6 | FK constraints: 5
+CREATE TABLE UserRegistry
+(
+    userID INT PRIMARY KEY NOT NULL
+        IDENTITY(1,1),
+    fName VARCHAR
+    (20) NOT NULL,
+    lName VARCHAR
+    (20) NULL,
+    username VARCHAR
+    (20) NOT NULL UNIQUE,
+    email VARCHAR
+    (40) NOT NULL UNIQUE,
+    pw VARCHAR
+    (20) NOT NULL
+);
+
+CREATE TABLE Schedule
+(
+    userID INT NOT NULL,
+    semester VARCHAR(6) NOT NULL,
+    term INT NOT NULL,
+    courseName VARCHAR(30) NOT NULL,
+    professorName VARCHAR(30) NOT NULL,
+    sectionNumber INT NOT NULL,
+    FOREIGN KEY (userID) REFERENCES UserRegistry(userID)
+);
+
+CREATE TABLE CourseRegistry
+(
+    courseName VARCHAR(30) NOT NULL,
+    courseDescription VARCHAR(150) NULL,
+    semester VARCHAR(6) NOT NULL,
+    term INT NOT NULL,
+    professorName VARCHAR(30) NOT NULL,
+    sectionNumber INT NOT NULL
+);
+
+CREATE TABLE Question
+(
+    creationDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    courseName VARCHAR(30) NOT NULL,
+    posterID INT NOT NULL,
+    questionID INT PRIMARY KEY IDENTITY(1,1),
+    questionTitle VARCHAR(50) NOT NULL,
+    questionBody VARCHAR(200) NULL,
+    FOREIGN KEY (posterID) REFERENCES UserRegistry(userID)
+);
+
+CREATE TABLE Answer
+(
+    answerID INT PRIMARY KEY IDENTITY(1,1),
+    questionID INT NOT NULL,
+    userID INT NOT NULL,
+    answerBody VARCHAR
+        (200) NULL,
+    upvotes INT NULL,
+    downvotes INT NULL,
+    FOREIGN KEY
+        (userID) REFERENCES UserRegistry
+        (userID),
+    FOREIGN KEY
+        (questionID) REFERENCES Question
+        (questionID)
+);
+
+CREATE TABLE Review
+(
+    posterID INT NOT NULL,
+    courseName VARCHAR(100) NOT NULL,
+    professor VARCHAR(50) NOT NULL,
+    workloadVal INT NOT NULL,
+    clarity INT NOT NULL,
+    comment VARCHAR(200) NULL,
+    FOREIGN KEY (posterID) REFERENCES UserRegistry(userID)
+);

@@ -1,0 +1,122 @@
+-- Source: https://github.com/UCASV/proyecto-final-grupo-35/blob/2df028a08e7b401c783f0510f58c4bdd61f354fa/Bases%20de%20datos/Script_VaccinationManagementDB.sql?raw=true
+-- Tables detected: 13 | FK constraints: 13
+-- Foreign keys added via ALTER TABLE:
+CREATE TABLE EMPLOYEE(
+    id INT PRIMARY KEY,
+    employee_name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    employee_address VARCHAR(100) NOT NULL,
+    employee_type INT NOT NULL,
+    id_booth INT NOT NULL,
+    id_user INT
+);
+
+CREATE TABLE EMPLOYEE_TYPE(
+    id INT PRIMARY KEY,
+    employee_type VARCHAR(30) NOT NULL
+);
+
+CREATE TABLE BOOTH(
+    id INT PRIMARY KEY,
+    manager VARCHAR(100) NOT NULL,
+    booth_address VARCHAR(100) NOT NULL,
+    phone INT NOT NULL,
+    email VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE LOG_IN(
+    id INT PRIMARY KEY IDENTITY NOT NULL,
+    id_user INT NOT NULL,
+    id_booth INT NOT NULL,
+    date_time TIMESTAMP NOT NULL
+);
+
+CREATE TABLE USERS(
+    id INT PRIMARY KEY,
+    password_user VARCHAR(30) NOT NULL,
+    users VARCHAR(30) NOT NULL
+);
+
+CREATE TABLE CITIZEN(
+    dui INT PRIMARY KEY,
+    citizen_name VARCHAR(100) NOT NULL,
+    citizen_address VARCHAR(100) NOT NULL,
+    phone INT NOT NULL,
+    email VARCHAR(100) NULL,
+    intitution_code INT NOT NULL,
+    id_employee INT NOT NULL,
+    id_special_institution INT NOT NULL,
+    id_priority_group INT NOT NULL
+);
+
+CREATE TABLE DISEASE(
+    id INT PRIMARY KEY IDENTITY,
+    disease VARCHAR(100) NOT NULL,
+    id_citizen INT
+);
+
+CREATE TABLE SPECIAL_INSTITUTION(
+    id INT PRIMARY KEY,
+    inst_name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE PRIORITY_GROUP(
+    id INT PRIMARY KEY,
+    priority_group VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE APPOINTMENT(
+    id INT PRIMARY KEY IDENTITY,
+    appointment_location VARCHAR(100) NOT NULL,
+    appointment_date TIMESTAMP NOT NULL,
+    step2_date TIMESTAMP  NULL,
+    vaccine_date TIMESTAMP NULL,
+    id_appointment_type INT NOT NULL,
+    id_citizen INT NOT NULL
+);
+
+CREATE TABLE APPOINTMENT_TYPE(
+    id INT PRIMARY KEY,
+    appointment_type VARCHAR(30) NOT NULL
+);
+
+CREATE TABLE SIDE_EFFECT(
+    id INT PRIMARY KEY IDENTITY,
+    id_effect INT NOT NULL,
+    effect_time TIMESTAMP NOT NULL,
+    id_appointment INT NOT NULL
+);
+
+CREATE TABLE SIDE_EFFECT_TYPE(
+    id INT PRIMARY KEY IDENTITY,
+    effect VARCHAR(100) NOT NULL
+);
+
+
+                         
+
+ALTER TABLE EMPLOYEE ADD FOREIGN KEY(EMPLOYEE_TYPE) REFERENCES EMPLOYEE_TYPE(id);
+
+ALTER TABLE EMPLOYEE ADD FOREIGN KEY(id_booth) REFERENCES   BOOTH(id);
+
+ALTER TABLE LOG_IN ADD FOREIGN KEY(id_booth) REFERENCES   BOOTH(id);
+
+ALTER TABLE EMPLOYEE ADD FOREIGN KEY(id_user) REFERENCES USERS(id);
+
+ALTER TABLE LOG_IN ADD FOREIGN KEY(id_user) REFERENCES USERS(id);
+
+ALTER TABLE CITIZEN ADD FOREIGN KEY(id_EMPLOYEE) REFERENCES EMPLOYEE(id);
+
+ALTER TABLE DISEASE ADD FOREIGN KEY(id_citizen) REFERENCES CITIZEN(dui);
+
+ALTER TABLE CITIZEN ADD FOREIGN KEY(id_special_institution) REFERENCES SPECIAL_INSTITUTION(id);
+
+ALTER TABLE CITIZEN ADD FOREIGN KEY(id_priority_group) REFERENCES PRIORITY_GROUP(id);
+
+ALTER TABLE APPOINTMENT ADD FOREIGN KEY(id_citizen) REFERENCES CITIZEN(dui);
+
+ALTER TABLE SIDE_EFFECT ADD FOREIGN KEY(id_effect) REFERENCES SIDE_EFFECT_TYPE(id);
+
+ALTER TABLE SIDE_EFFECT ADD FOREIGN KEY(id_appointment) REFERENCES APPOINTMENT(id);
+
+ALTER TABLE APPOINTMENT ADD FOREIGN KEY(id_appointment_type) REFERENCES APPOINTMENT_TYPE(id);

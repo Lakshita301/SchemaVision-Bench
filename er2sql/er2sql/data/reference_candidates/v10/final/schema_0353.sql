@@ -1,0 +1,965 @@
+-- Source: https://github.com/zh69183787/wd-investCost/blob/1eae95346967bb4f3cad26943cf18871ddfc0119/src/test/sql/oracle/0_schema-export.sql?raw=true
+-- Tables detected: 63 | FK/REFERENCES mentions: 144
+create table CD_ATTRIBUTE_PRIVILEGE  (
+    ID NUMERIC(19)                      not null,
+    ATTRIBUTE_NAME VARCHAR(255 CHAR),
+    GROUP_ID NUMERIC(19),
+    PRIVILEGE NUMERIC(19),
+    constraint PK_CF_610 primary key (ID)
+);
+create table CF_CODE_INFO  (
+    ID NUMERIC(19)                      not null,
+    CODE_INFO_ID NUMERIC(19),
+    TYPE_ID NUMERIC(19),
+    DISP_ORDER NUMERIC(10),
+    REMARK1 VARCHAR(255),
+    REMARK2 VARCHAR(255),
+    OPERATE_TIME NUMERIC(19),
+    OPERATOR VARCHAR(50),
+    REMOVED NUMERIC(10),
+    CODE VARCHAR(100),
+    NAME VARCHAR(255)                   not null,
+    DESCRIPTION VARCHAR(255),
+    constraint PK_CF_602 primary key (ID)
+);
+create table CF_CODE_TYPE  (
+    ID NUMERIC(19)                      not null,
+    SYSTEM_TYPE NUMERIC(10),
+    DISP_ORDER NUMERIC(10),
+    LEVE NUMERIC(10),
+    OPERATE_TIME NUMERIC(19),
+    OPERATOR VARCHAR(50),
+    REMOVED NUMERIC(10),
+    CODE VARCHAR(100),
+    NAME VARCHAR(255)                   not null,
+    DESCRIPTION VARCHAR(255),
+    EXTERNAL_MAPPING VARCHAR(4000 CHAR),
+    STORAGE_TYPE NUMERIC(10),
+    constraint PK_CF_1 primary key (ID)
+);
+create table CF_DEMO_COAUDIT  (
+    ID NUMERIC(19)                     not null,
+    CONTENT VARCHAR(255 CHAR),
+    CREATE_DATE DATE,
+    CREATOR VARCHAR(255 CHAR),
+    CO_AUDIT_ID NUMERIC(19),
+    constraint PK_CF_607 primary key (ID)
+);
+create table CF_DEMO_DRAFT  (
+    ID NUMERIC(19)                      not null,
+    PROCESS_INSTANCE VARCHAR(255 CHAR),
+    CONTENT VARCHAR(255 CHAR),
+    CREATOR VARCHAR(255 CHAR),
+    TITLE VARCHAR(255 CHAR),
+    TYPE NUMERIC(19),
+    CREATE_DATE DATE,
+    AFFILIATED_COMMENT VARCHAR(255 CHAR),
+    AFFILIATED_DATE DATE,
+    ARCHIVE_COMMENT VARCHAR(255 CHAR),
+    ARCHIVE_DATE DATE,
+    AUDITOR VARCHAR(255 CHAR),
+    AUDITOR_DATE DATE,
+    CONFIDENTIAL_LEVEL NUMERIC(19),
+    FILE_CODE VARCHAR(255 CHAR),
+    HEADER_COMMENT VARCHAR(255 CHAR),
+    HEADER_DATE DATE,
+    OFFICIAL_COMMENT VARCHAR(255 CHAR),
+    OFFICIAL_DATE DATE,
+    PRINT_COMMENT VARCHAR(255 CHAR),
+    PRINT_DATE DATE,
+    PRIORITY NUMERIC(19),
+    VERIFIED_COMMENT VARCHAR(255 CHAR),
+    VERIFIED_DATE DATE,
+    constraint PK_CF_608 primary key (ID)
+);
+create table CF_EXTEND_PROPERTY_CONFIG  (
+    ID NUMERIC(19),
+    CLASS_NAME VARCHAR(255),
+    EXT1 VARCHAR(255),
+    EXT2 VARCHAR(255),
+    EXT3 VARCHAR(255),
+    EXT4 VARCHAR(255),
+    EXT5 VARCHAR(255),
+    EXT6 VARCHAR(255),
+    EXT7 VARCHAR(255),
+    EXT8 VARCHAR(255),
+    EXT9 VARCHAR(255),
+    EXT10 VARCHAR(255),
+    EXT11 VARCHAR(255),
+    EXT12 VARCHAR(255),
+    EXT13 VARCHAR(255),
+    EXT14 VARCHAR(255),
+    EXT15 VARCHAR(255),
+    EXT16 VARCHAR(255),
+    EXT17 VARCHAR(255),
+    EXT18 VARCHAR(255),
+    EXT19 VARCHAR(255),
+    EXT20 VARCHAR(255),
+    EXT21 VARCHAR(255),
+    EXT22 VARCHAR(255),
+    EXT23 VARCHAR(255),
+    EXT24 VARCHAR(255),
+    EXT25 VARCHAR(255),
+    EXT26 VARCHAR(255),
+    EXT27 VARCHAR(255),
+    EXT28 VARCHAR(255),
+    EXT29 VARCHAR(255),
+    EXT30 VARCHAR(255),
+    EXT31 VARCHAR(255),
+    EXT32 VARCHAR(255),
+    EXT33 VARCHAR(255),
+    EXT34 VARCHAR(255),
+    EXT35 VARCHAR(255),
+    EXT36 VARCHAR(255),
+    EXT37 VARCHAR(255),
+    EXT38 VARCHAR(255),
+    EXT39 VARCHAR(255),
+    EXT40 VARCHAR(255)
+);
+create table CF_LOG  (
+    ID NUMERIC(19)                      not null,
+    LOGINDATE DATE,
+    OPERDATE DATE,
+    USERID VARCHAR(20),
+    USERNAME VARCHAR(50),
+    LOGINFO TEXT,
+    FULLCLASSNAME VARCHAR(200),
+    ERROR_MESSAGE TEXT,
+    constraint PK_CF_2 primary key (ID)
+);
+create table CF_SESSION_RECORD  (
+    ID NUMERIC(19)                      not null,
+    SESSION_KEY VARCHAR(20)                    not null,
+    SESSIONSET_ID NUMERIC(19),
+    SESSION_VALUE BYTEA,
+    constraint PK_CF_3 primary key (ID)
+);
+create table CF_SESSION_SET  (
+    ID NUMERIC(19)                      not null,
+    SESSION_ID VARCHAR(100)                   not null,
+    CLIENT_ID VARCHAR(100),
+    constraint PK_CF_4 primary key (ID)
+);
+create table CM_LEAVE_APPLY  (
+    ID NUMERIC(19)                      not null,
+    NAME VARCHAR(255 CHAR),
+    USER_ID VARCHAR(255 CHAR),
+    APPLY_DATE DATE,
+    TYPE INTEGER,
+    CONTENT VARCHAR(255 CHAR),
+    FROM_DATE DATE,
+    TO_DATE DATE,
+    COUNT INTEGER,
+    LEADER_SIGN NUMERIC(1),
+    MANAGER_SIGN NUMERIC(1),
+    constraint PK_CF_606 primary key (ID)
+);
+create table CM_URL_RESOURCE  (
+    ID NUMERIC(19)                      not null,
+    RESOURCE_NAME VARCHAR(255 CHAR),
+    DESCRIPTION VARCHAR(255 CHAR),
+    constraint PK_CF_609 primary key (ID)
+);
+create table CP_CONSOLE_OPERS  (
+    ID NUMERIC(19)                      not null,
+    DESCRIPTION VARCHAR(255),
+    PARENT_RESOURCE_ID NUMERIC(19),
+    RESOURCE_NAME VARCHAR(255),
+    CODE VARCHAR(100),
+    constraint PK_CF_5 primary key (ID),
+    constraint PK_CF_6 unique (CODE)
+);
+create table CP_INDIVIDUAL_VIEW  (
+    ID NUMERIC(19)                      not null,
+    DESCRIPTION VARCHAR(255),
+    DISP_ORDER NUMERIC(10),
+    IMAGE VARCHAR(255),
+    MENU_ID NUMERIC(19),
+    NAME VARCHAR(255),
+    PARENT_VIEW_ID NUMERIC(19),
+    USER_ID NUMERIC(19),
+    constraint PK_CF_7 primary key (ID)
+);
+create table CP_MENU_RESOURCE  (
+    ID NUMERIC(19)                      not null,
+    CODE VARCHAR(255),
+    RESOURCE_NAME VARCHAR(255),
+    LINKPATH VARCHAR(255),
+    DISP_ORDER NUMERIC(10),
+    VALID NUMERIC(1),
+    PARENT_RESOURCE_ID NUMERIC(19),
+    HANDLER VARCHAR(255),
+    CLS VARCHAR(255),
+    MENU_TYPE NUMERIC(19),
+    TARGET VARCHAR(255),
+    BIG_IMAGE NUMERIC(19),
+    SMALL_IMAGE NUMERIC(19),
+    BACKUP_IMAGE VARCHAR(100),
+    BACKUP_IMAGE2 VARCHAR(100),
+    HOST NUMERIC(19),
+    ICON VARCHAR(255),
+    DESCRIPTION VARCHAR(255),
+    EXT1 VARCHAR(255),
+    EXT2 VARCHAR(255),
+    EXT3 VARCHAR(255),
+    EXT4 VARCHAR(255),
+    EXT5 VARCHAR(255),
+    EXT6 VARCHAR(255),
+    EXT7 VARCHAR(255),
+    EXT8 VARCHAR(255),
+    constraint PK_CF_8 primary key (ID)
+);
+create table CP_URL_RESOURCE  (
+    ID NUMERIC(19)                      not null,
+    RESOURCE_NAME VARCHAR(255),
+    PARENT_RESOURCE_ID NUMERIC(19),
+    DISP_ORDER NUMERIC(10),
+    LINKPATH VARCHAR(100),
+    PARAMETERS VARCHAR(100),
+    DESCRIPTION VARCHAR(200),
+    CODE VARCHAR(200)                   not null,
+    constraint PK_CF_13 primary key (ID)
+);
+create table CR_PROXY_MENU  (
+    PROXY_ID NUMERIC(19)                      not null,
+    MENU_ID NUMERIC(19)                      not null,
+    constraint PK_CF_15 primary key (PROXY_ID, MENU_ID)
+);
+create table CS_ACC_PERMISSION  (
+    ACL_PERMISSION_ID NUMERIC(19)                      not null,
+    SECURITY_ROLE_ID NUMERIC(19)                      not null,
+    constraint PK_CF_18 primary key (SECURITY_ROLE_ID, ACL_PERMISSION_ID)
+);
+create table CS_ACL_OPERATION  (
+    ID NUMERIC(19)                      not null,
+    CODE VARCHAR(100),
+    NAME VARCHAR(255)                   not null,
+    DESCRIPTION VARCHAR(255),
+    ACL_RES_TYPE_ID NUMERIC(19),
+    OPERATE_TIME NUMERIC(19),
+    OPERATOR VARCHAR(50),
+    REMOVED NUMERIC(10),
+    constraint PK_CF_26 primary key (ID)
+);
+create table CS_ACL_PERMISSION  (
+    ID NUMERIC(19)                      not null,
+    ACL_OPERATION_ID NUMERIC(19),
+    ACL_RESOURCE_ID NUMERIC(19),
+    START_TIME DATE,
+    DUE_TIME DATE,
+    constraint PK_CF_28 primary key (ID)
+);
+create table CS_ACL_RESOURCE  (
+    ID NUMERIC(19)                      not null,
+    NAME VARCHAR(255),
+    DESCRIPTION VARCHAR(255),
+    PARENT_ACL_RES_ID NUMERIC(19),
+    ACL_RES_TYPE_ID NUMERIC(19),
+    NATIVE_RESOURCE_ID VARCHAR(255 CHAR),
+    constraint PK_CF_33 primary key (ID)
+);
+create table CS_ACL_RES_TYPE  (
+    ID NUMERIC(19)                      not null,
+    WEBAPP_NODE_ID NUMERIC(19),
+    CATALOG NUMERIC(10),
+    CODE VARCHAR(100),
+    DESCRIPTION VARCHAR(255),
+    NAME VARCHAR(100)                   not null,
+    CLASS_NAME VARCHAR(100),
+    INHERITTYPE NUMERIC(10),
+    OPERATE_TIME NUMERIC(19),
+    OPERATOR VARCHAR(50),
+    REMOVED NUMERIC(10),
+    constraint PK_CF_31 primary key (ID)
+);
+create table CS_ACTION_RESOURCE  (
+    ID NUMERIC(19)                      not null,
+    DESCRIPTION VARCHAR(255),
+    PARENT_RESOURCE_ID NUMERIC(19),
+    RESOURCE_NAME VARCHAR(255),
+    CLASS_NAME VARCHAR(255)                   not null,
+    METHOD_NAME VARCHAR(100)                   not null,
+    constraint PK_CF_128 primary key (ID)
+);
+create table CS_CUSTOM_RESOURCE  (
+    ID NUMERIC(19)                      not null,
+    CODE VARCHAR(100),
+    DESCRIPTION VARCHAR(255),
+    PARENT_RESOURCE_ID NUMERIC(19),
+    NAME VARCHAR(255),
+    ACL_RES_TYPE_ID NUMERIC(19),
+    OPERATE_TIME NUMERIC(19),
+    OPERATOR VARCHAR(50),
+    REMOVED NUMERIC(10),
+    constraint PK_CF_129 primary key (ID)
+);
+create table CS_GROUP  (
+    ID NUMERIC(19)                      not null,
+    DYNAACCESSCLASS VARCHAR(255),
+    DYANPARAMS VARCHAR(255),
+    DYNA NUMERIC(10),
+    OPERATE_TIME NUMERIC(19),
+    OPERATOR VARCHAR(50),
+    REMOVED NUMERIC(10),
+    CODE VARCHAR(100),
+    NAME VARCHAR(255)                   not null,
+    DESCRIPTION VARCHAR(255),
+    constraint PK_CF_41 primary key (ID)
+);
+create table CS_GROUP_ROLE  (
+    SECURITY_GROUP_ID NUMERIC(19)                      not null,
+    SECURITY_ROLE_ID NUMERIC(19)                      not null,
+    constraint PK_CF_42 primary key (SECURITY_GROUP_ID, SECURITY_ROLE_ID)
+);
+create table CS_ORGAN_EXTEND_PROPERTY  (
+    ID NUMERIC(19)                      not null,
+    EXT1 VARCHAR(255),
+    EXT2 VARCHAR(255),
+    EXT3 VARCHAR(255),
+    EXT4 VARCHAR(255),
+    EXT5 VARCHAR(255),
+    EXT6 VARCHAR(255),
+    EXT7 VARCHAR(255),
+    EXT8 VARCHAR(255),
+    EXT9 VARCHAR(255),
+    EXT10 VARCHAR(255),
+    EXT11 VARCHAR(255),
+    EXT12 VARCHAR(255),
+    EXT13 VARCHAR(255),
+    EXT14 VARCHAR(255),
+    EXT15 VARCHAR(255),
+    EXT16 VARCHAR(255),
+    EXT17 VARCHAR(255),
+    EXT18 VARCHAR(255),
+    EXT19 VARCHAR(255),
+    EXT20 VARCHAR(255),
+    EXT21 VARCHAR(255),
+    EXT22 VARCHAR(255),
+    EXT23 VARCHAR(255),
+    EXT24 VARCHAR(255),
+    EXT25 VARCHAR(255),
+    EXT26 VARCHAR(255),
+    EXT27 VARCHAR(255),
+    EXT28 VARCHAR(255),
+    EXT29 VARCHAR(255),
+    EXT30 VARCHAR(255),
+    EXT31 VARCHAR(255),
+    EXT32 VARCHAR(255),
+    EXT33 VARCHAR(255),
+    EXT34 VARCHAR(255),
+    EXT35 VARCHAR(255),
+    EXT36 VARCHAR(255),
+    EXT37 VARCHAR(255),
+    EXT38 VARCHAR(255),
+    EXT39 VARCHAR(255),
+    EXT40 VARCHAR(255),
+    ORGAN_NODE_ID NUMERIC(19),
+    constraint PK_CS_ORGAN_EXTEND_PROPERTY primary key (ID)
+);
+create table CS_ORGAN_MODEL  (
+    ID NUMERIC(19)                      not null,
+    LFT NUMERIC(10),
+    RGT NUMERIC(10),
+    NODESTATUS VARCHAR(255),
+    ORDERS NUMERIC(19),
+    RANK VARCHAR(255),
+    ORG_NODE_ID NUMERIC(19),
+    ORG_TREE_ID NUMERIC(19),
+    PARENT_NODE_ID NUMERIC(19),
+    OPERATE_TIME NUMERIC(19),
+    OPERATOR VARCHAR(50),
+    REMOVED NUMERIC(10),
+    constraint PK_CF_45 primary key (ID)
+);
+create table CS_ORGAN_NODE  (
+    ID NUMERIC(19)                      not null,
+    CREATE_TIME DATE,
+    DEPT_ADDRESS VARCHAR(255),
+    ICON NUMERIC(19),
+    ORGAN_NODE_TYPE_ID NUMERIC(19),
+    PRINCIPAL VARCHAR(255),
+    PRINCIPAL_PHONE VARCHAR(255),
+    FAX VARCHAR(255),
+    ADMIN_USER_ID NUMERIC(19),
+    OPERATE_TIME NUMERIC(19),
+    OPERATOR VARCHAR(50),
+    REMOVED NUMERIC(10),
+    CODE VARCHAR(100),
+    NAME VARCHAR(255)                   not null,
+    DESCRIPTION VARCHAR(255),
+    constraint PK_CF_49 primary key (ID)
+);
+create table CS_ORGAN_NODE_TYPE  (
+    ID NUMERIC(19)                      not null,
+    DOWN NUMERIC(10),
+    IMAGE VARCHAR(50),
+    PEOPLE NUMERIC(10),
+    IS_TOP NUMERIC(10),
+    OPERATE_TIME NUMERIC(19),
+    OPERATOR VARCHAR(50),
+    REMOVED NUMERIC(10),
+    CODE VARCHAR(100),
+    NAME VARCHAR(255)                   not null,
+    DESCRIPTION VARCHAR(255),
+    constraint PK_CF_53 primary key (ID)
+);
+create table CS_ORGAN_RELATION  (
+    ID NUMERIC(19)                      not null,
+    CHILD_NODE_ID NUMERIC(19),
+    CREATE_TIME DATE,
+    DESCRIPTION VARCHAR(255),
+    NAME VARCHAR(255)                   not null,
+    ORGAN_REALTION_TYPE_ID NUMERIC(19),
+    PARENT_NODE_ID NUMERIC(19),
+    OPERATE_TIME NUMERIC(19),
+    OPERATOR VARCHAR(50),
+    REMOVED NUMERIC(10),
+    constraint PK_CF_54 primary key (ID)
+);
+create table CS_ORGAN_RELATION_TYPE  (
+    ID NUMERIC(19)                      not null,
+    OPERATE_TIME NUMERIC(19),
+    OPERATOR VARCHAR(50),
+    REMOVED NUMERIC(10),
+    CODE VARCHAR(100),
+    NAME VARCHAR(255)                   not null,
+    DESCRIPTION VARCHAR(255),
+    constraint PK_CF_58 primary key (ID)
+);
+create table CS_ORGAN_ROLE  (
+    ORGAN_MODEL_ID NUMERIC(19)                      not null,
+    SECURITY_ROLE_ID NUMERIC(19)                      not null,
+    constraint PK_CF_59 primary key (ORGAN_MODEL_ID, SECURITY_ROLE_ID)
+);
+create table CS_ORGAN_RULE  (
+    ID NUMERIC(19)                      not null,
+    ORGAN_TREE_TYPE_ID NUMERIC(19),
+    SUPERIOR_NODE_ID NUMERIC(19),
+    SUBORDINATE_NODE_ID NUMERIC(19),
+    OPERATE_TIME NUMERIC(19),
+    OPERATOR VARCHAR(50),
+    REMOVED NUMERIC(10),
+    CODE VARCHAR(100),
+    NAME VARCHAR(255)                   not null,
+    DESCRIPTION VARCHAR(255),
+    constraint PK_CF_62 primary key (ID)
+);
+create table CS_ORGAN_TREE  (
+    ID NUMERIC(19)                      not null,
+    CREATE_TIME DATE,
+    ROOT_NODE_ID NUMERIC(19),
+    ORGAN_TREE_TYPE_ID NUMERIC(19),
+    OPERATE_TIME NUMERIC(19),
+    OPERATOR VARCHAR(50),
+    REMOVED NUMERIC(10),
+    CODE VARCHAR(100),
+    NAME VARCHAR(255)                   not null,
+    DESCRIPTION VARCHAR(255),
+    constraint PK_CF_65 primary key (ID)
+);
+create table CS_ORGAN_TREE_TYPE  (
+    ID NUMERIC(19)                      not null,
+    OPERATE_TIME NUMERIC(19),
+    OPERATOR VARCHAR(50),
+    REMOVED NUMERIC(10),
+    CODE VARCHAR(100),
+    NAME VARCHAR(255)                   not null,
+    DESCRIPTION VARCHAR(255),
+    constraint PK_CF_67 primary key (ID)
+);
+create table CS_PROXY_USER  (
+    ID NUMERIC(19)                      not null,
+    DESCRIPTION VARCHAR(255),
+    END_TIME DATE,
+    START_TIME DATE,
+    PROXY_ID NUMERIC(19),
+    USER_ID NUMERIC(19),
+    constraint PK_CF_68 primary key (ID)
+);
+create table CS_PUB_PERMISSION  (
+    ACL_PERMISSION_ID NUMERIC(19)                      not null,
+    SECURITY_ROLE_ID NUMERIC(19)                      not null,
+    constraint PK_CF_70 primary key (SECURITY_ROLE_ID, ACL_PERMISSION_ID)
+);
+create table CS_RESOURCE_GROUP  (
+    ID NUMERIC(19)                      not null,
+    ACL_RES_TYPE_ID NUMERIC(19),
+    CLASS_NAME VARCHAR(255)                   not null,
+    CODE VARCHAR(100),
+    DESCRIPTION VARCHAR(255),
+    NAME VARCHAR(255),
+    PROP_VALUES VARCHAR(255),
+    OPERATE_TIME NUMERIC(19),
+    OPERATOR VARCHAR(50),
+    REMOVED NUMERIC(10),
+    constraint PK_CF_73 primary key (ID)
+);
+create table CS_REV_PERMISSION  (
+    ACL_PERMISSION_ID NUMERIC(19)                      not null,
+    SECURITY_ROLE_ID NUMERIC(19)                      not null,
+    constraint PK_CF_75 primary key (SECURITY_ROLE_ID, ACL_PERMISSION_ID)
+);
+create table CS_ROLE  (
+    ID NUMERIC(19)                      not null,
+    NAME VARCHAR(100)                   not null,
+    TYPE VARCHAR(1)                     not null,
+    DESCRIPTION VARCHAR(255),
+    PARENT_ROLE_ID NUMERIC(19),
+    OPERATE_TIME NUMERIC(19),
+    OPERATOR VARCHAR(50),
+    REMOVED NUMERIC(10),
+    constraint PK_CF_78 primary key (ID),
+    constraint PK_CF_79 unique (NAME)
+);
+create table CS_USER  (
+    ID NUMERIC(19)                      not null,
+    EXT1 VARCHAR(255),
+    EXT2 VARCHAR(255),
+    EXT3 VARCHAR(255),
+    EXT4 VARCHAR(255),
+    EXT5 VARCHAR(255),
+    EXT6 VARCHAR(255),
+    EXT7 VARCHAR(255),
+    EXT8 VARCHAR(255),
+    EMAIL VARCHAR(100),
+    ADDRESS VARCHAR(255),
+    MOBILE1 VARCHAR(50),
+    MOBILE2 VARCHAR(50),
+    FAX VARCHAR(50),
+    HOME_PHONE VARCHAR(50),
+    OFFICE_PHONE VARCHAR(50),
+    AUTHENTIC_TYPE NUMERIC(10),
+    CERTIFICATE VARCHAR(255),
+    STATUS NUMERIC(19),
+    LOGIN_NAME VARCHAR(100)                   not null,
+    NAME VARCHAR(100),
+    SEX VARCHAR(255),
+    PASSWORD VARCHAR(100)                   not null,
+    USERTYPE NUMERIC(10),
+    ACCOUNTTYPE NUMERIC(10),
+    OPERATE_TIME NUMERIC(19),
+    OPERATOR VARCHAR(50),
+    REMOVED NUMERIC(10),
+    CREATEDATE NUMERIC(19),
+    RESET_CODE VARCHAR(255),
+    constraint PK_CF_81 primary key (ID)
+);
+create table CS_USER_APPNODE  (
+    APP_NODE_ID NUMERIC(19)                      not null,
+    USER_ID NUMERIC(19)                      not null,
+    constraint PK_CF_82 primary key (USER_ID, APP_NODE_ID)
+);
+create table CS_USER_EXTEND_PROPERTY  (
+    ID NUMERIC(19)                      not null,
+    EXT1 VARCHAR(255),
+    EXT2 VARCHAR(255),
+    EXT3 VARCHAR(255),
+    EXT4 VARCHAR(255),
+    EXT5 VARCHAR(255),
+    EXT6 VARCHAR(255),
+    EXT7 VARCHAR(255),
+    EXT8 VARCHAR(255),
+    EXT9 VARCHAR(255),
+    EXT10 VARCHAR(255),
+    EXT11 VARCHAR(255),
+    EXT12 VARCHAR(255),
+    EXT13 VARCHAR(255),
+    EXT14 VARCHAR(255),
+    EXT15 VARCHAR(255),
+    EXT16 VARCHAR(255),
+    EXT17 VARCHAR(255),
+    EXT18 VARCHAR(255),
+    EXT19 VARCHAR(255),
+    EXT20 VARCHAR(255),
+    EXT21 VARCHAR(255),
+    EXT22 VARCHAR(255),
+    EXT23 VARCHAR(255),
+    EXT24 VARCHAR(255),
+    EXT25 VARCHAR(255),
+    EXT26 VARCHAR(255),
+    EXT27 VARCHAR(255),
+    EXT28 VARCHAR(255),
+    EXT29 VARCHAR(255),
+    EXT30 VARCHAR(255),
+    EXT31 VARCHAR(255),
+    EXT32 VARCHAR(255),
+    EXT33 VARCHAR(255),
+    EXT34 VARCHAR(255),
+    EXT35 VARCHAR(255),
+    EXT36 VARCHAR(255),
+    EXT37 VARCHAR(255),
+    EXT38 VARCHAR(255),
+    EXT39 VARCHAR(255),
+    EXT40 VARCHAR(255),
+    SECURITY_USER_ID NUMERIC(19),
+    constraint PK_CS_USER_EXTEND_PROPERTY primary key (ID)
+);
+create table CS_USER_GROUP  (
+    SECURITY_GROUP_ID NUMERIC(19)                      not null,
+    SECURITY_USER_ID NUMERIC(19)                      not null,
+    constraint PK_CF_85 primary key (SECURITY_USER_ID, SECURITY_GROUP_ID)
+);
+create table CS_USER_LOGIN  (
+    ID NUMERIC(19)                      not null,
+    USER_ID NUMERIC(19),
+    USER_NAME VARCHAR(255),
+    LOGIN_NAME VARCHAR(255),
+    APP_ID NUMERIC(19),
+    APP_NAME VARCHAR(255),
+    LOGIN_TIME NUMERIC(19),
+    IP_ADDRESS VARCHAR(255),
+    AREA VARCHAR(255),
+    OPERATING_SYSTEM VARCHAR(255),
+    BROWSER VARCHAR(255),
+    ONLINE_TIME NUMERIC(19),
+    USER_STATE NUMERIC(10),
+    ERROR_INFO VARCHAR(255),
+    constraint PK_CS_USER_LOGIN primary key (ID)
+);
+create table CS_USER_ORGANNODE  (
+    ORGAN_NODE_ID NUMERIC(19)                      not null,
+    SECURITY_USER_ID NUMERIC(19)                      not null,
+    ORDERS NUMERIC(19),
+    constraint PK_CF_125 primary key (SECURITY_USER_ID, ORGAN_NODE_ID)
+);
+create table CS_USER_ROLE  (
+    SECURITY_ROLE_ID NUMERIC(19)                      not null,
+    SECURITY_USER_ID NUMERIC(19)                      not null,
+    constraint PK_CF_90 primary key (SECURITY_USER_ID, SECURITY_ROLE_ID)
+);
+create table CS_WEBAPP_NODE  (
+    ID NUMERIC(19)                      not null,
+    COMPATABLE NUMERIC(1),
+    CENTRAL_NODE_ID NUMERIC(19),
+    APP_SERVER VARCHAR(255),
+    CODE VARCHAR(100),
+    DB_SERVER VARCHAR(255),
+    DESCRIPTION VARCHAR(255),
+    INDEX_URL VARCHAR(255),
+    IS_CUTE_SERIES NUMERIC(1),
+    NAME VARCHAR(255),
+    NODE_TYPE NUMERIC(19)                      not null,
+    VENDOR VARCHAR(255),
+    VERSION VARCHAR(255),
+    OPERATE_TIME NUMERIC(19),
+    OPERATOR VARCHAR(50),
+    REMOVED NUMERIC(10),
+    MAX_INACTIVE_SECS NUMERIC(19),
+    LOGOUT_STYLE NUMERIC(1),
+    ROOT_MENU_CODE VARCHAR(255),
+    ORGAN_ID NUMERIC(19),
+    constraint PK_CF_94 primary key (ID)
+);
+create table CW_ACT_INSTANCE  (
+    ACT_INSTANCE_ID VARCHAR(255)                   not null,
+    ACTIVITY_ID VARCHAR(255),
+    ACTIVITY_NAME VARCHAR(255),
+    ACTIVITY_STATE NUMERIC(10),
+    ACTIVITY_TYPE NUMERIC(10),
+    END_TIME DATE,
+    INPUT_CONTAINERS VARCHAR(255),
+    OUTPUT_CONTAINERS VARCHAR(255),
+    PROCESS_INSTANCE_ID VARCHAR(255)                   not null,
+    START_TIME DATE,
+    PROPERTIES RAW(2000),
+    constraint PK_CF_96 primary key (ACT_INSTANCE_ID)
+);
+create table CW_AUDIT_ACT_INST  (
+    ID NUMERIC(19)                      not null,
+    ACTIVITY_NAME VARCHAR(255)                   not null,
+    PROCESS_INSTANCE_ID VARCHAR(255)                   not null,
+    ACTIVITY_INSTANCE_ID VARCHAR(255)                   not null,
+    CHANGEDTIME DATE                            not null,
+    NEWSTATE NUMERIC(10),
+    PERVIOUSSTATE NUMERIC(10),
+    ACTION NUMERIC(10)                      not null,
+    constraint PK_CF_98 primary key (ID)
+);
+create table CW_AUDIT_CONFIG  (
+    ID NUMERIC(19)                      not null,
+    ISAUDIT_ACTIVITY_INSTANCE NUMERIC(1),
+    ISAUDIT_GLOBAL NUMERIC(1),
+    ISAUDIT_PROCESS_INSTANCE NUMERIC(1),
+    ISAUDIT_PROCESS_MODEL NUMERIC(1),
+    ISAUDIT_WORKITEM NUMERIC(1),
+    PROCESS_ID VARCHAR(255),
+    ISAUDIT_PROCESS_DATA NUMERIC(1),
+    constraint PK_CF_99 primary key (ID),
+    constraint PK_CF_100 unique (PROCESS_ID)
+);
+create table CW_AUDIT_PDATA  (
+    ID NUMERIC(19)                      not null,
+    CONTAINER_INSTANCE_ID VARCHAR(255),
+    ACTION NUMERIC(10),
+    NEW_DATA VARCHAR(255),
+    OLD_DATA VARCHAR(255),
+    CHANGED_TIME DATE,
+    ATTRIBUTE_NAME VARCHAR(255),
+    PROCESS_DATA_ID NUMERIC(19),
+    PROCESS_INSTANCE_ID VARCHAR(255),
+    constraint PK_CF_126 primary key (ID)
+);
+create table CW_AUDIT_PINSTANCE  (
+    ID NUMERIC(19)                      not null,
+    PROCESS_NAME VARCHAR(255),
+    PROCESS_ID VARCHAR(255)                   not null,
+    PROCESS_INSTANCE_ID VARCHAR(255)                   not null,
+    CHANGEDTIME DATE                            not null,
+    NEWSTATE NUMERIC(10),
+    PERVIOUSSTATE NUMERIC(10),
+    ACTION NUMERIC(10)                      not null,
+    constraint PK_CF_127 primary key (ID)
+);
+create table CW_AUDIT_PMODEL  (
+    ID NUMERIC(19)                      not null,
+    PROCESS_NAME VARCHAR(255),
+    MODEL_ID VARCHAR(255),
+    PROCESS_ID VARCHAR(255),
+    CHANGEDTIME DATE                            not null,
+    NEWSTATE NUMERIC(10),
+    PERVIOUSSTATE NUMERIC(10),
+    ACTION NUMERIC(10)                      not null,
+    constraint PK_CF_102 primary key (ID)
+);
+create table CW_AUDIT_WORKITEM  (
+    ID NUMERIC(19)                      not null,
+    ACTIVITY_NAME VARCHAR(255),
+    WORKITEM_ID NUMERIC(19),
+    ACTIVITY_INSTANCE_ID VARCHAR(255),
+    CHANGEDTIME DATE                            not null,
+    NEWSTATE NUMERIC(10),
+    PERVIOUSSTATE NUMERIC(10),
+    ACTION NUMERIC(10)                      not null,
+    constraint PK_CF_103 primary key (ID)
+);
+create table CW_CON_INSTANCE  (
+    CON_INSTANCE_ID VARCHAR(255)                   not null,
+    PROCESS_INSTANCE_ID VARCHAR(255),
+    CONTAINER_ID VARCHAR(255),
+    CONTAINER_NAME VARCHAR(255),
+    constraint PK_CF_104 primary key (CON_INSTANCE_ID)
+);
+create table CW_PROCESS_DATA  (
+    ID NUMERIC(19)                      not null,
+    ATTRIBUTE_NAME VARCHAR(255),
+    ATTRIBUTE_TYPE VARCHAR(255),
+    ATTRIBUTE_VALUE VARCHAR(255),
+    CON_INSTANCE_ID VARCHAR(255),
+    MODIFIED_TIME DATE,
+    RECORD_INDEX NUMERIC(10),
+    constraint PK_CF_105 primary key (ID)
+);
+create table CW_PROCESS_INSTANCE  (
+    PROCESS_INSTANCE_ID VARCHAR(255)                   not null,
+    ENABLED_ACTIVITIES VARCHAR(255),
+    END_TIME DATE,
+    EXTERNALE_KEY VARCHAR(255),
+    PROCESS_ID VARCHAR(255)                   not null,
+    PROCESS_STATE NUMERIC(10),
+    START_TIME DATE,
+    PROCESS_NAME VARCHAR(255),
+    PROPERTIES RAW(2000),
+    BUSINESS_ENTITYID VARCHAR(255),
+    STATE_DESCRIPTION VARCHAR(255),
+    PARENT_INSTANCE_ID VARCHAR(255 CHAR),
+    constraint PK_CF_107 primary key (PROCESS_INSTANCE_ID)
+);
+create table CW_PROCESS_MODEL  (
+    PROCESS_ID VARCHAR(255)                   not null,
+    BUSINESS_TYPE NUMERIC(10),
+    DESCRIPTION VARCHAR(255),
+    MODEL TEXT,
+    MODEL_ID VARCHAR(255),
+    NAME VARCHAR(255),
+    PUBLISH_STATE NUMERIC(10),
+    VERSION NUMERIC(10),
+    constraint PK_CF_109 primary key (PROCESS_ID)
+);
+create table CW_TIME_ACTIVITY  (
+    ID NUMERIC(19)                      not null,
+    EXPECTED_TIME DATE,
+    ACTIVITY_INSTANCE_ID VARCHAR(255),
+    STARTED_TIME DATE,
+    constraint PK_CF_110 primary key (ID)
+);
+create table CW_TRANS_INSTANCE  (
+    TRANS_INSTANCE_ID VARCHAR(255)                   not null,
+    FROM_AINSTANCE_ID VARCHAR(255),
+    MODIFIED_TIME DATE,
+    TO_AINSTANCE_ID VARCHAR(255),
+    PROCESS_INSTANCE_ID VARCHAR(255),
+    TRANSITION_ID VARCHAR(255),
+    TRANSITION_NAME VARCHAR(255),
+    TRANSITION_STATE NUMERIC(10),
+    TRANSITION_TYPE NUMERIC(10),
+    PROPERTIES RAW(2000),
+    constraint PK_CF_112 primary key (TRANS_INSTANCE_ID)
+);
+create table CW_WORK_ITEMS  (
+    WORKITEM_ID NUMERIC(19)                      not null,
+    ACTIVITY_ID VARCHAR(255),
+    ACT_INSTANCE_ID VARCHAR(255),
+    ACTIVITY_NAME VARCHAR(255),
+    DEADLINE DATE,
+    DESCRIPTION VARCHAR(255),
+    OUTER_ID VARCHAR(255),
+    WORKITEM_TYPE NUMERIC(10),
+    WORK_STATE NUMERIC(10),
+    MODEL_ID VARCHAR(255 CHAR),
+    PROCESS_INSTANCE_ID VARCHAR(255 CHAR),
+    constraint PK_CF_117 primary key (WORKITEM_ID)
+);
+create table CW_WORK_PERSON  (
+    ID NUMERIC(19)                      not null,
+    DESCRIPTION VARCHAR(255),
+    IS_SHOW NUMERIC(1),
+    EXECUTE_TIME DATE,
+    WORK_INDEX NUMERIC(10),
+    PERSON_ID VARCHAR(255),
+    WORKITEM_ID NUMERIC(19),
+    constraint PK_CF_119 primary key (ID)
+);
+ALTER TABLE CD_ATTRIBUTE_PRIVILEGE ADD constraint PK_CF_334 foreign key (GROUP_ID)
+      references CS_GROUP (ID);
+ALTER TABLE CF_CODE_INFO ADD constraint PK_CF_500 foreign key (CODE_INFO_ID)
+      references CF_CODE_INFO (ID);
+ALTER TABLE CF_CODE_INFO ADD constraint PK_CF_300 foreign key (TYPE_ID)
+      references CF_CODE_TYPE (ID);
+ALTER TABLE CF_DEMO_COAUDIT ADD constraint PK_CF_333 foreign key (CO_AUDIT_ID)
+      references CF_DEMO_DRAFT (ID);
+ALTER TABLE CF_DEMO_DRAFT ADD constraint PK_CF_335 foreign key (TYPE)
+      references CF_CODE_INFO (ID);
+ALTER TABLE CF_DEMO_DRAFT ADD constraint PK_CF_336 foreign key (CONFIDENTIAL_LEVEL)
+      references CF_CODE_INFO (ID);
+ALTER TABLE CF_DEMO_DRAFT ADD constraint PK_CF_337 foreign key (PRIORITY)
+      references CF_CODE_INFO (ID);
+ALTER TABLE CF_SESSION_RECORD ADD constraint PK_CF_20 foreign key (SESSIONSET_ID)
+      references CF_SESSION_SET (ID);
+ALTER TABLE CP_CONSOLE_OPERS ADD constraint PK_CF_21 foreign key (PARENT_RESOURCE_ID)
+      references CP_CONSOLE_OPERS (ID);
+ALTER TABLE CP_INDIVIDUAL_VIEW ADD constraint PK_CF_22 foreign key (MENU_ID)
+      references CP_MENU_RESOURCE (ID);
+ALTER TABLE CP_INDIVIDUAL_VIEW ADD constraint PK_CF_23 foreign key (PARENT_VIEW_ID)
+      references CP_INDIVIDUAL_VIEW (ID);
+ALTER TABLE CP_INDIVIDUAL_VIEW ADD constraint PK_CF_24 foreign key (USER_ID)
+      references CS_USER (ID);
+ALTER TABLE CP_MENU_RESOURCE ADD constraint PK_CF_122 foreign key (PARENT_RESOURCE_ID)
+      references CP_MENU_RESOURCE (ID);
+ALTER TABLE CP_MENU_RESOURCE ADD constraint PK_CF_11 foreign key (HOST)
+      references CF_CODE_INFO (ID);
+ALTER TABLE CP_MENU_RESOURCE ADD constraint PK_CF_12 foreign key (MENU_TYPE)
+      references CF_CODE_INFO (ID);
+ALTER TABLE CP_MENU_RESOURCE ADD constraint PK_CF_9 foreign key (BIG_IMAGE)
+      references CF_CODE_INFO (ID);
+ALTER TABLE CP_MENU_RESOURCE ADD constraint PK_CF_10 foreign key (SMALL_IMAGE)
+      references CF_CODE_INFO (ID);
+ALTER TABLE CP_URL_RESOURCE ADD constraint PK_CF_14 foreign key (PARENT_RESOURCE_ID)
+      references CP_URL_RESOURCE (ID);
+ALTER TABLE CR_PROXY_MENU ADD constraint PK_CF_16 foreign key (MENU_ID)
+      references CP_MENU_RESOURCE (ID);
+ALTER TABLE CR_PROXY_MENU ADD constraint PK_CF_17 foreign key (PROXY_ID)
+      references CS_PROXY_USER (ID);
+ALTER TABLE CS_ACC_PERMISSION ADD constraint PK_CF_121 foreign key (ACL_PERMISSION_ID)
+      references CS_ACL_PERMISSION (ID);
+ALTER TABLE CS_ACC_PERMISSION ADD constraint PK_CF_25 foreign key (SECURITY_ROLE_ID)
+      references CS_ROLE (ID);
+ALTER TABLE CS_ACL_OPERATION ADD constraint PK_CF_27 foreign key (ACL_RES_TYPE_ID)
+      references CS_ACL_RES_TYPE (ID);
+ALTER TABLE CS_ACL_PERMISSION ADD constraint PK_CF_29 foreign key (ACL_OPERATION_ID)
+      references CS_ACL_OPERATION (ID);
+ALTER TABLE CS_ACL_RESOURCE ADD constraint PK_CF_34 foreign key (PARENT_ACL_RES_ID)
+      references CS_ACL_RESOURCE (ID);
+ALTER TABLE CS_ACL_RES_TYPE ADD constraint PK_CF_32 foreign key (WEBAPP_NODE_ID)
+      references CS_WEBAPP_NODE (ID);
+ALTER TABLE CS_ACTION_RESOURCE ADD constraint PK_CF_37 foreign key (PARENT_RESOURCE_ID)
+      references CS_ACTION_RESOURCE (ID);
+ALTER TABLE CS_CUSTOM_RESOURCE ADD constraint PK_CF_39 foreign key (PARENT_RESOURCE_ID)
+      references CS_CUSTOM_RESOURCE (ID);
+ALTER TABLE CS_CUSTOM_RESOURCE ADD constraint PK_CF_40 foreign key (ACL_RES_TYPE_ID)
+      references CS_ACL_RES_TYPE (ID);
+ALTER TABLE CS_GROUP_ROLE ADD constraint PK_CF_43 foreign key (SECURITY_GROUP_ID)
+      references CS_GROUP (ID);
+ALTER TABLE CS_GROUP_ROLE ADD constraint PK_CF_44 foreign key (SECURITY_ROLE_ID)
+      references CS_ROLE (ID);
+ALTER TABLE CS_ORGAN_EXTEND_PROPERTY ADD constraint PK_CF_339 foreign key (ORGAN_NODE_ID)
+      references CS_ORGAN_NODE (ID);
+ALTER TABLE CS_ORGAN_MODEL ADD constraint PK_CF_46 foreign key (ORG_NODE_ID)
+      references CS_ORGAN_NODE (ID);
+ALTER TABLE CS_ORGAN_MODEL ADD constraint PK_CF_47 foreign key (PARENT_NODE_ID)
+      references CS_ORGAN_NODE (ID);
+ALTER TABLE CS_ORGAN_MODEL ADD constraint PK_CF_48 foreign key (ORG_TREE_ID)
+      references CS_ORGAN_TREE (ID);
+ALTER TABLE CS_ORGAN_NODE ADD constraint PK_CF_50 foreign key (ADMIN_USER_ID)
+      references CS_USER (ID);
+ALTER TABLE CS_ORGAN_NODE ADD constraint PK_CF_51 foreign key (ICON)
+      references CF_CODE_INFO (ID);
+ALTER TABLE CS_ORGAN_NODE ADD constraint PK_CF_52 foreign key (ORGAN_NODE_TYPE_ID)
+      references CS_ORGAN_NODE_TYPE (ID);
+ALTER TABLE CS_ORGAN_RELATION ADD constraint PK_CF_55 foreign key (CHILD_NODE_ID)
+      references CS_ORGAN_NODE (ID);
+ALTER TABLE CS_ORGAN_RELATION ADD constraint PK_CF_56 foreign key (PARENT_NODE_ID)
+      references CS_ORGAN_NODE (ID);
+ALTER TABLE CS_ORGAN_RELATION ADD constraint PK_CF_57 foreign key (ORGAN_REALTION_TYPE_ID)
+      references CS_ORGAN_RELATION_TYPE (ID);
+ALTER TABLE CS_ORGAN_ROLE ADD constraint PK_CF_60 foreign key (SECURITY_ROLE_ID)
+      references CS_ROLE (ID);
+ALTER TABLE CS_ORGAN_ROLE ADD constraint PK_CF_61 foreign key (ORGAN_MODEL_ID)
+      references CS_ORGAN_MODEL (ID);
+ALTER TABLE CS_ORGAN_RULE ADD constraint PK_CF_63 foreign key (SUPERIOR_NODE_ID)
+      references CS_ORGAN_NODE_TYPE (ID);
+ALTER TABLE CS_ORGAN_RULE ADD constraint PK_CF_64 foreign key (SUBORDINATE_NODE_ID)
+      references CS_ORGAN_NODE_TYPE (ID);
+ALTER TABLE CS_ORGAN_TREE ADD constraint PK_CF_66 foreign key (ORGAN_TREE_TYPE_ID)
+      references CS_ORGAN_TREE_TYPE (ID);
+ALTER TABLE CS_PROXY_USER ADD constraint PK_CF_69 foreign key (USER_ID)
+      references CS_USER (ID);
+ALTER TABLE CS_PUB_PERMISSION ADD constraint PK_CF_71 foreign key (ACL_PERMISSION_ID)
+      references CS_ACL_PERMISSION (ID);
+ALTER TABLE CS_PUB_PERMISSION ADD constraint PK_CF_72 foreign key (SECURITY_ROLE_ID)
+      references CS_ROLE (ID);
+ALTER TABLE CS_RESOURCE_GROUP ADD constraint PK_CF_74 foreign key (ACL_RES_TYPE_ID)
+      references CS_ACL_RES_TYPE (ID);
+ALTER TABLE CS_REV_PERMISSION ADD constraint PK_CF_76 foreign key (ACL_PERMISSION_ID)
+      references CS_ACL_PERMISSION (ID);
+ALTER TABLE CS_REV_PERMISSION ADD constraint PK_CF_77 foreign key (SECURITY_ROLE_ID)
+      references CS_ROLE (ID);
+ALTER TABLE CS_ROLE ADD constraint PK_CF_80 foreign key (PARENT_ROLE_ID)
+      references CS_ROLE (ID);
+ALTER TABLE CS_USER_APPNODE ADD constraint PK_CF_83 foreign key (APP_NODE_ID)
+      references CS_WEBAPP_NODE (ID);
+ALTER TABLE CS_USER_APPNODE ADD constraint PK_CF_84 foreign key (USER_ID)
+      references CS_USER (ID);
+ALTER TABLE CS_USER_EXTEND_PROPERTY ADD constraint PK_CF_338 foreign key (SECURITY_USER_ID)
+      references CS_USER (ID);
+ALTER TABLE CS_USER_GROUP ADD constraint PK_CF_86 foreign key (SECURITY_GROUP_ID)
+      references CS_GROUP (ID);
+ALTER TABLE CS_USER_GROUP ADD constraint PK_CF_123 foreign key (SECURITY_USER_ID)
+      references CS_USER (ID);
+ALTER TABLE CS_USER_LOGIN ADD constraint PK_CF_340 foreign key (USER_ID)
+      references CS_USER (ID);
+ALTER TABLE CS_USER_ORGANNODE ADD constraint PK_CF_88 foreign key (SECURITY_USER_ID)
+      references CS_USER (ID);
+ALTER TABLE CS_USER_ORGANNODE ADD constraint PK_CF_89 foreign key (ORGAN_NODE_ID)
+      references CS_ORGAN_NODE (ID);
+ALTER TABLE CS_USER_ROLE ADD constraint PK_CF_91 foreign key (SECURITY_USER_ID)
+      references CS_USER (ID);
+ALTER TABLE CS_USER_ROLE ADD constraint PK_CF_92 foreign key (SECURITY_ROLE_ID)
+      references CS_ROLE (ID);
+ALTER TABLE CW_ACT_INSTANCE ADD constraint PK_CF_97 foreign key (PROCESS_INSTANCE_ID)
+      references CW_PROCESS_INSTANCE (PROCESS_INSTANCE_ID);
+ALTER TABLE CW_PROCESS_DATA ADD constraint PK_CF_106 foreign key (CON_INSTANCE_ID)
+      references CW_CON_INSTANCE (CON_INSTANCE_ID);
+ALTER TABLE CW_PROCESS_INSTANCE ADD constraint PK_CF_108 foreign key (PROCESS_ID)
+      references CW_PROCESS_MODEL (PROCESS_ID);
+ALTER TABLE CW_TIME_ACTIVITY ADD constraint PK_CF_111 foreign key (ACTIVITY_INSTANCE_ID)
+      references CW_ACT_INSTANCE (ACT_INSTANCE_ID);
+ALTER TABLE CW_TRANS_INSTANCE ADD constraint PK_CF_113 foreign key (TO_AINSTANCE_ID)
+      references CW_ACT_INSTANCE (ACT_INSTANCE_ID);
+ALTER TABLE CW_TRANS_INSTANCE ADD constraint PK_CF_115 foreign key (FROM_AINSTANCE_ID)
+      references CW_ACT_INSTANCE (ACT_INSTANCE_ID);
+ALTER TABLE CW_TRANS_INSTANCE ADD constraint PK_CF_116 foreign key (PROCESS_INSTANCE_ID)
+      references CW_PROCESS_INSTANCE (PROCESS_INSTANCE_ID);
+ALTER TABLE CW_WORK_ITEMS ADD constraint PK_CF_118 foreign key (ACT_INSTANCE_ID)
+      references CW_ACT_INSTANCE (ACT_INSTANCE_ID);
+ALTER TABLE CW_WORK_PERSON ADD constraint PK_CF_120 foreign key (WORKITEM_ID)
+      references CW_WORK_ITEMS (WORKITEM_ID);

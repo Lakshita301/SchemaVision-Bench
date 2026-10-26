@@ -1,0 +1,91 @@
+-- Source: https://github.com/hoquacvien/laravel/blob/928588c13758bd841c5529e4b7b5670fab749481/laravel1/public/source/db_banhang.sql?raw=true
+-- Tables detected: 8 | FK constraints: 1
+-- Foreign keys added via ALTER TABLE:
+CREATE TABLE "bills" (
+    "id" int UNSIGNED NOT NULL,
+    "id_customer" int DEFAULT NULL,
+    "date_order" date DEFAULT NULL,
+    "total" float DEFAULT NULL COMMENT 'tổng tiền',
+    "payment" varchar(200) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'hình thức thanh toán',
+    "note" varchar(500) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+    "created_at" timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    "updated_at" timestamp NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE "bill_detail" (
+    "id" int UNSIGNED NOT NULL,
+    "id_bill" int NOT NULL,
+    "id_product" int NOT NULL,
+    "quantity" int NOT NULL COMMENT 'số lượng',
+    "unit_price" DOUBLE PRECISION NOT NULL,
+    "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    "updated_at" timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
+);
+
+CREATE TABLE "customer" (
+    "id" int UNSIGNED NOT NULL,
+    "name" varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+    "gender" varchar(10) COLLATE utf8_unicode_ci NOT NULL,
+    "email" varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+    "address" varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+    "phone_number" varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+    "note" varchar(200) COLLATE utf8_unicode_ci NOT NULL,
+    "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    "updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE "news" (
+    "id" int NOT NULL,
+    "title" varchar(200) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT 'tiêu đề',
+    "content" text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT 'nội dung',
+    "image" varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT 'hình',
+    "create_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    "update_at" timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
+);
+
+CREATE TABLE "products" (
+    "id" int UNSIGNED NOT NULL,
+    "name" varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+    "id_type" int UNSIGNED DEFAULT NULL,
+    "description" text COLLATE utf8_unicode_ci,
+    "unit_price" float DEFAULT NULL,
+    "promotion_price" float DEFAULT NULL,
+    "image" varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+    "unit" varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+    "new" SMALLINT DEFAULT '0',
+    "created_at" timestamp NULL DEFAULT NULL,
+    "updated_at" timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE "slide" (
+    "id" int NOT NULL,
+    "link" varchar(100) NOT NULL,
+    "image" varchar(100) NOT NULL
+);
+
+CREATE TABLE "type_products" (
+    "id" int UNSIGNED NOT NULL,
+    "name" varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+    "description" text COLLATE utf8_unicode_ci NOT NULL,
+    "image" varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+    "created_at" timestamp NULL DEFAULT NULL,
+    "updated_at" timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE "users" (
+    "id" int UNSIGNED NOT NULL,
+    "full_name" varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+    "email" varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+    "password" varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+    "phone" varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+    "address" varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+    "remember_token" varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+    "created_at" timestamp NULL DEFAULT NULL,
+    "updated_at" timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+                          
+
+ALTER TABLE "products"
+  ADD CONSTRAINT "products_id_type_foreign" FOREIGN KEY ("id_type") REFERENCES "type_products" ("id");

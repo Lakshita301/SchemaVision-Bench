@@ -1,0 +1,186 @@
+-- Source: https://github.com/marsupilami79/zeoslib/blob/645f2b86bc0185a6334262cb258cbca59700dcf0/database/create_sqlite3.sql?raw=true
+-- Tables detected: 15 | FK constraints: 4
+create table blob_values (
+    b_id int                 not null,
+    b_text text                null,
+    b_blob BYTEA                null,
+    primary key  (b_id)
+);
+
+create table department (
+    dep_id smallint             not null,
+    dep_name varchar(20)          null,
+    dep_shname char(5)              null,
+    dep_address varchar(255)         null,
+    primary key  (dep_id)
+);
+
+create table cargo (
+    c_id integer              not null,
+    c_dep_id smallint             null,
+    c_name char(10)             null,
+    c_seal SMALLINT              null,
+    c_date_came TIMESTAMP             null,
+    c_date_out TIMESTAMP             null,
+    c_weight float                null,
+    c_width int                  null,
+    c_height int                  null,
+    c_cost money                null,
+    c_attributes BYTEA                 null,
+    primary key  (c_id),
+    foreign key (c_dep_id) references department (dep_id)
+);
+
+create table date_values (
+    d_id int                  not null,
+    d_date date                 null,
+    d_time time                 null,
+    d_datetime TIMESTAMP             null,
+    d_timestamp timestamp            null,
+    primary key  (d_id)
+);
+
+create table default_values(
+    d_id integer     not null,
+    d_fld1 int         default 123456,
+    d_fld2 float       default 123.456,
+    d_fld3 varchar(10) default 'xyz',
+    d_fld4 date        default '2003-12-11',
+    d_fld5 time        default '23:12:11',
+    d_fld6 TIMESTAMP    default '2003-12-11 23:12:11',
+    primary key (d_id)
+);
+
+create table default_values2(
+    d_id integer     not null,
+    d_fld1 float       default 123.456,
+    d_fld2 int         default 123456,
+    d_fld3 date        default '2003-12-11',
+    d_fld4 varchar(10) default 'xyz',
+    d_fld5 TIMESTAMP    default '2003-12-11 23:12:11',
+    d_fld6 time        default '23:12:11',
+    primary key (d_id)
+);
+
+create table equipment (
+    eq_id integer              not null,
+    eq_name varchar(30)          null,
+    eq_type smallint             null,
+    eq_cost numeric(9,4)         null,
+    eq_date TIMESTAMP             null,
+    woff_date TIMESTAMP             null,
+    primary key  (eq_id)
+);
+
+create table equipment2 (
+    dep_id smallint             not null,
+    eq_id int                  not null,
+    primary key  (dep_id, eq_id),
+    foreign key (dep_id) references department (dep_id),
+    foreign key (eq_id) references equipment (eq_id)
+);
+
+create table number_values (
+    n_id int                  not null,
+    n_tint SMALLINT              null,
+    n_sint smallint             null,
+    n_int int                  null,
+    n_bdecimal int                  null,
+    n_numeric numeric(9,4)         null,
+    n_float float                null,
+    n_real real                 null,
+    n_dprecission DOUBLE PRECISION precision     null,
+    n_money money                null,
+    primary key  (n_id)
+);
+
+create table people (
+    p_id integer              not null,
+    p_dep_id smallint             null,
+    p_name varchar(40)          null,
+    p_begin_work time                 null,
+    p_end_work time                 null,
+    p_picture BYTEA                 null,
+    p_resume text                 null,
+    p_redundant SMALLINT              null,
+    primary key  (p_id),
+    foreign key (p_dep_id) references department (dep_id)
+);
+
+create table string_values (
+    s_id int                  not null,
+    s_char char(255)            null,
+    s_varchar varchar(255)         null,
+    s_nchar char(255)            null,
+    s_nvarchar varchar(255)         null,
+    s_bit BYTEA          null,
+    s_varbit BYTEA      null,
+    primary key  (s_id)
+);
+
+create table not_null_values
+(
+    n_id int              	not null,
+    n_varchar VARCHAR(255)		not null,
+    primary key (n_id)
+);
+
+create table case_sensitive (
+    cs_id INTEGER                        not null,
+    "CS_DATA1" INTEGER		null,
+    "CS_Data2" INTEGER		null,
+    "Cs_Data3" INTEGER		null,
+    primary key (cs_id)
+);
+
+create table "Spaced Names" (
+    cs_id INTEGER                        not null,
+    "Cs Data1" INTEGER,
+    "cs data2" INTEGER,
+    "cS data3" INTEGER,
+    primary key (cs_id)
+);
+
+create table high_load (
+    hl_id INTEGER NOT NULL,
+    stBoolean BOOLEAN,
+    stByte SMALLINT,
+    stShort SMALLINT,
+    stInteger INTEGER,
+    stLong BIGINT,
+    stFloat FLOAT,
+    stDouble DOUBLE PRECISION PRECISION,
+    stBigDecimal NUMERIC(18,4),
+    stString VARCHAR(100),
+    stUnicodeString VARCHAR(255),
+    stBytes BYTEA,
+    stDate DATE,
+    stTime TIME,
+    stTimestamp TIMESTAMP,
+    stGUID CHAR(38),
+    stAsciiStream TEXT,
+    stUnicodeStream TEXT,
+    stBinaryStream BYTEA,
+    primary key (hl_id)
+);
+
+create table empty_types (
+    et_id NOT NULL,
+    data1 NOT NULL,
+    data2 NOT NULL,
+    primary key (et_id)
+);
+
+create table bcd_values
+(
+    id INTEGER NOT NULL,
+    curr18_4 INT(18,4),
+    curr15_2 INT(15,2),
+    curr10_4 INT(10,4),
+    curr4_4 INT(4,4),
+    bigd18_1 NUMERIC(18,1),
+    bigd18_5 NUMERIC(18,5),
+    bigd12_10 NUMERIC(12,10),
+    bigd18_18 NUMERIC(18,18),
+    primary key (id)
+);

@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "er2sql"
+version = "0.1.0"
+description = "ER Diagram -> SQL DDL pipeline with execution-grounded evaluation"
+requires-python = ">=3.10"
+dependencies = [
+    "openai>=1.30.0",
+    "jsonschema>=4.21.0",
+    "PyYAML>=6.0",
+    "python-dotenv>=1.0.0",
+    "tqdm>=4.66.0",
+    "psycopg2-binary>=2.9.9",
+    "sqlparse==0.5.3",
+]
+
+[project.optional-dependencies]
+compat-audit = [
+    "PyMySQL>=1.1.0",
+]
+reference-audit = [
+    "sqlglot==30.22.0",
+]
+
+[project.scripts]
+er2sql = "er2sql.cli:main"
+er2sql-audit-contamination = "er2sql.module7_evaluation.contamination_audit:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

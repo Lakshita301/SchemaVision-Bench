@@ -1,0 +1,80 @@
+protocol_version: 1
+frozen_on: '2026-10-03'
+scope: architecture_study_not_model_leaderboard
+research_question: Does explicit image-to-JSON-to-SQL mediation improve executable schema correctness over direct image-to-SQL generation?
+arms:
+  structured: image_to_json_to_sql
+  direct: image_to_sql
+repair: false
+verification_is_evaluation_only: true
+tiers:
+  tier1: full_keys_and_cardinality
+  tier2: key_badges_hidden_relationship_lines_retained
+  tier3: cardinality_hidden_key_badges_retained
+selection:
+  split_file: config/paper_splits.json
+  unit: schema_id
+  development_ids: 76
+  pilot_ids: 20
+  final_ids: 618
+  same_ids_across_models_arms_tiers: true
+  automatic_exclusions: false
+  use_existing_dataset_as_ground_truth: true
+  no_upstream_reconstruction_without_versioned_amendment: true
+  unsupported_reference_policy: block_launch_pending_resolution
+inference:
+  completed_responses_per_stage: 1
+  validation_retries: 0
+  repair_retries: 0
+  transport_retries: bounded_by_frozen_model_profile
+  generation_sees_ground_truth_sql: false
+  structured_generator_sees_image: false
+  invalid_or_truncated_completed_output: scored_failure_not_regenerated
+  unresolved_transport_outcome: incomplete_run_requires_reconciliation
+  model_roster: deferred_until_purchase_then_freeze_before_final_run
+primary:
+  endpoint: macro_cer_all
+  comparison: structured_minus_direct_within_each_model
+  aggregation: equal_schema_tier_weight_on_complete_paired_matrix
+  failure_score: 0
+  zero_behavioral_test_schema_score: 0
+  report_zero_test_schema_count: true
+  direction: higher_is_better
+mandatory_companion_metrics:
+  - ddl_execution_rate
+  - constraint_enforcement_rate
+  - unconditional_constraint_coverage
+  - end_to_end_success_rate
+  - valid_operation_acceptance_rate
+  - invalid_operation_rejection_rate
+secondary:
+  - final_sql_structural_precision_recall_f1
+  - ir_structural_precision_recall_f1_structured_only
+  - paired_tier1_minus_tier2_dropoff
+  - paired_tier1_minus_tier3_dropoff
+  - per_constraint_type_pass_rates
+  - latency_tokens_cost_and_failure_breakdowns
+  - available_text_similarity_metrics_descriptive_only
+statistics:
+  inference_mode: descriptive_effect_sizes_and_pointwise_intervals
+  hypothesis_p_values: not_claimed
+  multiplicity: no_familywise_significance_claims_from_pointwise_intervals
+  resampling_unit: schema_id_with_all_paired_tiers
+  bootstrap_replicates: 5000
+  bootstrap_seed: 20260930
+  confidence_level: 0.95
+  small_sample_threshold: 30
+  cross_model_averaging: not_a_primary_endpoint
+  related_source_families: independence_not_established_by_schema_id_split
+reporting:
+  partial_runs: exploratory_only_not_final_paper_matrix
+  undefined_empty_structural_categories: null_not_perfect
+  conditional_cer_requires_compilation: true
+  unsupported_constraints: disclose_not_pass_or_silently_drop
+  gold_warnings_or_fixture_failures: block_eligibility_not_model_fault
+  pricing_cost: estimate_until_reconciled_with_provider_billing
+  claims: sampled_constraint_behavior_not_full_semantic_equivalence
+amendments:
+  change_requires_new_protocol_hash: true
+  preserve_old_artifacts: true
+  after_final_model_results: label_changes_post_hoc_and_use_new_experiment_version

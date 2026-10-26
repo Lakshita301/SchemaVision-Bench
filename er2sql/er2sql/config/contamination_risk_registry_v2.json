@@ -1,0 +1,38 @@
+{
+  "version": 2,
+  "description": "Prospective before-paid-run registry: retains the locked-plan public tutorial examples and adds two repository/schema risks identified by the 2026-10-09 source review. Matches are risk flags, not proof of model training exposure.",
+  "candidates": [
+    {
+      "catalog_id": "sakila",
+      "aliases": ["Sakila", "Sakila sample database"],
+      "risk_level": "high",
+      "basis": "Named as a widely known tutorial schema in the locked research plan."
+    },
+    {
+      "catalog_id": "chinook",
+      "aliases": ["Chinook", "Chinook sample database"],
+      "risk_level": "high",
+      "basis": "Named as a widely known tutorial schema in the locked research plan."
+    },
+    {
+      "catalog_id": "northwind",
+      "aliases": ["Northwind", "Northwind sample database"],
+      "risk_level": "high",
+      "basis": "Named as a widely known tutorial schema in the locked research plan."
+    },
+    {
+      "catalog_id": "tpc_c_benchbase",
+      "aliases": ["cmu-db/benchbase", "TPC-C", "TPCC"],
+      "risk_level": "high",
+      "basis": "The source review found schema_0799 in BenchBase and schema_0955_026069 in OLTPBench-ii; both contain the recognizable standard TPC-C tables. Added prospectively before paid model outputs.",
+      "evidence_url": "https://github.com/cmu-db/benchbase"
+    },
+    {
+      "catalog_id": "quartz_scheduler",
+      "aliases": ["spring-quartz-cluster-sample", "QRTZ_TRIGGERS", "Quartz Scheduler"],
+      "risk_level": "high",
+      "basis": "The source review found identical standard QRTZ_* scheduler table sets in schema_1008_176453, schema_1023_473037, and schema_1309_516625. Added prospectively before paid model outputs.",
+      "evidence_url": "https://github.com/v5tech/spring-quartz-cluster-sample"
+    }
+  ]
+}

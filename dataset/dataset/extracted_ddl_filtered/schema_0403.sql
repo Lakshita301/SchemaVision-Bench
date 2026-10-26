@@ -1,0 +1,115 @@
+-- Source: https://github.com/sharpstef/cute-cat-cafe-website/blob/c6afbfed4b9b33ffd3d229574a452167375747e8/database/create.sql?raw=true
+-- Tables detected: 9 | FK/REFERENCES mentions: 18
+
+CREATE TABLE Customers (
+    customerID int AUTO_INCREMENT NOT NULL,
+    firstName varchar(50),
+    lastName varchar(50),
+    email varchar(255) NOT NULL UNIQUE,
+    password varchar(520) NOT NULL,
+    salt varchar(255) NOT NULL,
+    member boolean DEFAULT 0,
+    isAdmin boolean DEFAULT 0,
+    PRIMARY KEY (customerID)
+);
+
+CREATE TABLE Cats (
+    catID int AUTO_INCREMENT NOT NULL,
+    name varchar(50) NOT NULL,
+    breed varchar(50) NOT NULL,
+    age int,
+    dateAdmitted date NOT NULL,
+    adopted boolean NOT NULL DEFAULT 0,
+    roomID int,
+    PRIMARY KEY (catID)    
+);
+
+CREATE TABLE Rooms (
+    roomID int AUTO_INCREMENT NOT NULL,
+    name varchar(50) NOT NULL UNIQUE,
+    roomDescription text(500),
+    reservable boolean DEFAULT 0,
+    fee decimal(4,2) NOT NULL,
+    catID int,
+    PRIMARY KEY (roomID),
+    FOREIGN KEY (catID) REFERENCES Cats(catID)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE
+);
+
+CREATE TABLE Beverages (
+    beverageID int AUTO_INCREMENT NOT NULL,
+    name varchar(50) NOT NULL UNIQUE,
+    description text(500),
+    type varchar(7),
+    price decimal (3,2) NOT NULL,
+    CHECK (type='hot' OR type='cold' OR type='blended'),
+    PRIMARY KEY (beverageID)
+);
+
+CREATE TABLE Ingredients (
+    ingredientID int AUTO_INCREMENT NOT NULL,
+    name varchar(50) NOT NULL UNIQUE,
+    PRIMARY KEY (ingredientID)
+);
+
+CREATE TABLE Orders (
+    orderID int AUTO_INCREMENT NOT NULL,
+    purchaseTime datetime NOT NULL,
+    totalAmount decimal(5,2) NOT NULL,
+    complete boolean,
+    customerID int NOT NULL,
+    PRIMARY KEY (orderID),
+    FOREIGN KEY (customerID) REFERENCES Customers(customerID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+CREATE TABLE Reservations (
+    reservationID int AUTO_INCREMENT NOT NULL,
+    customerID int NOT NULL,
+    roomID int NOT NULL,
+    totalFee decimal(6,2) NOT NULL,
+    reservationStart datetime NOT NULL,
+    reservationEnd datetime NOT NULL,
+    PRIMARY KEY (reservationID),
+    FOREIGN KEY (customerID) REFERENCES Customers(customerID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+    FOREIGN KEY (roomID) REFERENCES Rooms(roomID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+CREATE TABLE BeverageIngredients (
+    beverageID int NOT NULL,
+    ingredientID int NOT NULL, 
+    PRIMARY KEY (beverageID, ingredientID),
+    FOREIGN KEY (beverageID) REFERENCES Beverages(beverageID)
+    ON DELETE CASCADE,
+    FOREIGN KEY (ingredientID) REFERENCES Ingredients(ingredientID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+CREATE TABLE OrderItems (
+    orderID int NOT NULL,
+    beverageID int NOT NULL,
+    quantity int(2) NOT NULL,
+    status varchar(15),
+    CHECK (status='ordered' OR status='prepared' OR status='delivered'),
+    PRIMARY KEY (beverageID, orderID),
+    FOREIGN KEY (beverageID) REFERENCES Beverages(beverageID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+    FOREIGN KEY (orderID) REFERENCES Orders(orderID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+-- Foreign keys added via ALTER TABLE:
+ALTER TABLE Cats
+ADD FOREIGN KEY (roomID) REFERENCES Rooms(roomID)
+ON DELETE SET NULL
+ON UPDATE CASCADE;
+
